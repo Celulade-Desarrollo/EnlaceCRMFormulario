@@ -35,17 +35,17 @@ onMounted(() => {
 <div class="col-lg-6 botones">
   <div>
     <h2 class="mb-2 titulo">Cuentanos un poco acerca de tu negocio</h2>
-    <p class="mb-4">Esta información es totalmente confidencial y esta nos permitirá conocerte mejor</p>
+    <p class="mb-4 font-bold">Esta información es totalmente confidencial y esta nos permitirá conocerte mejor</p>
   </div>
   <div class="button-container">
-    <p>¿Tu tienda tiene neveras?</p>
+    <p class="font-bold">¿Tu tienda tiene neveras?</p>
         <button class="button button2 mt-4">No</button>
         <button class="button button1 mt-4">1</button>
         <button class="button button2 mt-4">2</button>
         <button class="button button2 mt-4">3 o más</button>
   </div>
     <div class="button-container">
-    <p>¿Estas registrado ante la cámara de comercio de tu ciudad?</p>
+    <p class="font-bold">¿Estas registrado ante la cámara de comercio de tu ciudad?</p>
         <button class="button button1 mt-4">Si</button>
         <button class="button button2 mt-4">No</button>
     </div>

@@ -48,15 +48,15 @@ const handleSubmit = (event) => {
           <form @submit="handleSubmit">
             <div class="form-group">
               <h3 class="titulo-8 mb-4">¿Y en qué parte de {{ ciudad }}?</h3>
-              <p>Ingresa tu dirección</p>
+              <p class="font-bold">Ingresa tu dirección</p>
               <label for="direccion" id="label-direccion"> 
                 <input v-model="direccion" class="form-control" aria-required="true" name="direccion" type="text" placeholder="Dirección" data-gtm="home-hero-email-field" autocomplete="off" id="direccion" aria-describedby="error-direccion">
               </label>
-              <p>Detalles (Opcional)</p>
+              <p class="font-bold">Detalles (Opcional)</p>
               <label for="detalles" id="label-detalles"> 
                 <input class="form-control" aria-required="false" name="detalles" type="text" placeholder="Detalles" data-gtm="home-hero-email-field" autocomplete="off" id="detalles" aria-describedby="error-detalles">
               </label>
-              <p>Barrio</p>
+              <p class="font-bold">Barrio</p>
               <label for="barrio" id="label-barrio"> 
                 <input v-model="barrio" class="form-control" aria-required="true" name="barrio" type="text" placeholder="Barrio" data-gtm="home-hero-email-field" autocomplete="off" id="barrio" aria-describedby="error-barrio">
               </label>

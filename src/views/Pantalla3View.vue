@@ -48,21 +48,21 @@ const handleSubmit = (event) => {
 
       <div class="col-lg-6">
         <div class="mt-4 tarjeta">
-          <form action="Pantalla4View" @submit="handleSubmit">
+          <form action="Pantalla13View" @submit="handleSubmit">
             <div class="form-group">
               <p class="titulo-3 mb-4">Ingresa tu nombre completo tal como aparece en la cédula</p>
 
-              <p class="mb-4">Ingresa tus nombres</p>
+              <p class="mb-4 font-bold">Ingresa tus nombres</p>
               <label for="nombres">
                 <input id="nombres" class="form-control" v-model="nombre" name="nombres" type="text" autocomplete="off">
               </label>
 
-              <p class="mb-4 mt-4">Ingresa tu primer apellido</p>
+              <p class="mb-4 mt-4 font-bold">Ingresa tu primer apellido</p>
               <label for="primerApellido">
                 <input id="primerApellido" class="form-control" v-model="apellido" name="primerApellido" type="text" autocomplete="off">
               </label>
 
-              <p class="mb-4 mt-4">Ingresa tu segundo apellido (Opcional)</p>
+              <p class="mb-4 mt-4 font-bold">Ingresa tu segundo apellido (Opcional)</p>
               <label for="segundoApellido">
                 <input id="segundoApellido" class="form-control" name="segundoApellido" type="text" autocomplete="off">
               </label>

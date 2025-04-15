@@ -6,16 +6,42 @@ import Heading from "../components/UI/Heading.vue";
 import Button from "../components/UI/Button.vue";
 
 const departments = ref([]);
-const error = ref('');
 const paises = ref([]);
+const mostrarAlerta = ref(false);
+const mensajeAlerta = ref('');
+
+
+const onSubmit = (formData) => {
+  if (!formData.genero ||
+    !formData.estadoCivil ||
+    !formData.fechaNacimiento ||
+    !formData.pais ||
+    !formData.departamento) {
+    
+    mostrarAlerta.value = 'Por favor completa todos los campos';
+    mostrarAlerta.value = true;
+    return;
+  }
+  mostrarAlerta.value = false;
+  window.location.href = 'Pantalla14View';
+};
 
 onMounted(async () => {
   try {
     const response = await axios.get('https://restcountries.com/v3.1/all');
-    paises.value = response.data.map((pais) => ({
+    const listaPaises = response.data.map((pais) => ({
       value: pais.cca2,
       label: pais.name.common,
-    })).sort((a, b) => a.label.localeCompare(b.label));
+    }));
+    
+    // Encontrar Colombia y moverla al principio de la lista
+    const indiceColombia = listaPaises.findIndex(pais => pais.value === 'CO');
+    if (indiceColombia !== -1) {
+      const colombia = listaPaises.splice(indiceColombia, 1)[0];
+      listaPaises.unshift(colombia); // Añadir Colombia al principio
+    }
+    
+    paises.value = listaPaises;
   } catch (error) {
     console.error('Error al cargar países:', error)
   }
@@ -27,10 +53,9 @@ onMounted(async () => {
       label: item.departamento,
     }));
   } catch (err) {
-    error.value = 'Error al cargar los departamentos.';
     console.error('Error loading departments:', err);
   }
-})
+});
 
 
 </script>
@@ -38,8 +63,14 @@ onMounted(async () => {
 <template>
   <Heading></Heading>
   <h2 class="titulo">Datos Personales</h2>
+
+  
+
   <!-- Select de generos -->
-   <div>
+   <FormKit type="form" 
+        @submit="onSubmit" 
+        :actions="false"
+        :incomplete-message="'Por favor completa todos los campos'">
       <FormKit
         type="select"
         label="Género"
@@ -53,7 +84,7 @@ onMounted(async () => {
         validation="required"
         validation-visibility="dirty"
         :validation-messages="{
-          is: 'Seleccione un campo',
+          required: 'Seleccione su género',
       }"
       />
       <!-- Select de generos -->
@@ -73,7 +104,7 @@ onMounted(async () => {
         validation="required"
         validation-visibility="dirty"
         :validation-messages="{
-          is: 'Seleccione un campo',
+          required: 'Seleccione su estado civil',
         }"
       />
       <FormKit
@@ -84,6 +115,9 @@ onMounted(async () => {
         placeholder="Fecha de Nacimiento"
         validation="required|date_before:2010-01-01"
         validation-visibility="dirty"
+        :validation-messages="{
+          required: 'Coloque una fecha válida',
+        }"
       />
       <FormKit
         type="select"
@@ -93,6 +127,9 @@ onMounted(async () => {
         :options="paises"
         validation="required"
         validation-visibility="dirty"
+        :validation-messages="{
+          required: 'Seleccione un país',
+        }"
       />
       <FormKit
         type="select"
@@ -102,11 +139,14 @@ onMounted(async () => {
         :options="departments"
         validation="required"
         validation-visibility="dirty"
-        class="formkit-department-select appearance-none bg-gray-100 px-4 py-2 pr-10 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-        
+        :validation-messages="{
+          required: 'Seleccione un departamento',
+        }"
       />
-    </div>
-      <Button></Button>
+      <Button type="submit"></Button>
+      
+    </FormKit>
+
 </template>
 
 <style scoped>

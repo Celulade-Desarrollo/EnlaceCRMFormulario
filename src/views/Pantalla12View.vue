@@ -1,6 +1,7 @@
 <script setup>
     import RouterLink from "../components/UI/Routerlink.vue"; 
     import Heading from "../components/UI/Heading.vue";
+    import Button from "../components/UI/Button.vue";
     import { FormKit } from "@formkit/vue";
     import { onMounted } from 'vue';   
     
@@ -34,11 +35,11 @@ onMounted(() => {
 <div class="col-lg-6 botones">
   <div>
     <h2 class="titulo">Cuentanos un poco acerca de tu negocio</h2>
-    <p class="mb-4">Esta información es totalmente confidencial y esta nos permitirá conocerte mejor</p>
+    <p class="mb-4 font-bold">Esta información es totalmente confidencial y esta nos permitirá conocerte mejor</p>
   </div>
   
   <div class="mt-4 tarjeta">
-    <p class="mb-4">¿Cuanto vendes al día (opcional)?</p>
+    <p class="mb-4 font-bold">¿Cuanto vendes al día (opcional)?</p>
     <div class="checklist">
             <label class="check-item mb-4">
                 <input type="checkbox" name="100" value="100" id="100P" class="single-checkbox">
@@ -66,15 +67,7 @@ onMounted(() => {
                 Más de $400.000
             </label>
             <form action="Pantalla10View">
-                <button type="submit" id="email-on-hero-submit-btn" onclick="handleSubmit" data-testid="email-on-hero-submit-btn" data-gtm="home-hero-email-cta-btn" class="btn btn-primary">
-                    Continuar
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 21 20" class="ml-2" color="currentColor" role="img">
-                    <title>Arrow Right</title>
-                    <g>
-                        <path d="M18.5 10H2.5M18.5 10L12 16.5M18.5 10L12 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="round"></path>
-                    </g>
-                    </svg>
-                </button>
+                <Button></Button>
             </form>
         </div>
   </div>

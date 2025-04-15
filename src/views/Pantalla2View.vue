@@ -87,13 +87,13 @@ onMounted(() => {
         <div class="mt-4 tarjeta">
           <form action="Pantalla3View" id="myForm">
             <div class="form-group">
-              <p class="mb-4">Registra tus datos</p>
-              <p>Ingresa tu correo electrónico</p>
+              <p class="mb-4 font-bold">Registra tus datos</p>
+              <p class="font-bold">Ingresa tu correo electrónico</p>
               <label for="email">
                 <input id="email" v-model="email" class="form-control" aria-required="true" name="email" type="email" placeholder="" autocomplete="off" />
               </label>
               <span class="error-message">{{ emailErrorMessage }}</span> <!-- Mensaje de error para el email -->
-              <p class="mt-4">Confirma tu correo electrónico</p>
+              <p class="mt-4 font-bold">Confirma tu correo electrónico</p>
               <label for="confirmaremail">
                 <input id="confirmaremail" v-model="confirmaremail" class="form-control" aria-required="true" name="confirmaremail" type="email" placeholder="" autocomplete="off" />
               </label>

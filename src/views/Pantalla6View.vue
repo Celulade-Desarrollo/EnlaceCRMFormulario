@@ -46,8 +46,8 @@ onMounted(loadCountries);
 
     <div class="select-option">
       <h3 class="titulo mb-5">¿Cuál es tu nacionalidad?</h3>
-      <select class="form-select country mb-4" aria-label="Default select example" ref="countrySelect">
-        <option selected>Selecciona tu país</option>
+      <select class="form-select country mb-4  font-bold" aria-label="Default select example" ref="countrySelect">
+        <option selected >Selecciona tu país</option>
       </select>
     </div>
 

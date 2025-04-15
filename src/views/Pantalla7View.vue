@@ -78,13 +78,13 @@ onMounted(() => {
     <Alerta v-if="error">{{ error }}</Alerta>
     <div class="select-option">
       <h3 class="mb-4 titulo-7">¿Cuéntanos dónde está tu negocio?</h3>
-      <p class="mb-4">Por norma es necesario que te hagamos esta pregunta</p>
-      <p>Elige un departamento</p>
+      <p class="mb-4 font-bold">Por norma es necesario que te hagamos esta pregunta</p>
+      <p class="font-bold">Elige un departamento</p>
       <select v-model="selectedDepartment" @change="loadCities" aria-label="Esoge tu departamento" class="form-select mb-4 single-checkbox">
         <option selected disabled>Elige un departamento</option>
         <option v-for="department in departments" :key="department" :value="department">{{ department }}</option>
       </select>
-      <p>Elige una ciudad</p>
+      <p class="font-bold">Elige una ciudad</p>
       <select v-model="selectedCity" aria-label="Default select example" class="form-select mb-4 single-checkbox-1" id="ciudad">
         <option selected disabled>Elige una ciudad</option>
         <option v-for="city in cities" :key="city" :value="city">{{ city }}</option>

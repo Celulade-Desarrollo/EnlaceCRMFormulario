@@ -3,6 +3,7 @@
     import { onMounted, ref } from 'vue';   
     import Alerta from "../components/UI/Alerta.vue";
     import Button from "../components/UI/Button.vue";
+    import { FormKit } from "@formkit/vue";
 
     const error = ref('')
     const handleCheckboxChange = (event) => {
@@ -78,7 +79,7 @@
                     <form @submit="handleSubmit">
                         <div class="form-group">
                             <h3 class="titulo-10 mb-4">Antes de terminar</h3>
-                            <h6 class="mb-4">Falta poco. Solo necesitamos que respondas un par de preguntas más</h6>
+                            <h6 class="mb-4 font-bold">Falta poco. Solo necesitamos que respondas un par de preguntas más</h6>
                             <h4 class="sub-titulo">¿Eres una Persona Expuesta Politicamente (PEP) o lo has sido en los ultimos años?</h4>
                             <div class="checklist" aria-required="true">
                                 <label class="check-item">
@@ -93,7 +94,7 @@
                                 </label>
                             </div>
                             <h4 class="sub-titulo">¿Tu pareja, familiar directo o asociado cercano es una Persona Expuesta Politicamente (PEP) o lo has sido en los ultimos años?</h4>
-                            <p>Tu familia directa incluye padres, hermanos, abuelos o nietos</p>
+                            <p class="font-bold">Tu familia directa incluye padres, hermanos, abuelos o nietos</p>
                             <div class="checklist" aria-required="true">
                                 <label class="check-item">
                                     <input type="checkbox" name="familiar_pep" value="si" class="single-checkbox-1">
@@ -106,6 +107,24 @@
                                     No
                                 </label>
                             </div>
+                            <h3 class="titulo mb-4">¿Realiza operaciones en moneda extranjera?</h3>
+                                <FormKit
+                                    type="select"
+                                    name="Moneda"
+                                    placeholder="Seleccione"
+                                    :options="{
+                                    si: 'Sí',
+                                    no: 'No',
+                                    }"
+                                    validation="required"
+                                    validation-visibility="dirty"
+                                />
+                                <p>Declaro que soy nacido en Colombia, no tengo 
+                                otras nacionalidades, y mi domicilio es en Colombia 
+                                al igual que mi país de residencia físcal. Con el fin de 
+                                de dar cumplimiento a la normatividad de FATCA/CRS certifico
+                                lo anterior y me comprometo a suministrar cualquier cambio 
+                                de forma oprotuna. (Validar declaratoria con jurídico)</p>
                         </div>
                         <Button></Button>
                     </form>
