@@ -2,8 +2,8 @@
 import { ref } from "vue";
 import RouterLink from "../components/UI/Routerlink.vue"; 
 import Heading from "../components/UI/Heading.vue";
-import { FormKit } from "@formkit/vue";
 import Alerta from "../components/UI/Alerta.vue";
+import Button from "../components/UI/Button.vue";
 
 const clearUndefined = (value) => {
   return value === undefined || value === null ? '' : value;
@@ -67,15 +67,7 @@ const handleSubmit = (event) => {
                 <input id="segundoApellido" class="form-control" name="segundoApellido" type="text" autocomplete="off">
               </label>
             </div>
-            <button type="submit" id="submit-btn" class="btn btn-primary">
-              Continuar
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 21 20" class="ml-2" color="currentColor" role="img">
-                <title>Arrow Right</title>
-                <g>
-                  <path d="M18.5 10H2.5M18.5 10L12 16.5M18.5 10L12 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="round"></path>
-                </g>
-              </svg>
-            </button>
+            <Button></Button>
           </form>
         </div>
       </div>
@@ -114,21 +106,6 @@ body {
   font-size: 1.875rem;
   line-height: 1.2;
   margin-top: -100px;
-}
-
-.btn {
-  padding: 0 1.25rem;
-  border-radius: 6.25rem;
-  background: #dd3590;
-  color: rgb(255, 255, 255);
-  height: 3rem;
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-  border: none;
-  text-align: center;
 }
 
 .desktop {

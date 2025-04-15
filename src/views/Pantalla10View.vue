@@ -2,6 +2,7 @@
     import Heading from "../components/UI/Heading.vue";
     import { onMounted, ref } from 'vue';   
     import Alerta from "../components/UI/Alerta.vue";
+    import Button from "../components/UI/Button.vue";
 
     const error = ref('')
     const handleCheckboxChange = (event) => {
@@ -106,15 +107,7 @@
                                 </label>
                             </div>
                         </div>
-                        <button type="submit" id="email-on-hero-submit-btn" data-testid="email-on-hero-submit-btn" data-gtm="home-hero-email-cta-btn" class="btn btn-primary">
-                            Continuar
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 21 20" class="ml-2" color="currentColor" role="img">
-                                <title>Arrow Right</title>
-                                <g>
-                                    <path d="M18.5 10H2.5M18.5 10L12 16.5M18.5 10L12 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="round"></path>
-                                </g>
-                            </svg>
-                        </button>
+                        <Button></Button>
                     </form>
                 </div>
             </div>

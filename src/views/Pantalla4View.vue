@@ -2,6 +2,9 @@
 import { onMounted, ref } from 'vue';
 import Alerta from '../components/UI/Alerta.vue';
 import Heading from '../components/UI/Heading.vue'
+import Button from '../components/UI/Button.vue'
+
+
 const cedula = ref(localStorage.getItem('cedula') || '');
 
 // Referencias para los checkboxes
@@ -90,33 +93,25 @@ onMounted(() => {
               <h4 class="mb-4 titulo-4">Ingresa tu cédula</h4>
 
               <label for="numeroCedula" id="label-numeroCedula">
-                <input id="numeroCedula" class="form-control" v-model="cedula" aria-required="true" aria-invalid="true" aria-labelledby="label-numeroCedula" name="numeroCedula" type="number" placeholder="" autocomplete="off" required>
+                <input id="numeroCedula" class="form-control" v-model="cedula" aria-required="true" aria-invalid="true" aria-labelledby="label-numeroCedula" name="numeroCedula" type="number" placeholder="Ej: 1018276538" autocomplete="off" required>
               </label>
               <span id="cedula-error" class="error-message"></span> <!-- Mensaje de error -->
             </div>
 
             <div class="checklist">
               <label class="check-item">
-                <input type="checkbox" name="autorizacion" value="tratamientoDatos" class="checkbox-custom rounded-checkbox">
+                <input type="checkbox" name="autorizacion" value="tratamientoDatos" class="checkbox-custom rounded-checkbox single-checkbox">
                 <span class="checkmark"></span>
-                <p>He leído y autorizo el tratamiento de mis datos personales por <br><a href="#">Enlace S.A.S y Banco W</a></p>
+                <p class="">He leído y autorizo el tratamiento de mis datos personales por <br><a href="#">Enlace S.A.S y Banco W</a></p>
               </label>
               <label class="check-item mb-4">
-                <input type="checkbox" name="autorizacion" id="wpp" value="contactoWhatsapp" class="checkbox-custom rounded-checkbox">
+                <input type="checkbox" name="autorizacion" id="wpp" value="contactoWhatsapp" class="checkbox-custom rounded-checkbox ">
                 <span class="checkmark"></span>
-                <p>Autorizo a <br><span>Enlace S.A.S y Banco W</span> contactarme vía <span>Whatsapp</span> sobre mis productos (opcional)</p>
+                <p class="p-checkmark-2">Autorizo a <br><span>Enlace S.A.S y Banco W</span> contactarme vía <span>Whatsapp</span> sobre mis productos (opcional)</p>
               </label>
             </div>
 
-            <button type="submit" id="submit-btn" class="btn btn-primary">
-              Continuar
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 21 20" class="ml-2" color="currentColor" role="img">
-                <title>Arrow Right</title>
-                <g>
-                  <path d="M18.5 10H2.5M18.5 10L12 16.5M18.5 10L12 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="round"></path>
-                </g>
-              </svg>
-            </button>
+            <Button></Button>
           </form>
         </div>
       </div>
@@ -226,6 +221,10 @@ body {
     border: 2px solid #dd3590;
 }
 
+.p-checkmark-2{
+  font-size: 0.75rem;
+  color: black;
+}
 
 @media (max-width: 767px) {
   .desktop {

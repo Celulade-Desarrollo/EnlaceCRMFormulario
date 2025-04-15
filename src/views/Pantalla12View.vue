@@ -1,7 +1,6 @@
 <script setup>
     import RouterLink from "../components/UI/Routerlink.vue"; 
     import Heading from "../components/UI/Heading.vue";
-    import buttonInline from "../components/UI/buttonInline.vue";
     import { FormKit } from "@formkit/vue";
     import { onMounted } from 'vue';   
     
