@@ -10,7 +10,6 @@ const paises = ref([]);
 const mostrarAlerta = ref(false);
 const mensajeAlerta = ref('');
 
-
 const onSubmit = (formData) => {
   if (!formData.genero ||
     !formData.estadoCivil ||
@@ -64,8 +63,8 @@ onMounted(async () => {
   <Heading></Heading>
   <h2 class="titulo">Datos Personales</h2>
 
+  <!-- TODO: Validar si es necesario formkit y corregir los colores del error -->
   
-
   <!-- Select de generos -->
    <FormKit type="form" 
         @submit="onSubmit" 

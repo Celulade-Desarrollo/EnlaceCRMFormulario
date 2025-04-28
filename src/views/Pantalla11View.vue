@@ -40,11 +40,11 @@ const handleInicio = () => {
             title="Pago"
           />
         </picture>
-        <div>
+        <!-- <div>
           <h2 class="display-4 titulo text-center">
             <span>Tu cupo preaprobado es de <br /> $1.000.000</span>
           </h2>
-        </div>
+        </div> -->
         <div class="mt-4 tarjeta">
           <form>
             <button

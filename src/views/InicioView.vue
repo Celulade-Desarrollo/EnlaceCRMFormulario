@@ -20,7 +20,7 @@ const fetchData = async () => {
     localStorage.setItem('cedula', data.value.CEDULA);
     localStorage.setItem('ciudadNacimiento', data.value.CIUDAD_NACIMIENTO);
     localStorage.setItem('email', data.value.CORREO_ELECTRONICO);
-    // window.open("/Pantalla2View", "_parent");
+    window.open("/Pantalla2View", "_parent");
     error.value = '';
   } catch (error) {
     error.value = 'Error al obtener los datos';
