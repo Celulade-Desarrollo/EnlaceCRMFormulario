@@ -158,6 +158,12 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.form-control:focus {
+  outline: none;
+  box-shadow: none;
+  border-bottom-color: #ff00f2;
+}
+
 .error {
   border-color: red !important;
   border-width: 2px;
