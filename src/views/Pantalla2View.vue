@@ -1,22 +1,23 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue';
-import axios from 'axios';
+import { ref, onMounted, watch } from "vue";
+import axios from "axios";
 import RouterLink from "../components/UI/Routerlink.vue";
 import Heading from "../components/UI/Heading.vue";
-import Alerta from '../components/UI/Alerta.vue';
-import Button from '../components/UI/Button.vue';
+import Alerta from "../components/UI/Alerta.vue";
+import Button from "../components/UI/Button.vue";
+import Footer from "../components/UI/Footer.vue";
 
 // Inicializar los valores de los campos
-const cedula = ref('');
-const email = ref('');
-const confirmaremail = ref('');
-const errorMessage = ref('');
-const emailErrorMessage = ref('');
-const confirmEmailErrorMessage = ref('');
+const cedula = ref("");
+const email = ref("");
+const confirmaremail = ref("");
+const errorMessage = ref("");
+const emailErrorMessage = ref("");
+const confirmEmailErrorMessage = ref("");
 
 // Función para limpiar valores undefined o null
 const clearUndefined = (value) => {
-  return value === undefined || value === null ? '' : value;
+  return value === undefined || value === null ? "" : value;
 };
 
 // Validar que los correos coincidan
@@ -25,11 +26,11 @@ const validateEmail = () => {
   const confirmEmailValue = clearUndefined(confirmaremail.value);
 
   // Limpiar mensajes de error
-  emailErrorMessage.value = '';
-  confirmEmailErrorMessage.value = '';
+  emailErrorMessage.value = "";
+  confirmEmailErrorMessage.value = "";
 
   if (emailValue !== confirmEmailValue) {
-    confirmEmailErrorMessage.value = 'Los correos electrónicos no coinciden.';
+    confirmEmailErrorMessage.value = "Los correos electrónicos no coinciden.";
   }
 };
 
@@ -42,69 +43,106 @@ const handleSubmit = (event) => {
   const confirmEmailValue = clearUndefined(confirmaremail.value);
 
   // Limpiar mensajes de error
-  emailErrorMessage.value = '';
-  confirmEmailErrorMessage.value = '';
-  
+  emailErrorMessage.value = "";
+  confirmEmailErrorMessage.value = "";
+
   if (!emailValue || !confirmEmailValue) {
     event.preventDefault();
-    errorMessage.value = 'Por favor, completa todos los campos obligatorios.';
+    errorMessage.value = "Por favor, completa todos los campos obligatorios.";
 
     setTimeout(() => {
-      errorMessage.value=''
+      errorMessage.value = "";
     }, 3000);
   } else if (emailValue !== confirmEmailValue) {
     event.preventDefault();
-    confirmEmailErrorMessage.value = 'Los correos electrónicos no coinciden.';
+    confirmEmailErrorMessage.value = "Los correos electrónicos no coinciden.";
   }
 };
 
 // Montar el event listener para el envío del formulario
 onMounted(() => {
-  const form = document.getElementById('myForm');
+  const form = document.getElementById("myForm");
   if (form) {
-    form.addEventListener('submit', handleSubmit);
+    form.addEventListener("submit", handleSubmit);
   }
 });
 </script>
 
 <template>
-  <Heading />
-
-  <section class="container py-5 registro">
-    <div class="row align-items-center">
-      <div class="col-lg-6 desktop">
-        <picture>
-          <img src="/pago.png" alt="Pago" class="img-fluid" loading="lazy" title="Pago" />
-        </picture>
-      </div>
-
-      <Alerta class="titulo" v-if="errorMessage">{{ errorMessage }}</Alerta>
-      
-      <div class="col-lg-6">
-        <div>
-          <h2 class="display-4 titulo-2">Contar con tu fiado enlace es muy fácil!!!</h2>
+  <Heading class="mb-[150px]" />
+  <div class="relative">
+    <section class="container registro">
+      <div class="row align-items-center">
+        <div class="col-lg-6 desktop">
+          <picture>
+            <img
+              src="/pago.png"
+              alt="Pago"
+              class="img-fluid"
+              loading="lazy"
+              title="Pago"
+            />
+          </picture>
         </div>
-        <div class="mt-4 tarjeta">
-          <form action="Pantalla3View" id="myForm">
-            <div class="form-group">
-              <p class="mb-4 font-bold">Registra tus datos</p>
-              <p class="font-bold">Ingresa tu correo electrónico</p>
-              <label for="email">
-                <input id="email" v-model="email" class="form-control" aria-required="true" name="email" type="email" placeholder="" autocomplete="off" />
-              </label>
-              <span class="error-message">{{ emailErrorMessage }}</span> <!-- Mensaje de error para el email -->
-              <p class="mt-4 font-bold">Confirma tu correo electrónico</p>
-              <label for="confirmaremail">
-                <input id="confirmaremail" v-model="confirmaremail" class="form-control" aria-required="true" name="confirmaremail" type="email" placeholder="" autocomplete="off" />
-              </label>
-              <span class="error-message">{{ confirmEmailErrorMessage }}</span> <!-- Mensaje de error para confirmación de email -->
-            </div>
-            <Button></Button>
-          </form>
+
+        <Alerta class="titulo" v-if="errorMessage">{{ errorMessage }}</Alerta>
+
+        <div class="col-lg-6">
+          <div className="flex justify-center">
+            <h2 class="display-4 titulo-2 w-[350px] text-center">
+              Contar con tu fiado enlace es muy fácil !
+            </h2>
+          </div>
+          <div class="mt-4 tarjeta">
+            <form action="Pantalla3View" id="myForm">
+              <div class="form-group">
+                <p class="mb-4 font-bold">Registra tus datos</p>
+                <label for="email" class="input-label">
+                  <input
+                    id="email"
+                    v-model="email"
+                    class="form-control"
+                    aria-required="true"
+                    name="email"
+                    type="email"
+                    placeholder=" "
+                    autocomplete="off"
+                    required
+                  />
+                  <span class="floating-label"
+                    >Ingresa tu correo electrónico</span
+                  >
+                </label>
+                <span class="error-message">{{ emailErrorMessage }}</span>
+
+                <label for="confirmaremail" class="input-label mt-4">
+                  <input
+                    id="confirmaremail"
+                    v-model="confirmaremail"
+                    class="form-control"
+                    aria-required="true"
+                    name="confirmaremail"
+                    type="email"
+                    placeholder=" "
+                    autocomplete="off"
+                    required
+                  />
+                  <span class="floating-label"
+                    >Confirma tu correo electrónico</span
+                  >
+                </label>
+                <span class="error-message">{{
+                  confirmEmailErrorMessage
+                }}</span>
+              </div>
+              <Button></Button>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+    <Footer class="absolute bottom-0 left-0 right-0" />
+  </div>
 </template>
 
 <style scoped>
@@ -127,13 +165,13 @@ body {
   display: block; /* Muestra el mensaje de error */
 }
 .titulo-2 {
-    margin: 0 0 16px;
-    color: inherit;
-    font-weight: bold;
-    letter-spacing: -0.03em;
-    font-size: 1.875rem;
-    line-height: 1.2;
-    margin-top: -40px;
+  margin: 0 0 16px;
+  color: inherit;
+  font-weight: bold;
+  letter-spacing: -0.03em;
+  font-size: 1.875rem;
+  line-height: 1.2;
+  margin-top: -40px;
 }
 .container {
   background-color: white;
@@ -165,10 +203,10 @@ body {
   border: none;
   transform: translate3d(0, 0, 0);
 }
-#confirmaremail{
+#confirmaremail {
   margin-bottom: 50px;
 }
-#email-on-hero-submit-btn{
+#email-on-hero-submit-btn {
   margin-bottom: 100px;
 }
 @media (max-width: 767px) {
@@ -183,5 +221,53 @@ body {
   .tarjeta {
     width: 100%;
   }
+}
+
+.input-label {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin-top: 24px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px 0;
+  font-size: 16px;
+  border: none;
+  border-bottom: 2px solid #09008be1;
+  background: transparent;
+  font-family: sans-serif;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.floating-label {
+  position: absolute;
+  left: 0;
+  top: 0px;
+  color: black;
+  font-size: 16px;
+  pointer-events: none;
+  transition: 0.3s ease all;
+  font-family: sans-serif;
+}
+
+/* Animación al enfocar o escribir */
+.form-control:focus + .floating-label,
+.form-control:not(:placeholder-shown) + .floating-label {
+  top: -15px;
+  font-size: 12px;
+  color: black;
+}
+
+.input-label:hover .form-control {
+  border-bottom-color: #ff00f2;
+}
+
+.form-control:focus {
+  border-bottom-color: #0064e6cc;
+  outline: none;
+  box-shadow: none;
 }
 </style>
