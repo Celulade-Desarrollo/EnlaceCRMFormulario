@@ -97,7 +97,7 @@ onMounted(() => {
         <div class="mt-4 tarjeta">
           <form action="Pantalla7View" novalidate>
             <div class="form-group">
-              <h4 class="mb-4 titulo-4">Ingresa tu cédula</h4>
+              <h4 class="mb-4 titulo-4 mt-1">Ingresa tu cédula</h4>
 
               <label for="numeroCedula" id="label-numeroCedula">
                 <input

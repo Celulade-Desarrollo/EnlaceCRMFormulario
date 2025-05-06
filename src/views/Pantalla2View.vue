@@ -69,7 +69,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Heading class="mb-[150px]" />
+  <Heading class="mb-[80px]" />
   <div class="relative">
     <section class="container registro">
       <div class="row align-items-center">
