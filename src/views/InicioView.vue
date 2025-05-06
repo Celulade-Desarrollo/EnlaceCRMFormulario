@@ -23,7 +23,6 @@ const fetchData = async () => {
     localStorage.setItem("cedula", data.value.CEDULA);
     localStorage.setItem("ciudadNacimiento", data.value.CIUDAD_NACIMIENTO);
     localStorage.setItem("email", data.value.CORREO_ELECTRONICO);
-    // window.open("/Pantalla2View", "_parent");
     error.value = "";
   } catch (error) {
     error.value = "Error al obtener los datos";
@@ -33,8 +32,20 @@ const fetchData = async () => {
 
 // Validar al enviar el formulario
 const handleSubmit = async (event) => {
-  event.preventDefault(); // Evita el envío del formulario por defecto
-  await fetchData(); // Llama a la función fetchData para obtener datos
+  const regex = /^[0-9]{10}$/; // Expresión regular para validar el número celular
+  if (!regex.test(celular.value)) {
+    error.value = "Por favor, ingresa un número celular válido.";
+    event.preventDefault(); // Evita el envío del formulario por defecto
+
+    setTimeout(() => {
+      error.value = "";
+    }, 3000);
+    return; // Detiene la ejecución si el número no es válido
+  } else {
+    error.value = ""; // Limpia el mensaje de error si el número es válido
+  }
+  window.local.href("/Pantalla2View", "_parent");
+  // await fetchData(); // Llama a la función fetchData para obtener datos
 };
 
 // Función para enfocar el input
@@ -55,7 +66,6 @@ onMounted(() => {
 
 <template>
   <Heading />
-
   <section class="container registro">
     <div class="row align-items-center banner-registro">
       <div class="col-lg-6 desktop">
@@ -102,10 +112,12 @@ onMounted(() => {
                   placeholder="+57"
                   autocomplete="off"
                   id="celular"
-                  required
                   aria-describedby="error-celular"
                   ref="celularInput"
                 />
+                <p v-if="error" id="error-celular" class="text-danger mt-1">
+                  {{ error }}
+                </p>
                 <button
                   type="submit"
                   id="email-on-hero-submit-btn"
@@ -255,6 +267,12 @@ body {
   border: 1px 10px 1px 10px solid #dd3590;
   box-shadow: 0 0 5px rgba(221, 53, 144, 0.5);
 }
+
+.form-group input:invalid{
+  border: 1px solid red;
+  box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+}
+
 .titulo-1 {
   font-weight: bold;
   font-size: 1.5rem;
