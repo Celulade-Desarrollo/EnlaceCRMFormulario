@@ -1,19 +1,18 @@
 <script setup>
-import { onMounted, ref } from 'vue';
-import Alerta from '../components/UI/Alerta.vue';
-import Heading from '../components/UI/Heading.vue'
-import Button from '../components/UI/Button.vue'
+import { onMounted, ref } from "vue";
+import Alerta from "../components/UI/Alerta.vue";
+import Heading from "../components/UI/Heading.vue";
+import Button from "../components/UI/Button.vue";
 
-
-const cedula = ref(localStorage.getItem('cedula') || '');
+const cedula = ref(localStorage.getItem("cedula") || "");
 
 // Referencias para los checkboxes
 const checkboxes = ref([]);
-const error = ref('')
+const error = ref("");
 
 // Función para manejar el cambio de checkboxes
 const handleCheckboxChange = (event) => {
-  checkboxes.value.forEach(checkbox => {
+  checkboxes.value.forEach((checkbox) => {
     if (checkbox !== event.target) {
       checkbox.checked = false;
     }
@@ -22,34 +21,37 @@ const handleCheckboxChange = (event) => {
 
 // Validar que al menos una opción de cada grupo esté seleccionada
 const validateCheckboxes = () => {
-  const group1Checked = Array.from(document.querySelectorAll('.single-checkbox')).some(checkbox => checkbox.checked);
+  const group1Checked = Array.from(
+    document.querySelectorAll(".single-checkbox")
+  ).some((checkbox) => checkbox.checked);
   return group1Checked;
 };
 
 // Validar los campos del formulario
 const validateForm = () => {
   let valid = true;
-  
+
   // Validar campo de cédula
-  const cedulaField = document.getElementById('numeroCedula');
-  const cedulaError = document.getElementById('cedula-error');
+  const cedulaField = document.getElementById("numeroCedula");
+  const cedulaError = document.getElementById("cedula-error");
   if (!cedulaField.value) {
-    cedulaField.classList.add('error'); // Añadir clase de error
-    cedulaError.textContent = 'La cédula es un campo obligatorio.';
-    cedulaError.style.display = 'block';
+    cedulaField.classList.add("error"); // Añadir clase de error
+    cedulaError.textContent = "La cédula es un campo obligatorio.";
+    cedulaError.style.display = "block";
     valid = false;
   } else {
-    cedulaField.classList.remove('error'); // Quitar clase de error
-    cedulaError.style.display = 'none';
+    cedulaField.classList.remove("error"); // Quitar clase de error
+    cedulaError.style.display = "none";
   }
-  
+
   // Validar checkboxes
   if (!validateCheckboxes(error)) {
-    error.value = 'Debes autorizar el tratamiento de tus datos personales para continuar.';
+    error.value =
+      "Debes autorizar el tratamiento de tus datos personales para continuar.";
     valid = false;
-    setTimeout(()=>{
-      error.value=''
-    },3000)
+    setTimeout(() => {
+      error.value = "";
+    }, 3000);
   }
 
   return valid;
@@ -63,15 +65,15 @@ const handleSubmit = (event) => {
 
 onMounted(() => {
   // Asignar las referencias a los checkboxes
-  checkboxes.value = Array.from(document.querySelectorAll('.single-checkbox'));
+  checkboxes.value = Array.from(document.querySelectorAll(".single-checkbox"));
 
   // Agregar el event listener a los checkboxes
-  checkboxes.value.forEach(checkbox => {
-    checkbox.addEventListener('change', handleCheckboxChange);
+  checkboxes.value.forEach((checkbox) => {
+    checkbox.addEventListener("change", handleCheckboxChange);
   });
 
   // Vincular el handleSubmit al formulario
-  document.querySelector('form').addEventListener('submit', handleSubmit);
+  document.querySelector("form").addEventListener("submit", handleSubmit);
 });
 </script>
 
@@ -81,33 +83,69 @@ onMounted(() => {
     <div class="row align-items-center">
       <div class="col-lg-6 desktop">
         <picture>
-          <img src="/public/pago.png" alt="Pago" class="img-fluid" loading="lazy" title="Pago">
+          <img
+            src="/public/pago.png"
+            alt="Pago"
+            class="img-fluid"
+            loading="lazy"
+            title="Pago"
+          />
         </picture>
       </div>
       <Alerta v-if="error">{{ error }}</Alerta>
       <div class="col-lg-6">
         <div class="mt-4 tarjeta">
-         
           <form action="Pantalla7View" novalidate>
             <div class="form-group">
-              <h4 class="mb-4 titulo-4">Ingresa tu cédula</h4>
+              <h4 class="mb-4 titulo-4 mt-1">Ingresa tu cédula</h4>
 
               <label for="numeroCedula" id="label-numeroCedula">
-                <input id="numeroCedula" class="form-control" v-model="cedula" aria-required="true" aria-invalid="true" aria-labelledby="label-numeroCedula" name="numeroCedula" type="number" placeholder="Ej: 1018276538" autocomplete="off" required>
+                <input
+                  id="numeroCedula"
+                  class="form-control"
+                  v-model="cedula"
+                  aria-required="true"
+                  aria-invalid="true"
+                  aria-labelledby="label-numeroCedula"
+                  name="numeroCedula"
+                  type="number"
+                  placeholder="Ej: 1018276538"
+                  autocomplete="off"
+                  required
+                />
               </label>
-              <span id="cedula-error" class="error-message"></span> <!-- Mensaje de error -->
+              <span id="cedula-error" class="error-message"></span>
+              <!-- Mensaje de error -->
             </div>
 
             <div class="checklist">
               <label class="check-item">
-                <input type="checkbox" name="autorizacion" value="tratamientoDatos" class="checkbox-custom rounded-checkbox single-checkbox">
+                <input
+                  type="checkbox"
+                  name="autorizacion"
+                  value="tratamientoDatos"
+                  class="checkbox-custom rounded-checkbox single-checkbox"
+                />
                 <span class="checkmark"></span>
-                <p class="">He leído y autorizo el tratamiento de mis datos personales por <br><a href="#">Enlace S.A.S y Banco W</a></p>
+                <p class="">
+                  He leído y autorizo el tratamiento de mis datos personales por
+                  <br /><a href="#">Enlace S.A.S y Banco W</a>
+                </p>
               </label>
               <label class="check-item mb-4">
-                <input type="checkbox" name="autorizacion" id="wpp" value="contactoWhatsapp" class="checkbox-custom rounded-checkbox ">
+                <input
+                  type="checkbox"
+                  name="autorizacion"
+                  id="wpp"
+                  value="contactoWhatsapp"
+                  class="checkbox-custom rounded-checkbox"
+                />
                 <span class="checkmark"></span>
-                <p class="p-checkmark-2">Autorizo a <br><span>Enlace S.A.S y Banco W</span> contactarme vía <span>Whatsapp</span> sobre mis productos (opcional)</p>
+                <p class="p-checkmark-2">
+                  Autorizo a <br /><span>Enlace S.A.S y Banco W</span>
+                  contactarme vía <span>Whatsapp</span> sobre mis productos
+                  (opcional)
+                </p>
               </label>
             </div>
 
@@ -120,6 +158,12 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.form-control:focus {
+  outline: none;
+  box-shadow: none;
+  border-bottom-color: #ff00f2;
+}
+
 .error {
   border-color: red !important;
   border-width: 2px;
@@ -170,13 +214,13 @@ body {
   color: #111111;
 }
 .titulo-4 {
-    margin: 0 0 16px;
-    color: inherit;
-    font-weight: bold;
-    letter-spacing: -0.03em;
-    font-size: 1.875rem;
-    line-height: 1.2;
-    margin-top: -100px;
+  margin: 0 0 16px;
+  color: inherit;
+  font-weight: bold;
+  letter-spacing: -0.03em;
+  font-size: 1.875rem;
+  line-height: 1.2;
+  margin-top: -100px;
 }
 .checklist {
   max-width: 300px;
@@ -200,8 +244,8 @@ body {
 
 .checkmark {
   display: inline-block;
-  width: 40px;
-  height: 40px;
+  width: 60px;
+  height: 30px;
   border-radius: 50%;
   background-color: #c9c7c7;
   margin-right: 10px;
@@ -209,19 +253,18 @@ body {
 }
 
 .checkbox-custom + .checkmark {
-    width: 50px;
-    height: 30px;
-    border-radius: 50%;
-    margin-right: 20px;
-    background-color: #c9c7c7;
+  width: 60px;
+  height: 30px;
+  border-radius: 30px;
+  margin-right: 30px;
+  background-color: #c9c7c7;
 }
 
 .checkbox-custom:checked + .checkmark {
-    background-color: #dd3590;
-    border: 2px solid #dd3590;
+  background-color: #dd3590;
 }
 
-.p-checkmark-2{
+.p-checkmark-2 {
   font-size: 0.75rem;
   color: black;
 }

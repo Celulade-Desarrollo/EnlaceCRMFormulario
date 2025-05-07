@@ -1,8 +1,8 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
-import RouterLink from "../components/UI/Routerlink.vue"; 
-import Alerta from '../components/UI/Alerta.vue';
+import { ref, onMounted } from "vue";
+import axios from "axios";
+import RouterLink from "../components/UI/Routerlink.vue";
+import Alerta from "../components/UI/Alerta.vue";
 import Heading from "../components/UI/Heading.vue";
 import Button from "../components/UI/Button.vue";
 import { FormKit } from "@formkit/vue";
@@ -11,26 +11,30 @@ const departments = ref([]);
 const cities = ref([]);
 const selectedDepartment = ref(null);
 const selectedCity = ref(null);
-const error = ref('');
+const error = ref("");
 
 const loadDepartments = async () => {
   try {
-    const response = await axios.get('https://www.datos.gov.co/resource/xdk5-pm3f.json?$select=departamento&$group=departamento&$order=departamento');
-    departments.value = response.data.map(item => item.departamento);
+    const response = await axios.get(
+      "https://www.datos.gov.co/resource/xdk5-pm3f.json?$select=departamento&$group=departamento&$order=departamento"
+    );
+    departments.value = response.data.map((item) => item.departamento);
   } catch (err) {
-    error.value = 'Error al cargar los departamentos.';
-    console.error('Error loading departments:', err);
+    error.value = "Error al cargar los departamentos.";
+    console.error("Error loading departments:", err);
   }
 };
 
 const loadCities = async () => {
   if (!selectedDepartment.value) return;
   try {
-    const response = await axios.get(`https://www.datos.gov.co/resource/xdk5-pm3f.json?$select=municipio&$where=departamento='${selectedDepartment.value}'&$order=municipio`);
-    cities.value = response.data.map(item => item.municipio);
+    const response = await axios.get(
+      `https://www.datos.gov.co/resource/xdk5-pm3f.json?$select=municipio&$where=departamento='${selectedDepartment.value}'&$order=municipio`
+    );
+    cities.value = response.data.map((item) => item.municipio);
   } catch (err) {
-    error.value = 'Error al cargar las ciudades.';
-    console.error('Error loading cities:', err);
+    error.value = "Error al cargar las ciudades.";
+    console.error("Error loading cities:", err);
   }
 };
 
@@ -39,19 +43,19 @@ const handleSubmit = (event) => {
 
   // Validación
   if (!selectedDepartment.value || !selectedCity.value) {
-    error.value = 'Por favor, selecciona tu departamento y ciudad.';
+    error.value = "Por favor, selecciona tu departamento y ciudad.";
 
     setTimeout(() => {
-      error.value = ''
+      error.value = "";
     }, 3000);
     return false;
   }
 
   // Guardar ciudad seleccionada en localStorage
-  localStorage.setItem('selectedCity', selectedCity.value);
+  localStorage.setItem("selectedCity", selectedCity.value);
 
   // Limpiar error si no lo hay
-  error.value = '';
+  error.value = "";
 
   // Redirigir a la nueva página
   window.open("/Pantalla8View", "_parent");
@@ -60,7 +64,6 @@ const handleSubmit = (event) => {
 onMounted(() => {
   loadDepartments();
 });
-
 </script>
 
 <template>
@@ -70,25 +73,49 @@ onMounted(() => {
     <div class="row align-items-center">
       <div class="col-lg-6 desktop">
         <picture>
-          <img src="/public/pago.png" alt="Pago" class="img-fluid" loading="lazy" title="Pago" />
+          <img
+            src="/public/pago.png"
+            alt="Pago"
+            class="img-fluid"
+            loading="lazy"
+            title="Pago"
+          />
         </picture>
       </div>
     </div>
     <!-- Muestra la alerta solo si hay un error -->
     <Alerta v-if="error">{{ error }}</Alerta>
-    <div class="select-option">
+    <div class="select-option mt-5">
       <h3 class="mb-4 titulo-7">¿Cuéntanos dónde está tu negocio?</h3>
-      <p class="mb-4 font-bold">Por norma es necesario que te hagamos esta pregunta</p>
+      <p class="mb-4 font-bold">
+        Por norma es necesario que te hagamos esta pregunta
+      </p>
       <p class="font-bold">Elige un departamento</p>
-      <select v-model="selectedDepartment" @change="loadCities" aria-label="Esoge tu departamento" class="form-select mb-4 single-checkbox">
-        <option selected disabled>Elige un departamento</option>
-        <option v-for="department in departments" :key="department" :value="department">{{ department }}</option>
-      </select>
+      <div class="custom-select-wrapper">
+        <select
+          v-model="selectedDepartment"
+          @change="loadCities"
+          class="custom-select"
+        >
+          <option disabled selected>Elige un departamento</option>
+          <option
+            v-for="department in departments"
+            :key="department"
+            :value="department"
+          >
+            {{ department }}
+          </option>
+        </select>
+      </div>
       <p class="font-bold">Elige una ciudad</p>
-      <select v-model="selectedCity" aria-label="Default select example" class="form-select mb-4 single-checkbox-1" id="ciudad">
-        <option selected disabled>Elige una ciudad</option>
-        <option v-for="city in cities" :key="city" :value="city">{{ city }}</option>
-      </select>
+      <div class="custom-select-wrapper">
+        <select v-model="selectedCity" class="custom-select">
+          <option disabled selected>Elige una ciudad</option>
+          <option v-for="city in cities" :key="city" :value="city">
+            {{ city }}
+          </option>
+        </select>
+      </div>
     </div>
     <form id="myForm" @submit="handleSubmit">
       <Button></Button>
@@ -97,6 +124,33 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.custom-select-wrapper {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.custom-select {
+  appearance: none;
+  border: none;
+  border-bottom: 2px solid #ccc;
+  background-color: transparent;
+  font-size: 16px;
+  padding: 8px 30px 8px 0;
+  background-image: url('data:image/svg+xml;charset=utf8,%3Csvg fill="%23495057" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/%3E%3C/svg%3E');
+  background-position: right 12px center;
+  background-size: 16px 12px;
+  width: 100%;
+  outline: none;
+  box-shadow: none;
+  color: #333;
+  cursor: pointer;
+}
+.custom-select:focus {
+  border-bottom: 2px solid #ff00f2;
+  outline: none;
+  box-shadow: none;
+}
+
 body {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   background-color: white;
@@ -126,13 +180,13 @@ body {
 }
 
 .titulo-7 {
-    margin: 0 0 16px;
-    color: inherit;
-    font-weight: bold;
-    letter-spacing: -0.03em;
-    font-size: 1.875rem;
-    line-height: 1.2;
-    margin-top: -50px;
+  margin: 0 0 16px;
+  color: inherit;
+  font-weight: bold;
+  letter-spacing: -0.03em;
+  font-size: 1.875rem;
+  line-height: 1.2;
+  margin-top: -50px;
 }
 
 .form-group input {
@@ -185,7 +239,8 @@ body {
 }
 
 .info-banner {
-  font-family: Graphik-Medium, Graphik-Regular, "Gotham SSm A", "Gotham SSm B", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Graphik-Medium, Graphik-Regular, "Gotham SSm A", "Gotham SSm B",
+    "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin: 0 0 12px;
   font-weight: 500;
   letter-spacing: -0.03em;
