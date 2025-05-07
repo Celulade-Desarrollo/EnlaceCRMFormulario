@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import axios from "axios";
+import { useRouter } from "vue-router";
 import RouterLink from "../components/UI/Routerlink.vue";
 import Heading from "../components/UI/Heading.vue";
 import Footer from "../components/UI/Footer.vue";
@@ -10,6 +11,7 @@ const celular = ref("");
 const data = ref(null);
 const error = ref("");
 const celularInput = ref(null); // Ref para el input
+const router = useRouter(); // Instancia del router
 
 // Función para obtener datos
 const fetchData = async () => {
@@ -46,9 +48,8 @@ const handleSubmit = async (event) => {
     return; // Detiene la ejecución si el número no es válido
   } else {
     error.value = ""; // Limpia el mensaje de error si el número es válido
+    router.push("/Pantalla2View"); // Redirige a la siguiente pantalla
   }
-  this.$store.dispatch("completarFormulario");
-  this.$router.push("/Pantalla2View"); // o a donde quieras redirigir despué
   // await fetchData(); // Llama a la función fetchData para obtener datos
 };
 
