@@ -38,6 +38,8 @@ const handleSubmit = async (event) => {
     error.value = "Por favor, ingresa un número celular válido.";
     event.preventDefault(); // Evita el envío del formulario por defecto
 
+    s;
+
     setTimeout(() => {
       error.value = "";
     }, 3000);
@@ -45,7 +47,8 @@ const handleSubmit = async (event) => {
   } else {
     error.value = ""; // Limpia el mensaje de error si el número es válido
   }
-  window.local.href("/Pantalla2View", "_parent");
+  this.$store.dispatch("completarFormulario");
+  this.$router.push("/Pantalla2View"); // o a donde quieras redirigir despué
   // await fetchData(); // Llama a la función fetchData para obtener datos
 };
 
