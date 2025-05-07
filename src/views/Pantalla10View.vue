@@ -152,17 +152,15 @@ const handleSubmit = (event) => {
               <h3 class="titulo mb-4">
                 ¿Realiza operaciones en moneda extranjera?
               </h3>
-              <FormKit
-                type="select"
-                name="Moneda"
-                placeholder="Seleccione"
-                :options="{
-                  si: 'Sí',
-                  no: 'No',
-                }"
-                validation="required"
-                validation-visibility="dirty"
-              />
+                <div class="form-group">
+                  <label for="moneda" >Seleccione</label>
+                  <div class="custom-select-wrapper">
+                    <select v-model="selectedCity" id="moneda" class="custom-select">
+                      <option value="si">Sí</option>
+                      <option value="no">No</option>
+                    </select>
+                  </div>
+                </div>
               <p>
                 Declaro que soy nacido en Colombia, no tengo otras
                 nacionalidades, y mi domicilio es en Colombia al igual que mi
@@ -181,6 +179,34 @@ const handleSubmit = (event) => {
 </template>
 
 <style scoped>
+.custom-select-wrapper {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.custom-select {
+  appearance: none;
+  border: none;
+  border-bottom: 2px solid #ccc;
+  background-color: transparent;
+  font-size: 16px;
+  padding: 8px 30px 8px 0;
+  background-image: url('data:image/svg+xml;charset=utf8,%3Csvg fill="%23495057" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/%3E%3C/svg%3E');
+  background-position: right 12px center;
+  background-size: 16px 12px;
+  width: 100%;
+  outline: none;
+  box-shadow: none;
+  color: #333;
+  cursor: pointer;
+}
+.custom-select:focus {
+  border-bottom: 2px solid #ff00f2;
+  outline: none;
+  box-shadow: none;
+}
+
+
 body {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   background-color: white;

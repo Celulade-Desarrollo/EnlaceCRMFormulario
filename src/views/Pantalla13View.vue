@@ -9,17 +9,22 @@ const departments = ref([]);
 const paises = ref([]);
 const mostrarAlerta = ref(false);
 const mensajeAlerta = ref('');
-
+const countrySelect = ref(null);
+const departmentSelect = ref(null);
+const genero = ref(''); // Refs para almacenar los valores de los campos
+const estadoCivil = ref('');
+const fechaNacimiento = ref('');
+const paisSeleccionado = ref('');
+const departamentoSeleccionado = ref('');
 
 const onSubmit = (formData) => {
-  if (!formData.genero ||
-    !formData.estadoCivil ||
-    !formData.fechaNacimiento ||
-    !formData.pais ||
-    !formData.departamento) {
-    
-    mostrarAlerta.value = 'Por favor completa todos los campos';
+  if (!genero.value ||
+      !estadoCivil.value ||
+      !fechaNacimiento.value ||
+      !paisSeleccionado.value ||
+      !departamentoSeleccionado.value) {
     mostrarAlerta.value = true;
+    mostrarAlerta.value = 'Por favor completa todos los campos';
     return;
   }
   mostrarAlerta.value = false;
@@ -42,6 +47,14 @@ onMounted(async () => {
     }
     
     paises.value = listaPaises;
+    if (countrySelect.value) {
+      listaPaises.forEach(pais => {
+        const option = document.createElement('option');
+        option.value = pais.value;
+        option.text = pais.label;
+        countrySelect.value.appendChild(option);
+      });
+    }
   } catch (error) {
     console.error('Error al cargar países:', error)
   }
@@ -55,6 +68,27 @@ onMounted(async () => {
   } catch (err) {
     console.error('Error loading departments:', err);
   }
+  try {
+    const response = await axios.get('https://www.datos.gov.co/resource/xdk5-pm3f.json?$select=departamento&$group=departamento&$order=departamento');
+    const listaDepartamentos = response.data.map(item => ({
+      value: item.departamento,
+      label: item.departamento,
+    }));
+
+    departments.value = listaDepartamentos;
+
+    // Poblamos el select de departamentos
+    if (departmentSelect.value) {
+      listaDepartamentos.forEach(dep => {
+        const option = document.createElement('option');
+        option.value = dep.value;
+        option.text = dep.label;
+        departmentSelect.value.appendChild(option);
+      });
+    }
+  } catch (err) {
+    console.error('Error loading departments:', err);
+  }
 });
 
 
@@ -64,14 +98,58 @@ onMounted(async () => {
   <Heading></Heading>
   <h2 class="titulo">Datos Personales</h2>
 
-  
-
   <!-- Select de generos -->
-   <FormKit type="form" 
+  <form @submit.prevent="onSubmit">
+    <div class="form-group">
+      <label for="genero">Género</label>
+      <div class="custom-select-wrapper">
+        <select v-model="genero" name="genero" class="custom-select">
+          <option value="Masculino">Masculino</option>
+          <option value="Femenino">Femenino</option>
+          <option value="Otro">Otro</option>
+        </select>
+      </div>
+
+      <label for="estadoCivil">Estado civil</label>
+      <div class="custom-select-wrapper">
+        <select v-model="estadoCivil" name="estadoCivil" class="custom-select">
+          <option selected disabled>Selecciona tu estado civil</option>
+          <option value="soltero">Soltero/a</option>
+          <option value="casado">Casado/a</option>
+          <option value="divorciado">Divorciado/a</option>
+          <option value="viudo">Viudo/a</option>
+          <option value="unionLibre">Unión Libre (o Concubinato)</option>
+          <option value="separado">Separado</option>
+        </select>
+      </div>
+
+      <label for="fechaNacimiento">Fecha de Nacimiento</label>
+      <label for="fechaNacimiento" class="form-example-text">Ejemplo: 1999-01-01</label>
+      <div class="custom-date">
+        <input v-model="fechaNacimiento" type="date" name="fechaNacimiento" class="custom-input-date">
+      </div>
+
+      <label for="paisNacimiento">País de Nacimiento</label>
+      <div class="custom-select-wrapper">
+        <select v-model="paisSeleccionado" class="custom-select" name="pais" ref="countrySelect">
+          <option selected disabled>Selecciona tu país</option>
+        </select>
+      </div>
+
+      <label for="departamento">Departamento</label>
+      <div class="custom-select-wrapper">
+        <select v-model="departamentoSeleccionado" class="custom-select" name="departamento" ref="departmentSelect">
+          <option selected disabled>Selecciona un departamento</option>
+        </select>
+      </div>
+    </div>
+    <Button type="submit"></Button>
+  </form>
+  <!--  <FormKit type="form" 
         @submit="onSubmit" 
         :actions="false"
-        :incomplete-message="'Por favor completa todos los campos'">
-      <FormKit
+        :incomplete-message="'Por favor completa todos los campos'"> -->
+      <!-- <FormKit
         type="select"
         label="Género"
         placeholder="Seleccione"
@@ -86,9 +164,9 @@ onMounted(async () => {
         :validation-messages="{
           required: 'Seleccione su género',
       }"
-      />
+      /> -->
       <!-- Select de generos -->
-      <FormKit
+     <!--  <FormKit
         type="select"
         label="Estado Cívil"
         placeholder="Seleccione"
@@ -106,8 +184,8 @@ onMounted(async () => {
         :validation-messages="{
           required: 'Seleccione su estado civil',
         }"
-      />
-      <FormKit
+      /> -->
+     <!--  <FormKit
         type="date"
         label="Fecha de Nacimiento"
         name="fechaNacimiento"
@@ -118,8 +196,8 @@ onMounted(async () => {
         :validation-messages="{
           required: 'Coloque una fecha válida',
         }"
-      />
-      <FormKit
+      /> -->
+      <!-- <FormKit
         type="select"
         name="pais"
         label="País"
@@ -130,8 +208,8 @@ onMounted(async () => {
         :validation-messages="{
           required: 'Seleccione un país',
         }"
-      />
-      <FormKit
+      /> -->
+    <!--   <FormKit
         type="select"
         name="departamento"
         label="Departamento"
@@ -142,14 +220,127 @@ onMounted(async () => {
         :validation-messages="{
           required: 'Seleccione un departamento',
         }"
-      />
-      <Button type="submit"></Button>
+      /> -->
       
-    </FormKit>
+      
+    <!-- </FormKit> -->
 
 </template>
 
 <style scoped>
+.custom-select-wrapper {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.custom-select {
+  appearance: none;
+  border: none;
+  border-bottom: 2px solid #ccc;
+  background-color: transparent;
+  font-size: 16px;
+  padding: 8px 30px 8px 0;
+  background-image: url('data:image/svg+xml;charset=utf8,%3Csvg fill="%23495057" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/%3E%3C/svg%3E');
+  background-position: right 12px center;
+  background-size: 16px 12px;
+  width: 100%;
+  outline: none;
+  box-shadow: none;
+  color: #333;
+  cursor: pointer;
+}
+
+.custom-select:focus {
+  border-bottom: 2px solid #ff00f2;
+  outline: none;
+  box-shadow: none;
+}
+.form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.form-group label:not(:first-child) {
+  margin-top: 16px;
+}
+
+.form-group label:nth-child(7) {
+  font-weight: normal;
+  font-size: 0.8em;
+  color: #777;
+  margin-top: 4px;
+  margin-bottom: 16px;
+}
+
+.custom-select-wrapper {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.custom-select {
+  appearance: none;
+  border: none;
+  border-bottom: 2px solid #ccc;
+  background-color: transparent;
+  font-size: 16px;
+  padding: 8px 30px 8px 0;
+  background-image: url('data:image/svg+xml;charset=utf8,%3Csvg fill="%23495057" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/%3E%3C/svg%3E');
+  background-position: right 12px center;
+  background-size: 16px 12px;
+  width: 100%;
+  outline: none;
+  box-shadow: none;
+  color: #333;
+  cursor: pointer;
+}
+
+.custom-select:focus {
+  border-bottom: 2px solid #ff00f2;
+  outline: none;
+  box-shadow: none;
+}
+
+.custom-date {
+  position: relative;
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.custom-input-date {
+  appearance: none;
+  border: none;
+  border-bottom: 2px solid #ccc;
+  background-color: transparent;
+  font-size: 16px;
+  padding: 8px 0;
+  width: 100%;
+  outline: none;
+  box-shadow: none;
+  color: #333;
+}
+
+.custom-input-date:focus {
+  border-bottom: 2px solid #ff00f2;
+  outline: none;
+  box-shadow: none;
+}
+
+.custom-input-date::-webkit-calendar-picker-indicator {
+  color: #495057;
+  cursor: pointer;
+}
+
+.custom-input-date::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+.form-group {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
 .titulo {
     margin: 16px;
     color: inherit;
@@ -158,7 +349,6 @@ onMounted(async () => {
     font-size: 1.875rem;
     line-height: 1.2;
 }
-
 
 
 
