@@ -48,17 +48,66 @@ onMounted(() => {
         </div>
         <div class="button-container">
           <p class="font-bold">¿Tu tienda tiene neveras?</p>
-          <button class="button button2 mt-4">No</button>
-          <button class="button button1 mt-4">1</button>
-          <button class="button button2 mt-4">2</button>
-          <button class="button button2 mt-4">3 o más</button>
+
+          <input
+            type="radio"
+            id="nevera-no"
+            class="checkbox-hidden"
+            name="nevera"
+            value="No"
+          />
+          <label for="nevera-no" class="button mt-4">No</label>
+
+          <input
+            type="radio"
+            id="nevera-1"
+            class="checkbox-hidden"
+            name="nevera"
+            value="1"
+          />
+          <label for="nevera-1" class="button mt-4">1</label>
+
+          <input
+            type="radio"
+            id="nevera-2"
+            class="checkbox-hidden"
+            name="nevera"
+            value="2"
+          />
+          <label for="nevera-2" class="button mt-4">2</label>
+
+          <input
+            type="radio"
+            id="nevera-3"
+            class="checkbox-hidden"
+            name="nevera"
+            value="3 o más"
+          />
+          <label for="nevera-3" class="button mt-4">3 o más</label>
         </div>
+
         <div class="button-container">
           <p class="font-bold">
-            ¿Estas registrado ante la cámara de comercio de tu ciudad?
+            ¿Estás registrado ante la cámara de comercio de tu ciudad?
           </p>
-          <button class="button button1 mt-4">Si</button>
-          <button class="button button2 mt-4">No</button>
+
+          <input
+            type="radio"
+            id="registro-si"
+            class="checkbox-hidden"
+            name="registro"
+            value="Sí"
+          />
+          <label for="registro-si" class="button mt-4">Sí</label>
+
+          <input
+            type="radio"
+            id="registro-no"
+            class="checkbox-hidden"
+            name="registro"
+            value="No"
+          />
+          <label for="registro-no" class="button mt-4">No</label>
         </div>
 
         <div class="mt-4 tarjeta">
@@ -74,6 +123,39 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.button-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-bottom: 2rem;
+}
+
+.checkbox-hidden {
+  display: none;
+}
+
+.button {
+  padding: 10px 20px;
+  margin-right: 0.5rem;
+  border-radius: 8px;
+  border: 0px solid #ccc;
+  cursor: pointer;
+  background: #dd3590;
+  color: #ffffff;
+  transition: 0.3s;
+  width: 80%;
+  border-radius: 50px;
+}
+
+.checkbox-hidden:checked + label.button {
+  background-color: #883963; /* azul */
+  color: white;
+}
+
+.button:hover {
+  background-color: #f15bab;
+}
 body {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   background-color: white;
