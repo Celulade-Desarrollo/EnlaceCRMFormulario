@@ -5,6 +5,8 @@ import { useRouter } from "vue-router";
 import RouterLink from "../components/UI/Routerlink.vue";
 import Heading from "../components/UI/Heading.vue";
 import Footer from "../components/UI/Footer.vue";
+import { useStore } from "vuex";
+const store = useStore();
 
 // Variables reactivas
 const celular = ref("");
@@ -40,15 +42,20 @@ const handleSubmit = async (event) => {
     error.value = "Por favor, ingresa un número celular válido.";
     event.preventDefault(); // Evita el envío del formulario por defecto
 
-    s;
-
     setTimeout(() => {
       error.value = "";
     }, 3000);
     return; // Detiene la ejecución si el número no es válido
   } else {
-    error.value = ""; // Limpia el mensaje de error si el número es válido
-    router.push("/Pantalla2View"); // Redirige a la siguiente pantalla
+    try {
+      event.preventDefault();
+      alert("Pantalla 2 ");
+      store.dispatch("completarFormulario");
+      router.push("/Pantalla2View");
+      error.value = ""; // Limpia el mensaje de error si el número es válido
+    } catch (error) {
+      alert(error);
+    }
   }
   // await fetchData(); // Llama a la función fetchData para obtener datos
 };
@@ -61,12 +68,14 @@ const focusInput = () => {
 };
 
 // Montar el event listener para el envío del formulario
-onMounted(() => {
+/* onMounted(() => {
   const form = document.getElementById("myForm");
   if (form) {
     form.addEventListener("submit", handleSubmit);
   }
 });
+
+*/
 </script>
 
 <template>
@@ -129,6 +138,7 @@ onMounted(() => {
                   data-testid="email-on-hero-submit-btn"
                   data-gtm="home-hero-email-cta-btn"
                   class="btn btn-primary mt-2 w-full font-semibold"
+                  @click="handleSubmit"
                 >
                   Registrar mi fiado
                   <svg
