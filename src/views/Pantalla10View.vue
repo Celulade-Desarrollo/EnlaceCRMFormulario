@@ -98,7 +98,7 @@ const handleSubmit = (event) => {
                 ¿Eres una Persona Expuesta Politicamente (PEP) o lo has sido en
                 los ultimos años?
               </h4>
-              <div class="checklist" aria-required="true">
+              <div class="checklist m-0" aria-required="true">
                 <label class="check-item">
                   <input
                     type="checkbox"
@@ -127,7 +127,7 @@ const handleSubmit = (event) => {
               <p class="font-bold">
                 Tu familia directa incluye padres, hermanos, abuelos o nietos
               </p>
-              <div class="checklist" aria-required="true">
+              <div class="checklist m-0" aria-required="true">
                 <label class="check-item">
                   <input
                     type="checkbox"

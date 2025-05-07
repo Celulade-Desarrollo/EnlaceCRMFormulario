@@ -149,7 +149,7 @@ onMounted(() => {
 }
 
 .checkbox-hidden:checked + label.button {
-  background-color: #883963; /* azul */
+  background-color: #251786; /* azul */
   color: white;
 }
 
