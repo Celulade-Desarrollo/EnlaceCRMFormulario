@@ -56,49 +56,51 @@ const handleSubmit = (event) => {
               <h3 class="titulo-8 mb-4 mt-3">
                 ¿Y en qué parte de {{ ciudad }}?
               </h3>
-              <p class="font-bold">Ingresa tu dirección</p>
-              <label for="direccion" id="label-direccion">
+           
+              <label for="direccion" class="input-label mt-4">
                 <input
                   v-model="direccion"
                   class="form-control"
                   aria-required="true"
                   name="direccion"
                   type="text"
-                  placeholder="Dirección"
+                  placeholder=" "
                   data-gtm="home-hero-email-field"
                   autocomplete="off"
                   id="direccion"
                   aria-describedby="error-direccion"
                 />
+                <span class="floating-label" >Ingresa tu dirección </span>
               </label>
-              <p class="font-bold">Detalles (Opcional)</p>
-              <label for="detalles" id="label-detalles">
+              <label for="detalles" class="input-label mt-4">
                 <input
                   class="form-control"
                   aria-required="false"
                   name="detalles"
                   type="text"
-                  placeholder="Detalles"
+                  placeholder=" "
                   data-gtm="home-hero-email-field"
                   autocomplete="off"
                   id="detalles"
                   aria-describedby="error-detalles"
                 />
+                <span class="floating-label">Detalles (Opcional) </span>
               </label>
-              <p class="font-bold">Barrio</p>
-              <label for="barrio" id="label-barrio">
+              
+              <label for="barrio" class="input-label mt-4">
                 <input
                   v-model="barrio"
                   class="form-control"
                   aria-required="true"
                   name="barrio"
                   type="text"
-                  placeholder="Barrio"
+                  placeholder=" "
                   data-gtm="home-hero-email-field"
                   autocomplete="off"
                   id="barrio"
                   aria-describedby="error-barrio"
                 />
+                <span class="floating-label">Barrio</span>
               </label>
             </div>
             <Button></Button>
@@ -110,6 +112,64 @@ const handleSubmit = (event) => {
 </template>
 
 <style scoped>
+.form-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 10px;
+  gap: 10px;
+}
+
+.input-label {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin-top: 24px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px 0;
+  font-size: 16px;
+  border: none;
+  border-bottom: 2px solid #09008be1;
+  background: transparent;
+  font-family: sans-serif;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.floating-label {
+  position: absolute;
+  left: 0;
+  top: 10px;
+  color: black;
+  font-size: 16px;
+  pointer-events: none;
+  transition: 0.3s ease all;
+  font-family: sans-serif;
+}
+
+/* Animación al enfocar o escribir */
+.form-control:focus + .floating-label,
+.form-control:not(:placeholder-shown) + .floating-label {
+  top: -15px;
+  font-size: 12px;
+  color: black;
+}
+
+.input-label:hover .form-control {
+  border-bottom-color: #ff00f2;
+}
+
+.form-control:focus {
+  border-bottom-color: #0064e6cc;
+  outline: none;
+  box-shadow: none;
+}
+
+
 body {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   background-color: white;
@@ -123,18 +183,7 @@ body {
   line-height: 1.2;
   margin-top: -100px;
 }
-.form-group input {
-  background-color: transparent;
-  border-width: 0px 0px 1px;
-  border-bottom-style: solid;
-  border-bottom-color: rgba(17, 17, 17, 0.2);
-  color: rgb(17, 17, 17);
-  display: block;
-  margin: 0;
-  padding: 8px 0;
-  outline: none;
-  width: 100%;
-}
+
 .container button {
   padding-left: 1.25rem;
   padding-right: 1.25rem;
