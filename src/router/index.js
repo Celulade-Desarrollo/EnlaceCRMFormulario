@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import InicioView from "../views/InicioView.vue";
 
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -13,65 +12,89 @@ const router = createRouter({
     {
       path: '/Pantalla2View',
       name: 'pantalla2',
-      component: () => import("../views/Pantalla2View.vue") 
+      component: () => import("../views/Pantalla2View.vue"), 
+      meta: { requiresForm: true } 
     },
     {
       path: '/Pantalla3View',
       name: 'pantalla3',
-      component: () => import("../views/Pantalla3View.vue") 
+      component: () => import("../views/Pantalla3View.vue"),
+      meta: { requiresForm: true } 
     },
     {
       path: '/Pantalla4View',
       name: 'pantalla4',
-      component: () => import("../views/Pantalla4View.vue") 
+      component: () => import("../views/Pantalla4View.vue"),
+      meta: { requiresForm: true }
     },
     {
       path: '/Pantalla5View',
       name: 'pantalla5',
-      component: () => import("../views/Pantalla5View.vue") 
+      component: () => import("../views/Pantalla5View.vue"),
+      meta: { requiresForm: true }
     },
     {
       path: '/Pantalla6View',
       name: 'pantalla6',
-      component: () => import("../views/Pantalla6View.vue") 
+      component: () => import("../views/Pantalla6View.vue"),
+      meta: { requiresForm: true }
     },
     {
       path: '/Pantalla7View',
       name: 'pantalla7',
-      component: () => import("../views/Pantalla7View.vue") 
+      component: () => import("../views/Pantalla7View.vue"),
+      meta: { requiresForm: true } 
     },
     {
       path: '/Pantalla8View',
       name: 'pantalla8',
-      component: () => import("../views/Pantalla8View.vue") 
+      component: () => import("../views/Pantalla8View.vue"),
+      meta: { requiresForm: true }
     },
     {
       path: '/Pantalla9View',
       name: 'pantalla9',
-      component: () => import("../views/Pantalla9View.vue") 
+      component: () => import("../views/Pantalla9View.vue"),
+      meta: { requiresForm: true }
     },
     {
       path: '/Pantalla10View',
       name: 'pantalla10',
-      component: () => import("../views/Pantalla10View.vue") 
+      component: () => import("../views/Pantalla10View.vue"),
+      meta: { requiresForm: true }
     },{
       path: '/Pantalla11View',
       name: 'pantalla11',
-      component: () => import("../views/Pantalla11View.vue") 
+      component: () => import("../views/Pantalla11View.vue"),
+      meta: { requiresForm: true }
     },{
       path: '/Pantalla12View',
       name: 'pantalla12',
-      component: () => import("../views/Pantalla12View.vue") 
+      component: () => import("../views/Pantalla12View.vue"),
+      meta: { requiresForm: true }
     },{
       path: '/Pantalla13View',
       name: 'pantalla13',
-      component: () => import("../views/Pantalla13View.vue") 
+      component: () => import("../views/Pantalla13View.vue"),
+      meta: { requiresForm: true }
     },{
       path: '/Pantalla14View',
       name: 'pantalla14',
-      component: () => import("../views/Pantalla14View.vue") 
+      component: () => import("../views/Pantalla14View.vue"),
+      meta: { requiresForm: true }
     },
   ]
 })
+
+// router.beforeEach((to, from, next) => {
+//   const formCompleto = sessionStorage.getItem('formCompleto') === 'true';
+
+//   if (to.meta.requiresForm && !formCompleto) {
+//     alert('Debes llenar los datos antes de continuar.');
+//     next('/'); 
+//   } else {
+//     next(); 
+//   }
+// });
 
 export default router

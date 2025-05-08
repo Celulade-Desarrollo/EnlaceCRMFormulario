@@ -3,12 +3,16 @@ import { FormKit } from '@formkit/vue';
 import Heading from "../components/UI/Heading.vue";
 import Button from "../components/UI/Button.vue";
 
+const onSubmit = (formData) => {
 
+  window.location.href = 'Pantalla7View';
+};
 </script>
 
 <template>
   <Heading></Heading>
   <h2 class="titulo">Datos Personales</h2>
+  <!-- TODO: Validar si fromkit es necesario -->
   <!-- Select de generos -->
   <FormKit type="form" 
         @submit="onSubmit" 
