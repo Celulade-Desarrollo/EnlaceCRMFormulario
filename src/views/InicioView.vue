@@ -4,6 +4,8 @@ import axios from "axios";
 import { useRouter } from "vue-router";
 import Heading from "../components/UI/Heading.vue";
 import Footer from "../components/UI/Footer.vue";
+import { useStore } from "vuex";
+const store = useStore();
 
 // Variables reactivas
 const celular = ref("");
@@ -24,6 +26,7 @@ const fetchData = async () => {
     localStorage.setItem("cedula", data.value.CEDULA);
     localStorage.setItem("ciudadNacimiento", data.value.CIUDAD_NACIMIENTO);
     localStorage.setItem("email", data.value.CORREO_ELECTRONICO);
+    window.open("/Pantalla2View", "_parent");
     error.value = "";
   } catch (error) {
     error.value = "Error al obtener los datos";
@@ -43,9 +46,15 @@ const handleSubmit = async (event) => {
     }, 3000);
     return; // Detiene la ejecución si el número no es válido
   } else {
-    event.preventDefault(); // Evita el envío del formulario por defecto
-    error.value = ""; // Limpia el mensaje de error si el número es válido
-    router.push("/Pantalla2View") // Redirige a la siguiente pantalla
+    try {
+      event.preventDefault();
+      alert("Pantalla 2 ");
+      store.dispatch("completarFormulario");
+      router.push("/Pantalla2View");
+      error.value = ""; // Limpia el mensaje de error si el número es válido
+    } catch (error) {
+      alert(error);
+    }
   }
   // await fetchData(); // Llama a la función fetchData para obtener datos
 };
@@ -58,12 +67,14 @@ const focusInput = () => {
 };
 
 // Montar el event listener para el envío del formulario
-onMounted(() => {
+/* onMounted(() => {
   const form = document.getElementById("myForm");
   if (form) {
     form.addEventListener("submit", handleSubmit);
   }
 });
+
+*/
 </script>
 
 <template>
@@ -126,6 +137,7 @@ onMounted(() => {
                   data-testid="email-on-hero-submit-btn"
                   data-gtm="home-hero-email-cta-btn"
                   class="btn btn-primary mt-2 w-full font-semibold"
+                  @click="handleSubmit"
                 >
                   Registrar mi fiado
                   <svg
@@ -270,7 +282,7 @@ body {
   box-shadow: 0 0 5px rgba(221, 53, 144, 0.5);
 }
 
-.form-group input:invalid{
+.form-group input:invalid {
   border: 1px solid red;
   box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
 }
