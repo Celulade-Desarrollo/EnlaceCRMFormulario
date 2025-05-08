@@ -39,7 +39,13 @@ const validateForm = () => {
     cedulaError.textContent = "La cédula es un campo obligatorio.";
     cedulaError.style.display = "block";
     valid = false;
-  } else {
+  }else if (cedulaField.value.length !== 10){
+    cedulaField.classList.add("error"); // Añadir clase de error
+    cedulaError.textContent = "La cédula debe tener 10 números.";
+    cedulaError.style.display = "block";
+    valid = false;
+  }
+  else {
     cedulaField.classList.remove("error"); // Quitar clase de error
     cedulaError.style.display = "none";
   }
@@ -92,13 +98,12 @@ onMounted(() => {
           />
         </picture>
       </div>
-      <Alerta v-if="error">{{ error }}</Alerta>
       <div class="col-lg-6">
         <div class="mt-4 tarjeta">
           <form action="Pantalla7View" novalidate>
             <div class="form-group">
+              <Alerta v-if="error">{{ error }}</Alerta>
               <h4 class="mb-4 titulo-4 mt-1">Ingresa tu cédula</h4>
-
               <label for="numeroCedula" id="label-numeroCedula">
                 <input
                   id="numeroCedula"

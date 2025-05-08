@@ -48,15 +48,14 @@ const handleSubmit = (event) => {
           />
         </picture>
       </div>
-      <Alerta v-if="error">{{ error }}</Alerta>
       <div class="col-lg-6">
         <div class="mt-4 tarjeta">
           <form @submit="handleSubmit">
             <div class="form-group">
+                <Alerta v-if="error">{{ error }}</Alerta>
               <h3 class="titulo-8 mb-4 mt-3">
                 ¿Y en qué parte de {{ ciudad }}?
               </h3>
-           
               <label for="direccion" class="input-label mt-4">
                 <input
                   v-model="direccion"
