@@ -3,6 +3,8 @@ import { ref, watch } from "vue";
 import Heading from "../components/UI/Heading.vue";
 import Button from "../components/UI/Button.vue";
 import Footer from "../components/UI/Footer.vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
 const nameRegex = /^[a-zA-ZÀ-ÿ\s'-]{2,50}$/;
 
@@ -14,6 +16,8 @@ const clearUndefined = (value) => {
 const nombre = ref("");
 const apellido = ref("");
 const SegundoApellido = ref("");
+const router = useRouter();
+const store = useStore();
 
 // Variables para mostrar errores
 const errorMessage = ref("");
@@ -23,10 +27,11 @@ const SegundoApellidoError = ref("");
 
 const validateNombre = () => {
   if (/[^a-zA-ZÀ-ÿ\s'-]/.test(nombre.value)) {
-    nombre.value = nombre.value.replace(/[^a-zA-ZÀ-ÿ\s'-]/g, ''); 
+    nombre.value = nombre.value.replace(/[^a-zA-ZÀ-ÿ\s'-]/g, "");
   }
   if (!nombre.value || !nameRegex.test(nombre.value)) {
-    nombreError.value = "Por favor, ingresa un nombre válido, sin tildes y solo letras.";
+    nombreError.value =
+      "Por favor, ingresa un nombre válido, sin tildes y solo letras.";
   } else {
     nombreError.value = ""; // Limpiar el mensaje de error si es válido
   }
@@ -34,10 +39,11 @@ const validateNombre = () => {
 
 const validateApellido = () => {
   if (/[^a-zA-ZÀ-ÿ\s'-]/.test(apellido.value)) {
-    apellido.value = apellido.value.replace(/[^a-zA-ZÀ-ÿ\s'-]/g, ''); 
+    apellido.value = apellido.value.replace(/[^a-zA-ZÀ-ÿ\s'-]/g, "");
   }
   if (!apellido.value || !nameRegex.test(apellido.value)) {
-    apellidoError.value = "Por favor, ingresa un apellido válido, sin tildes y solo letras.";
+    apellidoError.value =
+      "Por favor, ingresa un apellido válido, sin tildes y solo letras.";
   } else {
     apellidoError.value = ""; // Limpiar el mensaje de error si es válido
   }
@@ -45,10 +51,14 @@ const validateApellido = () => {
 
 const validateSegundoApellido = () => {
   if (/[^a-zA-ZÀ-ÿ\s'-]/.test(SegundoApellido.value)) {
-    SegundoApellido.value = SegundoApellido.value.replace(/[^a-zA-ZÀ-ÿ\s'-]/g, ''); 
+    SegundoApellido.value = SegundoApellido.value.replace(
+      /[^a-zA-ZÀ-ÿ\s'-]/g,
+      ""
+    );
   }
   if (SegundoApellido.value && !nameRegex.test(SegundoApellido.value)) {
-    SegundoApellidoError.value = "Por favor, ingresa un apellido válido, sin tildes y solo letras.";
+    SegundoApellidoError.value =
+      "Por favor, ingresa un apellido válido, sin tildes y solo letras.";
   } else {
     SegundoApellidoError.value = ""; // Limpiar el mensaje de error si es válido
   }
@@ -67,12 +77,12 @@ const handleSubmit = (event) => {
   nombreError.value = "";
   apellidoError.value = "";
   SegundoApellidoError.value = "";
-  
+
   let isValid = true;
 
-
   if (!nombre.value || !nameRegex.test(nombre.value)) {
-    nombreError.value = "Por favor, ingresa un nombre válido, sin tildes y solo letras.";
+    nombreError.value =
+      "Por favor, ingresa un nombre válido, sin tildes y solo letras.";
     isValid = false;
     setTimeout(() => {
       nombreError.value = "";
@@ -80,7 +90,8 @@ const handleSubmit = (event) => {
   }
 
   if (!apellido.value || !nameRegex.test(apellido.value)) {
-    apellidoError.value = "Por favor, ingresa un apellido válido, sin tildes y solo letras.";
+    apellidoError.value =
+      "Por favor, ingresa un apellido válido, sin tildes y solo letras.";
     isValid = false;
     setTimeout(() => {
       apellidoError.value = "";
@@ -88,7 +99,8 @@ const handleSubmit = (event) => {
   }
 
   if (SegundoApellido.value && !nameRegex.test(SegundoApellido.value)) {
-    SegundoApellidoError.value = "Por favor, ingresa un apellido válido, sin tildes y solo letras.";
+    SegundoApellidoError.value =
+      "Por favor, ingresa un apellido válido, sin tildes y solo letras.";
     isValid = false;
     setTimeout(() => {
       SegundoApellidoError.value = "";
@@ -104,7 +116,10 @@ const handleSubmit = (event) => {
     }, 3000);
   }
 
-
+  // Cuando todo se cumpla, redirigir
+  event.preventDefault();
+  store.dispatch("completarFormulario"); // Disparador para indicar que el formulario se completó
+  router.push("/cedula");
 };
 </script>
 
@@ -131,13 +146,9 @@ const handleSubmit = (event) => {
               <p class="titulo-3 mb-4">
                 Ingresa tu nombre completo tal como aparece en la cédula
               </p>
-                <p
-                  v-if="errorMessage"
-                  class="text-danger mt-1"
-                >
-                  {{ errorMessage }}
-                </p>
-
+              <p v-if="errorMessage" class="text-danger mt-1">
+                {{ errorMessage }}
+              </p>
 
               <label for="nombres" class="input-label">
                 <input
@@ -152,12 +163,9 @@ const handleSubmit = (event) => {
                 />
                 <span class="floating-label">Ingresa tus nombres</span>
               </label>
-              <p
-                  v-if="nombreError"
-                  class="text-danger mt-1"
-                >
-                  {{ nombreError }}
-                </p>
+              <p v-if="nombreError" class="text-danger mt-1">
+                {{ nombreError }}
+              </p>
               <label for="primerApellido" class="input-label mt-4">
                 <input
                   id="primerApellido"
@@ -171,12 +179,9 @@ const handleSubmit = (event) => {
                 />
                 <span class="floating-label">Ingresa tu primer apellido</span>
               </label>
-              <p
-                  v-if="apellidoError"
-                  class="text-danger mt-1"
-                >
-                  {{ apellidoError }}
-                </p>
+              <p v-if="apellidoError" class="text-danger mt-1">
+                {{ apellidoError }}
+              </p>
               <label for="segundoApellido" class="input-label mt-4">
                 <input
                   id="segundoApellido"
@@ -192,12 +197,9 @@ const handleSubmit = (event) => {
                   >Ingresa tu segundo apellido (Opcional)</span
                 >
               </label>
-              <p
-                  v-if="SegundoApellidoError"
-                  class="text-danger mt-1"
-                >
-                  {{ SegundoApellidoError }}
-                </p>
+              <p v-if="SegundoApellidoError" class="text-danger mt-1">
+                {{ SegundoApellidoError }}
+              </p>
             </div>
             <Button @click="handleSubmit"></Button>
           </form>

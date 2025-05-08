@@ -23,8 +23,8 @@ const router = createRouter({
       meta: { requiereFormulario: true },
     },
     {
-      path: "/Pantalla4View",
-      name: "pantalla4",
+      path: "/cedula",
+      name: "cedula",
       component: () => import("../views/Pantalla4View.vue"),
       meta: { requiereFormulario: true },
     },
