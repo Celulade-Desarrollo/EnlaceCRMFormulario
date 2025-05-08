@@ -41,8 +41,8 @@ const router = createRouter({
       meta: { requiereFormulario: true },
     },
     {
-      path: "/Pantalla7View",
-      name: "pantalla7",
+      path: "/negocio",
+      name: "negocio",
       component: () => import("../views/Pantalla7View.vue"),
       meta: { requiereFormulario: true },
     },
@@ -91,12 +91,12 @@ const router = createRouter({
   ],
 });
 
-/* router.beforeEach((to, from, next) => {
+router.beforeEach((to, from, next) => {
   if (to.meta.requiereFormulario && !store.getters.formularioCompletado) {
     next("/"); // Direccion a redirigir cuando no se completa el formulario
   } else {
     next();
   }
-}); */
+});
 
 export default router;

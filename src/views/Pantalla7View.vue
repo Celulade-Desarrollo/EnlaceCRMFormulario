@@ -5,7 +5,6 @@ import RouterLink from "../components/UI/Routerlink.vue";
 import Alerta from "../components/UI/Alerta.vue";
 import Heading from "../components/UI/Heading.vue";
 import Button from "../components/UI/Button.vue";
-import { FormKit } from "@formkit/vue";
 
 const departments = ref([]);
 const cities = ref([]);

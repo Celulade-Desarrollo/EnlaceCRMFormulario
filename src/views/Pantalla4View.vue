@@ -43,13 +43,13 @@ const validateForm = () => {
     cedulaError.textContent = "La cédula es un campo obligatorio.";
     cedulaError.style.display = "block";
     valid = false;
-  }else if (cedulaField.value.length !== 10){
+  } else if (cedulaField.value.length < 6 || cedulaField.value.length > 10) {
     cedulaField.classList.add("error"); // Añadir clase de error
-    cedulaError.textContent = "La cédula debe tener 10 números.";
+    cedulaError.textContent = "La cédula debe tener entre 6 y 10 números.";
     cedulaError.style.display = "block";
     valid = false;
-  }
-  else {
+    cedulaField.value = "";
+  } else {
     cedulaField.classList.remove("error"); // Quitar clase de error
     cedulaError.style.display = "none";
   }
@@ -71,6 +71,9 @@ const handleSubmit = (event) => {
   if (!validateForm()) {
     event.preventDefault(); // Evitar el envío del formulario si no es válido
   }
+  event.preventDefault(); // Evitar el envío del formulario si no es válido
+  store.dispatch("completarFormulario"); // Disparador para indicar que el formulario se completó
+  router.push("/negocio");
 };
 
 onMounted(() => {
@@ -83,13 +86,12 @@ onMounted(() => {
   });
 
   // Vincular el handleSubmit al formulario
-  document.querySelector("form").addEventListener("submit", handleSubmit);
 });
 </script>
 
 <template>
   <Heading />
-  <section class="container  registro">
+  <section class="container registro">
     <div class="row align-items-center">
       <div class="col-lg-6 desktop">
         <picture>
@@ -104,7 +106,7 @@ onMounted(() => {
       </div>
       <div class="col-lg-6">
         <div class="mt-4 tarjeta">
-          <form action="Pantalla7View" novalidate>
+          <form novalidate>
             <div class="form-group">
               <h4 class="mb-4 titulo-4 mt-1">Ingresa tu cédula</h4>
               <label for="numeroCedula" id="label-numeroCedula">
@@ -150,13 +152,15 @@ onMounted(() => {
                 />
                 <span class="checkmark"></span>
                 <p class="p-checkmark-2">
-                  Autorizo a <span>Enlace S.A.S y Banco W</span> contactarme vía <span>Whatsapp</span> sobre mis productos
-                  (opcional)
+                  Autorizo a <span>Enlace S.A.S y Banco W</span> contactarme vía
+                  <span>Whatsapp</span> sobre mis productos (opcional)
                 </p>
               </label>
             </div>
-
-            <Button class="mt-5"></Button>
+            <p v-if="error" class="text-danger mt-1">
+              {{ error }}
+            </p>
+            <Button class="mt-5" @click="handleSubmit"></Button>
           </form>
         </div>
       </div>
@@ -166,7 +170,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-
 input[type="number"] {
   -moz-appearance: textfield; /* Firefox */
 }
@@ -190,7 +193,6 @@ input::-webkit-inner-spin-button {
   text-decoration: none;
   font-weight: bold;
 }
-
 
 .form-control:focus {
   outline: none;
@@ -278,8 +280,6 @@ body {
   position: absolute;
 }
 
-
-
 .checkbox-custom + .checkmark {
   width: 50px;
   height: 20px;
@@ -290,8 +290,6 @@ body {
 .checkbox-custom:checked + .checkmark {
   background-color: #dd3590;
 }
-
-
 
 @media (max-width: 767px) {
   .desktop {
