@@ -145,85 +145,7 @@ onMounted(async () => {
     </div>
     <Button type="submit"></Button>
   </form>
-  <!--  <FormKit type="form" 
-        @submit="onSubmit" 
-        :actions="false"
-        :incomplete-message="'Por favor completa todos los campos'"> -->
-      <!-- <FormKit
-        type="select"
-        label="Género"
-        placeholder="Seleccione"
-        name="genero"
-        :options="{
-          masculino: 'Masculino',
-          venus: 'Femenino',
-          Otro: 'Otro',
-        }"
-        validation="required"
-        validation-visibility="dirty"
-        :validation-messages="{
-          required: 'Seleccione su género',
-      }"
-      /> -->
-      <!-- Select de generos -->
-     <!--  <FormKit
-        type="select"
-        label="Estado Cívil"
-        placeholder="Seleccione"
-        name="estadoCivil"
-        :options="{
-          soltero: 'Soltero/a',
-          casado: 'Casado/a',
-          divorciado: 'Divorciado/a',
-          viudo: 'Viudo/a',
-          unionLibre: 'Unión Libre (o Concubinato)',
-          separado: 'Separado',
-        }"
-        validation="required"
-        validation-visibility="dirty"
-        :validation-messages="{
-          required: 'Seleccione su estado civil',
-        }"
-      /> -->
-     <!--  <FormKit
-        type="date"
-        label="Fecha de Nacimiento"
-        name="fechaNacimiento"
-        help="Ejemplo: 1999-01-01"
-        placeholder="Fecha de Nacimiento"
-        validation="required|date_before:2010-01-01"
-        validation-visibility="dirty"
-        :validation-messages="{
-          required: 'Coloque una fecha válida',
-        }"
-      /> -->
-      <!-- <FormKit
-        type="select"
-        name="pais"
-        label="País"
-        placeholder="País de Nacimiento"
-        :options="paises"
-        validation="required"
-        validation-visibility="dirty"
-        :validation-messages="{
-          required: 'Seleccione un país',
-        }"
-      /> -->
-    <!--   <FormKit
-        type="select"
-        name="departamento"
-        label="Departamento"
-        placeholder="Selecciona un departamento"
-        :options="departments"
-        validation="required"
-        validation-visibility="dirty"
-        :validation-messages="{
-          required: 'Seleccione un departamento',
-        }"
-      /> -->
-      
-      
-    <!-- </FormKit> -->
+
 
 </template>
 
@@ -236,7 +158,7 @@ onMounted(async () => {
 .custom-select {
   appearance: none;
   border: none;
-  border-bottom: 2px solid #ccc;
+  border-bottom: 2px solid #09008be1;
   background-color: transparent;
   font-size: 16px;
   padding: 8px 30px 8px 0;
@@ -273,7 +195,7 @@ onMounted(async () => {
 .custom-select {
   appearance: none;
   border: none;
-  border-bottom: 2px solid #ccc;
+  border-bottom: 2px solid #09008be1;
   background-color: transparent;
   font-size: 16px;
   padding: 8px 30px 8px 0;
@@ -309,7 +231,7 @@ onMounted(async () => {
 .custom-input-date {
   appearance: none;
   border: none;
-  border-bottom: 2px solid #ccc;
+  border-bottom: 2px solid #09008be1;
   background-color: transparent;
   font-size: 16px;
   padding: 8px 0;

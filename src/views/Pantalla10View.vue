@@ -1,11 +1,15 @@
 <script setup>
 import Heading from "../components/UI/Heading.vue";
-import { onMounted, ref } from "vue";
-import Alerta from "../components/UI/Alerta.vue";
 import Button from "../components/UI/Button.vue";
-import { FormKit } from "@formkit/vue";
+import Footer from "../components/UI/Footer.vue";
+import { onMounted, ref } from "vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
 const error = ref("");
+const store = useStore();
+const router = useRouter();
+
 const handleCheckboxChange = (event) => {
   const checkboxes = document.querySelectorAll(".single-checkbox");
   checkboxes.forEach((checkbox) => {
@@ -24,6 +28,15 @@ const handleCheckboxChange1 = (event) => {
   });
 };
 
+const handleCheckboxChange2 = (event) => {
+  const checkboxes = document.querySelectorAll(".single-checkbox-2");
+  checkboxes.forEach((checkbox) => {
+    if (checkbox !== event.target) {
+      checkbox.checked = false;
+    }
+  });
+}
+
 onMounted(() => {
   const checkboxes = document.querySelectorAll(".single-checkbox");
   checkboxes.forEach((checkbox) => {
@@ -32,6 +45,11 @@ onMounted(() => {
 
   const checkboxes1 = document.querySelectorAll(".single-checkbox-1");
   checkboxes1.forEach((checkbox) => {
+    checkbox.addEventListener("change", handleCheckboxChange1);
+  });
+
+  const checkboxes2 = document.querySelectorAll(".single-checkbox-2");
+  checkboxes2.forEach((checkbox) => {
     checkbox.addEventListener("change", handleCheckboxChange1);
   });
 });
@@ -43,16 +61,18 @@ const validateCheckboxes = () => {
   const group2Checked = Array.from(
     document.querySelectorAll(".single-checkbox-1")
   ).some((checkbox) => checkbox.checked);
-
-  return group1Checked && group2Checked;
+  const group3Checked = Array.from(
+    document.querySelectorAll(".single-checkbox-2")
+  ).some((checkbox) => checkbox.checked);
+  return group1Checked && group2Checked && group3Checked;
 };
 
 const handleSubmit = (event) => {
-  event.preventDefault(); // Prevent form submission
 
   if (!validateCheckboxes()) {
+    event.preventDefault(); // Prevent form submissio
     error.value =
-      "Por favor, selecciona al menos una opción de los dos grupos.";
+      "Por favor, selecciona al menos una opción de los tres grupos.";
 
     setTimeout(() => {
       error.value = "";
@@ -62,9 +82,9 @@ const handleSubmit = (event) => {
 
   // Limpiar error si no lo hay
   error.value = "";
-
-  // Redirigir a la nueva página
-  window.open("/Pantalla11View", "_parent");
+  event.preventDefault(); // Evita el envío del formulario por defecto
+  store.dispatch("completarFormulario"); // Disparador para indicar que el formulario se completó
+  router.push("/antesDeTerminar");
 };
 </script>
 
@@ -84,10 +104,9 @@ const handleSubmit = (event) => {
           />
         </picture>
       </div>
-      <Alerta v-if="error">{{ error }}</Alerta>
       <div class="col-lg-6">
         <div class="mt-4 tarjeta">
-          <form @submit="handleSubmit">
+          <form >
             <div class="form-group">
               <h3 class="titulo-10 mb-4">Antes de terminar</h3>
               <h6 class="mb-4 font-bold">
@@ -152,30 +171,46 @@ const handleSubmit = (event) => {
               <h3 class="titulo mb-4">
                 ¿Realiza operaciones en moneda extranjera?
               </h3>
-                <div class="form-group">
-                  <label for="moneda" >Seleccione</label>
-                  <div class="custom-select-wrapper">
-                    <select v-model="selectedCity" id="moneda" class="custom-select">
-                      <option value="si">Sí</option>
-                      <option value="no">No</option>
-                    </select>
-                  </div>
-                </div>
+              <div class="checklist m-0" aria-required="true">
+                <label class="check-item">
+                  <input
+                    type="checkbox"
+                    name="MonedaExtranjeraSi"
+                    value="si"
+                    class="single-checkbox-2"
+                  />
+                  <span class="checkmark"></span>
+                  Si
+                </label>
+                <label class="check-item mb-4">
+                  <input
+                    type="checkbox"
+                    name="MonedaExtranjeraNo"
+                    value="no"
+                    class="single-checkbox-2"
+                  />
+                  <span class="checkmark"></span>
+                  No
+                </label>
+              </div>
               <p>
                 Declaro que soy nacido en Colombia, no tengo otras
                 nacionalidades, y mi domicilio es en Colombia al igual que mi
                 país de residencia físcal. Con el fin de de dar cumplimiento a
                 la normatividad de FATCA/CRS certifico lo anterior y me
                 comprometo a suministrar cualquier cambio de forma oprotuna.
-                (Validar declaratoria con jurídico)
               </p>
             </div>
-            <Button></Button>
+            <Button @click="handleSubmit"></Button>
+            <p v-if="error" class="text-danger mt-1 flex justify-center">
+              {{ error }}
+            </p>
           </form>
         </div>
       </div>
     </div>
   </section>
+  <Footer class=" bottom-0 left-0 right-0"></Footer>
 </template>
 
 <style scoped>

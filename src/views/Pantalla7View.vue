@@ -1,11 +1,14 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import axios from "axios";
-import RouterLink from "../components/UI/Routerlink.vue";
-import Alerta from "../components/UI/Alerta.vue";
 import Heading from "../components/UI/Heading.vue";
 import Button from "../components/UI/Button.vue";
+import Footer from "../components/UI/Footer.vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
+const store = useStore();
+const router = useRouter();
 const departments = ref([]);
 const cities = ref([]);
 const selectedDepartment = ref(null);
@@ -38,11 +41,11 @@ const loadCities = async () => {
 };
 
 const handleSubmit = (event) => {
-  event.preventDefault(); // Evita el envío del formulario por defecto
 
   // Validación
   if (!selectedDepartment.value || !selectedCity.value) {
     error.value = "Por favor, selecciona tu departamento y ciudad.";
+    event.preventDefault(); // Evita el envío del formulario por defecto
 
     setTimeout(() => {
       error.value = "";
@@ -57,7 +60,9 @@ const handleSubmit = (event) => {
   error.value = "";
 
   // Redirigir a la nueva página
-  window.open("/Pantalla8View", "_parent");
+  event.preventDefault(); // Evitar el envío del formulario si no es válido
+  store.dispatch("completarFormulario"); // Disparador para indicar que el formulario se completó
+  router.push("/locacion");
 };
 
 onMounted(() => {
@@ -83,7 +88,8 @@ onMounted(() => {
       </div>
     </div>
     <!-- Muestra la alerta solo si hay un error -->
-    <Alerta v-if="error">{{ error }}</Alerta>
+
+
     <div class="select-option mt-5">
       <h3 class="mb-4 titulo-7">¿Cuéntanos dónde está tu negocio?</h3>
       <p class="mb-4 font-bold">
@@ -116,10 +122,15 @@ onMounted(() => {
         </select>
       </div>
     </div>
-    <form id="myForm" @submit="handleSubmit">
-      <Button></Button>
-    </form>
+
+
+      <Button class="mt-5" @click="handleSubmit"></Button>
+ 
+    <p v-if="error" class="text-danger mt-1 flex justify-center">
+      {{ error }}
+    </p>
   </section>
+  <Footer class="absolute bottom-0 left-0 right-0" />
 </template>
 
 <style scoped>
@@ -131,7 +142,7 @@ onMounted(() => {
 .custom-select {
   appearance: none;
   border: none;
-  border-bottom: 2px solid #ccc;
+  border-bottom: 2px solid #09008be1;
   background-color: transparent;
   font-size: 16px;
   padding: 8px 30px 8px 0;
@@ -192,7 +203,7 @@ body {
   background-color: transparent;
   border-width: 0 0 1px;
   border-style: solid;
-  border-color: rgba(17, 17, 17, 0.2);
+  border-color: #09008be1;
   border-radius: 0;
   box-sizing: border-box;
   color: rgb(17, 17, 17);

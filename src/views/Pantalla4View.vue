@@ -73,7 +73,7 @@ const handleSubmit = (event) => {
   }
   event.preventDefault(); // Evitar el envío del formulario si no es válido
   store.dispatch("completarFormulario"); // Disparador para indicar que el formulario se completó
-  router.push("/negocio");
+  router.push("/Pantalla13View");
 };
 
 onMounted(() => {

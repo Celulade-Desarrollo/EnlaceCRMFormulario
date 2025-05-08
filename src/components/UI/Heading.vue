@@ -4,11 +4,11 @@
       <img src="/Enlace-Logo_Azul.jpg" alt="Logo" />
     </div>
     <nav class="menu">
-      <button class="menu-toggle" id="menuToggle">
+      <!-- <button class="menu-toggle" id="menuToggle">
         <span class="bar"></span>
         <span class="bar"></span>
         <span class="bar"></span>
-      </button>
+      </button> -->
       <ul class="menu-list" id="menuList">
         <li><a href="#home">Inicio</a></li>
         <li><a href="#texto-botton">Tu fiado</a></li>
