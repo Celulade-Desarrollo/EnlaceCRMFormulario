@@ -129,7 +129,7 @@ const focusInput = () => {
                   ref="celularInput"
                 />
                 <span class="floating-label"
-                    >Ingresa tu número celular +57</span
+                    >Ingresa tu número celular </span
                   >
                 <p v-if="error" id="error-celular" class="text-danger mt-1">
                   {{ error }}
@@ -486,6 +486,7 @@ input[type="number"]::-webkit-inner-spin-button {
   .container {
     max-width: 100%;
   }
+
   .container button {
     padding-left: 1.25rem;
     padding-right: 1.25rem;
