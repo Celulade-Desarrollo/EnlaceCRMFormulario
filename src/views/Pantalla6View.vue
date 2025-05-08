@@ -47,7 +47,7 @@ onMounted(loadCountries);
     <div class="custom-select-wrapper">
       <h3 class="titulo mb-5">¿Cuál es tu nacionalidad?</h3>
       <select class="custom-select" aria-label="Default select example" ref="countrySelect">
-        <option selected >Selecciona tu país</option>
+        <option selected disabled >Selecciona tu país</option>
       </select>
     </div>
 

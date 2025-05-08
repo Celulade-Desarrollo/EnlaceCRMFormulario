@@ -104,16 +104,16 @@ onMounted(async () => {
       <label for="genero">Género</label>
       <div class="custom-select-wrapper">
         <select v-model="genero" name="genero" class="custom-select">
+          <option selected disabled value="">Seleccione</option>
           <option value="Masculino">Masculino</option>
           <option value="Femenino">Femenino</option>
           <option value="Otro">Otro</option>
         </select>
       </div>
-
       <label for="estadoCivil">Estado civil</label>
       <div class="custom-select-wrapper">
         <select v-model="estadoCivil" name="estadoCivil" class="custom-select">
-          <option selected disabled>Selecciona tu estado civil</option>
+          <option selected disabled value="">Seleccione</option>
           <option value="soltero">Soltero/a</option>
           <option value="casado">Casado/a</option>
           <option value="divorciado">Divorciado/a</option>
@@ -132,14 +132,14 @@ onMounted(async () => {
       <label for="paisNacimiento">País de Nacimiento</label>
       <div class="custom-select-wrapper">
         <select v-model="paisSeleccionado" class="custom-select" name="pais" ref="countrySelect">
-          <option selected disabled>Selecciona tu país</option>
+          <option selected disabled value="">Selecciona tu país</option>
         </select>
       </div>
 
       <label for="departamento">Departamento</label>
       <div class="custom-select-wrapper">
         <select v-model="departamentoSeleccionado" class="custom-select" name="departamento" ref="departmentSelect">
-          <option selected disabled>Selecciona un departamento</option>
+          <option selected disabled value="">Selecciona un departamento</option>
         </select>
       </div>
     </div>
@@ -263,15 +263,7 @@ onMounted(async () => {
 
 .form-group label:not(:first-child) {
   margin-top: 16px;
-}
-
-.form-group label:nth-child(7) {
-  font-weight: normal;
-  font-size: 0.8em;
-  color: #777;
-  margin-top: 4px;
-  margin-bottom: 16px;
-}
+} 
 
 .custom-select-wrapper {
   position: relative;
@@ -300,6 +292,13 @@ onMounted(async () => {
   outline: none;
   box-shadow: none;
 }
+
+
+.form-group {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
 
 .custom-date {
   position: relative;
@@ -334,11 +333,6 @@ onMounted(async () => {
 .custom-input-date::-moz-focus-inner {
   border: 0;
   padding: 0;
-}
-
-.form-group {
-  margin-left: 20px;
-  margin-right: 20px;
 }
 
 .titulo {
