@@ -1,16 +1,12 @@
 <script setup>
 import { ref, onMounted, watch } from "vue";
-import axios from "axios";
-import RouterLink from "../components/UI/Routerlink.vue";
 import Heading from "../components/UI/Heading.vue";
-import Alerta from "../components/UI/Alerta.vue";
 import Button from "../components/UI/Button.vue";
 import Footer from "../components/UI/Footer.vue";
 import { useStore } from "vuex";
 const store = useStore();
 
 // Inicializar los valores de los campos
-const cedula = ref("");
 const email = ref("");
 const confirmaremail = ref("");
 const errorMessage = ref("");
@@ -22,6 +18,8 @@ const clearUndefined = (value) => {
   return value === undefined || value === null ? "" : value;
 };
 
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 // Validar que los correos coincidan
 const validateEmail = () => {
   const emailValue = clearUndefined(email.value);
@@ -31,7 +29,18 @@ const validateEmail = () => {
   emailErrorMessage.value = "";
   confirmEmailErrorMessage.value = "";
 
-  if (emailValue !== confirmEmailValue) {
+  if (emailValue && !emailRegex.test(emailValue)) {
+    emailErrorMessage.value = "Por favor, ingresa un correo electrónico válido."
+  }
+
+  if (confirmEmailValue && !emailRegex.test(confirmEmailValue)) {
+    emailErrorMessage.value = "Por favor, ingresa un correo electrónico válido."
+  }
+
+  if (
+    emailRegex.test(emailValue) &&
+    emailRegex.test(confirmEmailValue) &&
+    emailValue !== confirmEmailValue) {
     confirmEmailErrorMessage.value = "Los correos electrónicos no coinciden.";
   }
 };
@@ -88,7 +97,6 @@ onMounted(() => {
           </picture>
         </div>
 
-        <Alerta class="titulo" v-if="errorMessage">{{ errorMessage }}</Alerta>
 
         <div class="col-lg-6">
           <div className="flex justify-center">
@@ -100,6 +108,7 @@ onMounted(() => {
             <form action="Pantalla3View" id="myForm">
               <div class="form-group">
                 <p class="mb-4 font-bold">Registra tus datos</p>
+
                 <label for="email" class="input-label">
                   <input
                     id="email"
@@ -107,33 +116,40 @@ onMounted(() => {
                     class="form-control"
                     aria-required="true"
                     name="email"
-                    type="email"
+                    type="text"
                     placeholder=" "
                     autocomplete="off"
-                    required
                   />
+   
                   <span class="floating-label"
                     >Ingresa tu correo electrónico</span
                   >
+  
                 </label>
-                <span class="error-message">{{ emailErrorMessage }}</span>
 
-                <label for="confirmaremail" class="input-label mt-4">
+                <label for="confirmaremail" class="input-label mt-4 mb-0">
                   <input
                     id="confirmaremail"
                     v-model="confirmaremail"
                     class="form-control"
                     aria-required="true"
                     name="confirmaremail"
-                    type="email"
+                    type="text"
                     placeholder=" "
                     autocomplete="off"
-                    required
                   />
+
                   <span class="floating-label"
                     >Confirma tu correo electrónico</span
                   >
+
                 </label>
+                <p v-if="errorMessage" id="error-celular" class="text-danger mt-1">
+                    {{ errorMessage }}
+                </p>
+                <span v-if="emailErrorMessage" class="text-danger text-sm mt-1 d-block">
+                    {{ emailErrorMessage }}
+                  </span>
                 <span class="error-message">{{
                   confirmEmailErrorMessage
                 }}</span>

@@ -2,7 +2,6 @@
 import { ref, onMounted } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
-import RouterLink from "../components/UI/Routerlink.vue";
 import Heading from "../components/UI/Heading.vue";
 import Footer from "../components/UI/Footer.vue";
 import { useStore } from "vuex";
