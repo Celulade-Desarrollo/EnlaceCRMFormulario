@@ -43,6 +43,7 @@ const handleSubmit = async (event) => {
     }, 3000);
     return; // Detiene la ejecución si el número no es válido
   } else {
+    event.preventDefault(); // Evita el envío del formulario por defecto
     error.value = ""; // Limpia el mensaje de error si el número es válido
     router.push("/Pantalla2View") // Redirige a la siguiente pantalla
   }
