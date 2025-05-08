@@ -1,9 +1,13 @@
 <script setup>
 import { onMounted, ref } from "vue";
-import Alerta from "../components/UI/Alerta.vue";
 import Heading from "../components/UI/Heading.vue";
 import Button from "../components/UI/Button.vue";
+import Footer from "../components/UI/Footer.vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
+const store = useStore();
+const router = useRouter();
 const cedula = ref(localStorage.getItem("cedula") || "");
 
 // Referencias para los checkboxes
@@ -85,7 +89,7 @@ onMounted(() => {
 
 <template>
   <Heading />
-  <section class="container py-5 registro">
+  <section class="container  registro">
     <div class="row align-items-center">
       <div class="col-lg-6 desktop">
         <picture>
@@ -102,7 +106,6 @@ onMounted(() => {
         <div class="mt-4 tarjeta">
           <form action="Pantalla7View" novalidate>
             <div class="form-group">
-              <Alerta v-if="error">{{ error }}</Alerta>
               <h4 class="mb-4 titulo-4 mt-1">Ingresa tu cédula</h4>
               <label for="numeroCedula" id="label-numeroCedula">
                 <input
@@ -134,7 +137,7 @@ onMounted(() => {
                 <span class="checkmark"></span>
                 <p class="">
                   He leído y autorizo el tratamiento de mis datos personales por
-                  <br /><a href="#">Enlace S.A.S y Banco W</a>
+                  <a class="link-contacto" href="#">Enlace S.A.S y Banco W</a>
                 </p>
               </label>
               <label class="check-item mb-4">
@@ -147,22 +150,48 @@ onMounted(() => {
                 />
                 <span class="checkmark"></span>
                 <p class="p-checkmark-2">
-                  Autorizo a <br /><span>Enlace S.A.S y Banco W</span>
-                  contactarme vía <span>Whatsapp</span> sobre mis productos
+                  Autorizo a <span>Enlace S.A.S y Banco W</span> contactarme vía <span>Whatsapp</span> sobre mis productos
                   (opcional)
                 </p>
               </label>
             </div>
 
-            <Button></Button>
+            <Button class="mt-5"></Button>
           </form>
         </div>
       </div>
     </div>
   </section>
+  <Footer class="absolute bottom-0 left-0 right-0"></Footer>
 </template>
 
 <style scoped>
+
+input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+}
+
+/* Ocultar flechas para Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.link-contacto {
+  color: #dd3590;
+  text-decoration: none;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.link-contacto:active {
+  color: #09008be1;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+
 .form-control:focus {
   outline: none;
   box-shadow: none;
@@ -190,11 +219,12 @@ body {
   background-color: transparent;
   border-width: 0 0 1px;
   border-bottom-style: solid;
-  border-bottom-color: rgba(17, 17, 17, 0.2);
+  border-bottom: 2px solid #09008be1;
   color: rgb(17, 17, 17);
   padding: 8px 0;
   width: 100%;
   outline: none;
+  margin-top: 24px;
 }
 
 .container button {
@@ -219,18 +249,19 @@ body {
   color: #111111;
 }
 .titulo-4 {
-  margin: 0 0 16px;
   color: inherit;
   font-weight: bold;
   letter-spacing: -0.03em;
   font-size: 1.875rem;
   line-height: 1.2;
-  margin-top: -100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
 }
 .checklist {
   max-width: 300px;
   margin-top: 30px;
-  margin: 0 auto;
 }
 
 .check-item {
@@ -239,7 +270,7 @@ body {
   margin-bottom: 10px;
   font-size: 16px;
   position: relative;
-  gap: 10px;
+  gap: 20px;
 }
 
 .check-item input[type="checkbox"] {
@@ -247,21 +278,12 @@ body {
   position: absolute;
 }
 
-.checkmark {
-  display: inline-block;
-  width: 60px;
-  height: 30px;
-  border-radius: 50%;
-  background-color: #c9c7c7;
-  margin-right: 10px;
-  position: relative;
-}
+
 
 .checkbox-custom + .checkmark {
-  width: 60px;
-  height: 30px;
-  border-radius: 30px;
-  margin-right: 30px;
+  width: 50px;
+  height: 20px;
+  border-radius: 40px;
   background-color: #c9c7c7;
 }
 
@@ -269,10 +291,7 @@ body {
   background-color: #dd3590;
 }
 
-.p-checkmark-2 {
-  font-size: 0.75rem;
-  color: black;
-}
+
 
 @media (max-width: 767px) {
   .desktop {
