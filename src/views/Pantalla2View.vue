@@ -73,6 +73,7 @@ const handleSubmit = (event) => {
     setTimeout(() => {
       errorMessage.value = "";
     }, 3000);
+
     return;
   }
 
@@ -82,7 +83,9 @@ const handleSubmit = (event) => {
   }
   event.preventDefault();
   store.dispatch("completarFormulario"); // Disparador para indicar que el formulario se completó
-  router.push("/nombres");
+  router.push({
+    path: "/nombres",
+  });
 };
 
 // // Montar el event listener para el envío del formulario
