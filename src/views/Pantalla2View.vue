@@ -93,8 +93,6 @@ onMounted(() => {
             />
           </picture>
         </div>
-
-
         <div class="col-lg-6">
           <div className="flex justify-center">
             <h2 class="display-4 titulo-2 w-[350px] text-center">
@@ -105,7 +103,6 @@ onMounted(() => {
             <form action="Pantalla3View" id="myForm">
               <div class="form-group">
                 <p class="mb-4 font-bold">Registra tus datos</p>
-
                 <label for="email" class="input-label">
                   <input
                     id="email"
