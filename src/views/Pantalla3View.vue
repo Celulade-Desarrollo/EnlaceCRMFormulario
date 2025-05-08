@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from "vue";
+import RouterLink from "../components/UI/Routerlink.vue";
 import Heading from "../components/UI/Heading.vue";
 import Alerta from "../components/UI/Alerta.vue";
 import Button from "../components/UI/Button.vue";

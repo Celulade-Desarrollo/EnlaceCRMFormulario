@@ -17,8 +17,8 @@ const router = createRouter({
       meta: { requiereFormulario: true },
     },
     {
-      path: "/Pantalla3View",
-      name: "pantalla3",
+      path: "/nombres",
+      name: "nombres",
       component: () => import("../views/Pantalla3View.vue"),
       meta: { requiereFormulario: true },
     },
