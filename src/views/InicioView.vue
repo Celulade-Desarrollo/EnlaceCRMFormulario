@@ -94,27 +94,29 @@ onMounted(() => {
         </div>
         <div class="mt-4 tarjeta">
           <form id="myForm" class="w-full">
-            <div class="form-group w-full">
+            <div class="form-group ">
               <label
                 for="celular"
                 id="label-celular"
-                class="w-full pl-2 pr-2 mt-2 flex flex-col gap-4"
+                class="input-label"
               >
-                <p class="subtitulo font-semibold">Ingresa tu número celular</p>
                 <input
-                  class="form-control w-full"
+                  class="form-control"
                   aria-required="true"
                   aria-invalid="false"
                   aria-labelledby="label-celular"
                   name="celular"
                   v-model="celular"
                   type="number"
-                  placeholder="+57"
+                  placeholder=""
                   autocomplete="off"
                   id="celular"
                   aria-describedby="error-celular"
                   ref="celularInput"
                 />
+                <span class="floating-label"
+                    >Ingresa tu número celular +57</span
+                  >
                 <p v-if="error" id="error-celular" class="text-danger mt-1">
                   {{ error }}
                 </p>
@@ -252,27 +254,53 @@ body {
   align-items: center;
 }
 
-.form-group input {
-  background-color: transparent;
-  border-width: 0 0 1px;
-  border-bottom: solid 1px rgba(17, 17, 17, 0.2);
-  color: rgb(17, 17, 17);
-  padding: 8px;
+.input-label {
+  position: relative;
+  display: block;
   width: 100%;
+  margin-top: 24px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px 0;
+  font-size: 16px;
+  border: none;
+  border-bottom: 2px solid #09008be1;
+  background: transparent;
+  font-family: sans-serif;
   outline: none;
-  max-width: 500px;
+  transition: border-color 0.3s ease;
 }
 
-.form-group input:focus {
-  border: 1px 10px 1px 10px solid #dd3590;
-  box-shadow: 0 0 5px rgba(221, 53, 144, 0.5);
+.floating-label {
+  position: absolute;
+  left: 0;
+  top: 0px;
+  color: black;
+  font-size: 16px;
+  pointer-events: none;
+  transition: 0.3s ease all;
+  font-family: sans-serif;
 }
 
-.form-group input:invalid{
-  border: 1px solid red;
-  box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+/* Animación al enfocar o escribir */
+.form-control:focus + .floating-label,
+.form-control:not(:placeholder-shown) + .floating-label {
+  top: -15px;
+  font-size: 12px;
+  color: black;
 }
 
+.input-label:hover .form-control {
+  border-bottom-color: #ff00f2;
+}
+
+.form-control:focus {
+  border-bottom-color: #0064e6cc;
+  outline: none;
+  box-shadow: none;
+}
 .titulo-1 {
   font-weight: bold;
   font-size: 1.5rem;
