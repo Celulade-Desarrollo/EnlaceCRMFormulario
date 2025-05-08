@@ -6,6 +6,8 @@ import Heading from "../components/UI/Heading.vue";
 import Alerta from "../components/UI/Alerta.vue";
 import Button from "../components/UI/Button.vue";
 import Footer from "../components/UI/Footer.vue";
+import { useStore } from "vuex";
+const store = useStore();
 
 // Inicializar los valores de los campos
 const cedula = ref("");
@@ -64,6 +66,7 @@ onMounted(() => {
   const form = document.getElementById("myForm");
   if (form) {
     form.addEventListener("submit", handleSubmit);
+  } else {
   }
 });
 </script>

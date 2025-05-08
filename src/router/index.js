@@ -11,8 +11,8 @@ const router = createRouter({
       component: InicioView,
     },
     {
-      path: "/Pantalla2View",
-      name: "pantalla2",
+      path: "/correoElectronico",
+      name: "correoElectronico",
       component: () => import("../views/Pantalla2View.vue"),
       meta: { requiereFormulario: true },
     },
@@ -93,7 +93,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.meta.requiereFormulario && !store.getters.formularioCompletado) {
-    alert("Completar formulario");
+    next("/"); // Direccion a redirigir cuando no se completa el formulario
   } else {
     next();
   }

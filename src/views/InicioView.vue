@@ -42,19 +42,20 @@ const handleSubmit = async (event) => {
     error.value = "Por favor, ingresa un número celular válido.";
     event.preventDefault(); // Evita el envío del formulario por defecto
 
+    // Limpia el mensaje de error despues de 3 segundos
     setTimeout(() => {
       error.value = "";
     }, 3000);
+
     return; // Detiene la ejecución si el número no es válido
   } else {
     try {
-      event.preventDefault();
-      alert("Pantalla 2 ");
-      store.dispatch("completarFormulario");
-      router.push("/Pantalla2View");
+      event.preventDefault(); // Evita el envío del formulario por defecto
+      store.dispatch("completarFormulario"); // Disparador para indicar que el formulario se completó
+      router.push("/correoElectronico");
       error.value = ""; // Limpia el mensaje de error si el número es válido
     } catch (error) {
-      alert(error);
+      alert("Lo sentimos hubo un error");
     }
   }
   // await fetchData(); // Llama a la función fetchData para obtener datos
