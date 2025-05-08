@@ -92,12 +92,8 @@ onMounted(() => {
       </p>
       <p class="font-bold">Elige un departamento</p>
       <div class="custom-select-wrapper">
-        <select
-          v-model="selectedDepartment"
-          @change="loadCities"
-          class="custom-select"
-        >
-          <option disabled selected>Elige un departamento</option>
+        <select v-model="selectedDepartment" @change="loadCities" class="custom-select" >
+          <option selected disabled >Seleccione</option>
           <option
             v-for="department in departments"
             :key="department"
@@ -109,8 +105,7 @@ onMounted(() => {
       </div>
       <p class="font-bold">Elige una ciudad</p>
       <div class="custom-select-wrapper">
-        <select v-model="selectedCity" class="custom-select">
-          <option disabled selected>Elige una ciudad</option>
+        <select v-model="selectedCity" name="ciudad" class="custom-select">
           <option v-for="city in cities" :key="city" :value="city">
             {{ city }}
           </option>

@@ -112,7 +112,7 @@ onMounted(async () => {
       </div>
       <label for="estadoCivil">Estado civil</label>
       <div class="custom-select-wrapper">
-        <select v-model="estadoCivil" name="estadoCivil" class="custom-select">
+        <select  name="estadoCivil" class="custom-select">
           <option selected disabled value="">Seleccione</option>
           <option value="soltero">Soltero/a</option>
           <option value="casado">Casado/a</option>

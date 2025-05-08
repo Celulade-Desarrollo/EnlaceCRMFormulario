@@ -12,14 +12,12 @@ const onSubmit = (formData) => {
 <template>
   <Heading></Heading>
   <h2 class="titulo">Datos Personales</h2>
-  <!-- TODO: Validar si fromkit es necesario -->
-  <!-- Select de generos -->
-  <form @submit.prevent="onSubmit">
+   <form @submit.prevent="onSubmit">
     <div class="form-group">
       <label for="nivel educativo">Nivel Educativo</label>
       <div class="custom-select-wrapper">
-        <select v-model="nivelEducativo" name="nivelEducativo" class="custom-select">
-          <option selected disabled value="">Seleccione</option>
+        <select name="nivelEducativo" class="custom-select">
+          <option selected disabled >Seleccione</option>
           <option value="basico">Básico Primaria</option>
           <option value="bachillerato">Bachillerato</option>
           <option value="tecnico">Técnico</option>
@@ -30,7 +28,7 @@ const onSubmit = (formData) => {
       </div>
       <label for="estrato">Estrato</label>
       <div class="custom-select-wrapper">
-        <select v-model="estrato" name="estrato" class="custom-select">
+        <select name="estrato" class="custom-select">
           <option selected disabled value="">Seleccione</option>
           <option value="1">Estrato 1</option>
           <option value="2">Estrato 2</option>
@@ -42,8 +40,8 @@ const onSubmit = (formData) => {
       </div>
       <label for="grupo etnico">Grupo Étnico</label>
       <div class="custom-select-wrapper">
-        <select v-model="grupoEtnico" name="grupoEtnico" class="custom-select">
-          <option selected disabled value="">Seleccione</option>
+        <select name="grupoEtnico" class="custom-select">
+          <option selected disabled >Seleccione</option>
           <option value="afrocolombiano">Afrocolombiano</option>
           <option value="indigena">Indígena</option>
           <option value="raizal">Raizal</option>
@@ -54,15 +52,16 @@ const onSubmit = (formData) => {
       </div>
       <label for="declaraRenta">¿Declara Renta?</label>
       <div class="custom-select-wrapper">
-        <select v-model="declarasRenta" name="declarasRenta" class="custom-select">
-          <option selected disabled value="">Seleccione</option>
+        <select name="declarasRenta" class="custom-select">
+          <option selected disabled>Seleccione</option>
           <option value="si">Sí</option>
           <option value="no">No</option>
         </select>
       </div>
       <label for="rut">¿Esta obligado a tener RUT por tu actividad económica?</label>
       <div class="custom-select-wrapper">
-        <select v-model="rut" name="Rut" class="custom-select">
+        <select name="Rut" class="custom-select">
+          <option selected disabled >Seleccione</option>
           <option value="si">Sí</option>
           <option value="no">No</option>
         </select>
@@ -157,12 +156,12 @@ const onSubmit = (formData) => {
   outline: none;
   box-shadow: none;
 }
+
+
 .form-group {
   margin-left: 20px;
   margin-right: 20px;
 }
-
-
 
 .titulo {
     margin: 16px;
@@ -173,11 +172,7 @@ const onSubmit = (formData) => {
     line-height: 1.2;
 }
 
-
-
-
 @media (max-width: 767px) {
-
 
 }
 </style>

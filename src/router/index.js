@@ -91,12 +91,12 @@ const router = createRouter({
   ],
 });
 
-router.beforeEach((to, from, next) => {
-  if (to.meta.requiereFormulario && !store.getters.formularioCompletado) {
-    alert("Completar formulario");
-  } else {
-    next();
-  }
-});
+// router.beforeEach((to, from, next) => {
+//   if (to.meta.requiereFormulario && !store.getters.formularioCompletado) {
+//     alert("Completar formulario");
+//   } else {
+//     next();
+//   }
+// });
 
 export default router;
