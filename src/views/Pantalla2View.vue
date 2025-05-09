@@ -1,10 +1,10 @@
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, onMounted } from "vue";
 import Heading from "../components/UI/Heading.vue";
 import Button from "../components/UI/Button.vue";
 import Footer from "../components/UI/Footer.vue";
-import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import { useFormularioStore } from "../router/store";
 
 // Inicializar los valores de los campos
 const email = ref("");
@@ -13,7 +13,7 @@ const errorMessage = ref("");
 const emailErrorMessage = ref("");
 const confirmEmailErrorMessage = ref("");
 const router = useRouter();
-const store = useStore();
+const store = useFormularioStore();
 
 // Función para limpiar valores undefined o null
 const clearUndefined = (value) => {
@@ -82,20 +82,26 @@ const handleSubmit = (event) => {
     return;
   }
   event.preventDefault();
-  store.dispatch("completarFormulario"); // Disparador para indicar que el formulario se completó
-  router.push({
-    path: "/nombres",
-  });
+  store.completarFormulario(); // Marca el formulario como completado
+  router.push("/nombres"); // Redirige a la siguiente pantalla
 };
 
-// // Montar el event listener para el envío del formulario
-// onMounted(() => {
-//   const form = document.getElementById("myForm");
-//   if (form) {
-//     form.addEventListener("submit", handleSubmit);
-//   } else {
-//   }
-// });
+onMounted(() => {
+  let miRuta = window.location.pathname;
+
+  // Validar si ya existe "ruta"
+  if (localStorage.getItem.length > 0) {
+    localStorage.removeItem("ruta");
+
+    // Setear la ruta por defecto
+    localStorage.setItem("ruta", miRuta);
+  } else {
+    // Setear la ruta por defecto
+    localStorage.setItem("ruta", miRuta);
+  }
+
+  alert(miRuta);
+});
 </script>
 
 <template>

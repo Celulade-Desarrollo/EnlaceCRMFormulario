@@ -1,10 +1,10 @@
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, onMounted } from "vue";
 import Heading from "../components/UI/Heading.vue";
 import Button from "../components/UI/Button.vue";
 import Footer from "../components/UI/Footer.vue";
-import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import { useFormularioStore } from "../router/store";
 
 const nameRegex = /^[a-zA-ZÀ-ÿ\s'-]{2,50}$/;
 
@@ -17,7 +17,7 @@ const nombre = ref("");
 const apellido = ref("");
 const SegundoApellido = ref("");
 const router = useRouter();
-const store = useStore();
+const store = useFormularioStore();
 
 // Variables para mostrar errores
 const errorMessage = ref("");
@@ -118,9 +118,26 @@ const handleSubmit = (event) => {
 
   // Cuando todo se cumpla, redirigir
   event.preventDefault();
-  store.dispatch("completarFormulario"); // Disparador para indicar que el formulario se completó
-  router.push("/cedula");
+  store.completarFormulario(); // Marca el formulario como completado
+  router.push("/cedula"); // Redirige a la siguiente pantalla
 };
+
+onMounted(() => {
+  let miRuta = window.location.pathname;
+
+  // Validar si ya existe "ruta"
+  if (localStorage.getItem.length > 0) {
+    localStorage.removeItem("ruta");
+
+    // Setear la ruta por defecto
+    localStorage.setItem("ruta", miRuta);
+  } else {
+    // Setear la ruta por defecto
+    localStorage.setItem("ruta", miRuta);
+  }
+
+  alert(miRuta);
+});
 </script>
 
 <template>

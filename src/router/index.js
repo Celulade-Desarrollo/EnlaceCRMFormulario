@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import InicioView from "../views/InicioView.vue";
-import store from "./store";
+import { useFormularioStore } from "./store";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -92,10 +92,16 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.meta.requiereFormulario && !store.getters.formularioCompletado) {
-    next();
+  const store = useFormularioStore();
+
+  const requiereFormulario = to.meta.requiereFormulario;
+
+  if (requiereFormulario && !store.formularioCompletado) {
+    store.completarFormulario();
+    next(store.ultimaRutaValida || "/");
   } else {
-    next(); // Permite continuar a la ruta deseada
+    store.actualizarRutaValida(to.fullPath);
+    next();
   }
 });
 

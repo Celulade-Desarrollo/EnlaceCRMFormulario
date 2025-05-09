@@ -4,8 +4,7 @@ import axios from "axios";
 import { useRouter } from "vue-router";
 import Heading from "../components/UI/Heading.vue";
 import Footer from "../components/UI/Footer.vue";
-import { useStore } from "vuex";
-const store = useStore();
+import { useFormularioStore } from "../router/store";
 
 // Variables reactivas
 const celular = ref("");
@@ -13,6 +12,7 @@ const data = ref(null);
 const error = ref("");
 const celularInput = ref(null); // Ref para el input
 const router = useRouter(); // Instancia del router
+const store = useFormularioStore();
 
 // Función para obtener datos
 const fetchData = async () => {
@@ -50,8 +50,8 @@ const handleSubmit = async (event) => {
   } else {
     try {
       event.preventDefault(); // Evita el envío del formulario por defecto
-      store.dispatch("completarFormulario"); // Disparador para indicar que el formulario se completó
-      router.push("/correoElectronico");
+      store.completarFormulario(); // Marca el formulario como completado
+      router.push("/correoElectronico"); // Redirige a la siguiente pantalla
       error.value = ""; // Limpia el mensaje de error si el número es válido
     } catch (error) {
       alert("Lo sentimos hubo un error");
@@ -68,14 +68,22 @@ const focusInput = () => {
 };
 
 // Montar el event listener para el envío del formulario
-/* onMounted(() => {
-  const form = document.getElementById("myForm");
-  if (form) {
-    form.addEventListener("submit", handleSubmit);
-  }
-});
+onMounted(() => {
+  let miRuta = window.location.pathname;
 
-*/
+  // Validar si ya existe "ruta"
+  if (localStorage.getItem.length > 0) {
+    localStorage.removeItem("ruta");
+
+    // Setear la ruta por defecto
+    localStorage.setItem("ruta", miRuta);
+  } else {
+    // Setear la ruta por defecto
+    localStorage.setItem("ruta", miRuta);
+  }
+
+  alert(miRuta);
+});
 </script>
 
 <template>
@@ -108,12 +116,8 @@ const focusInput = () => {
         </div>
         <div class="mt-4 tarjeta">
           <form id="myForm" class="w-full">
-            <div class="form-group ">
-              <label
-                for="celular"
-                id="label-celular"
-                class="input-label"
-              >
+            <div class="form-group">
+              <label for="celular" id="label-celular" class="input-label">
                 <input
                   class="form-control"
                   aria-required="true"
@@ -128,9 +132,7 @@ const focusInput = () => {
                   aria-describedby="error-celular"
                   ref="celularInput"
                 />
-                <span class="floating-label"
-                    >Ingresa tu número celular </span
-                  >
+                <span class="floating-label">Ingresa tu número celular </span>
                 <p v-if="error" id="error-celular" class="text-danger mt-1">
                   {{ error }}
                 </p>
