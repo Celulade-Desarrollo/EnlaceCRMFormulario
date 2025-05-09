@@ -5,6 +5,8 @@ import { useFormularioStore } from "../router/store";
 import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
 import Footer from "../components/UI/Footer.vue";
+import { fadeInUp } from "../motion/PagesAnimation";
+import { motion } from "motion-v";
 
 const store = useFormularioStore();
 const router = useRouter();
@@ -48,103 +50,104 @@ onMounted(() => {
 
 <template>
   <Heading></Heading>
-
-  <section class="container py-5 registro">
-    <div class="row align-items-center">
-      <div class="col-lg-6 desktop">
-        <picture>
-          <img
-            src="/public/pago.png"
-            alt="Pago"
-            class="img-fluid"
-            loading="lazy"
-            title="Pago"
-          />
-        </picture>
-      </div>
-      <div class="col-lg-6 botones">
-        <div>
-          <h2 class="mb-2 titulo">Cuentanos un poco acerca de tu negocio</h2>
-          <p class="mb-4 font-bold">
-            Esta información es totalmente confidencial y esta nos permitirá
-            conocerte mejor
-          </p>
+  <motion.div v-bind="fadeInUp">
+    <section class="container py-5 registro">
+      <div class="row align-items-center">
+        <div class="col-lg-6 desktop">
+          <picture>
+            <img
+              src="/public/pago.png"
+              alt="Pago"
+              class="img-fluid"
+              loading="lazy"
+              title="Pago"
+            />
+          </picture>
         </div>
-        <div class="button-container">
-          <p class="font-bold">¿Tu tienda tiene neveras?</p>
-
-          <input
-            type="radio"
-            id="nevera-no"
-            class="checkbox-hidden"
-            name="nevera"
-            value="No"
-          />
-          <label for="nevera-no" class="button mt-4">No</label>
-
-          <input
-            type="radio"
-            id="nevera-1"
-            class="checkbox-hidden"
-            name="nevera"
-            value="1"
-          />
-          <label for="nevera-1" class="button mt-4">1</label>
-
-          <input
-            type="radio"
-            id="nevera-2"
-            class="checkbox-hidden"
-            name="nevera"
-            value="2"
-          />
-          <label for="nevera-2" class="button mt-4">2</label>
-
-          <input
-            type="radio"
-            id="nevera-3"
-            class="checkbox-hidden"
-            name="nevera"
-            value="3 o más"
-          />
-          <label for="nevera-3" class="button mt-4">3 o más</label>
-        </div>
-
-        <div class="button-container">
-          <p class="font-bold">
-            ¿Estás registrado ante la cámara de comercio de tu ciudad?
-          </p>
-
-          <input
-            type="radio"
-            id="registro-si"
-            class="checkbox-hidden"
-            name="registro"
-            value="Sí"
-          />
-          <label for="registro-si" class="button mt-4">Sí</label>
-
-          <input
-            type="radio"
-            id="registro-no"
-            class="checkbox-hidden"
-            name="registro"
-            value="No"
-          />
-          <label for="registro-no" class="button mt-4">No</label>
-        </div>
-
-        <div class="mt-4 tarjeta">
-          <div class="checklist">
-            <Button @click="handleSubmit"></Button>
-            <p v-if="error" class="text-danger mt-1 flex justify-center">
-              {{ error }}
+        <div class="col-lg-6 botones">
+          <div>
+            <h2 class="mb-2 titulo">Cuentanos un poco acerca de tu negocio</h2>
+            <p class="mb-4 font-bold">
+              Esta información es totalmente confidencial y esta nos permitirá
+              conocerte mejor
             </p>
+          </div>
+          <div class="button-container">
+            <p class="font-bold">¿Tu tienda tiene neveras?</p>
+
+            <input
+              type="radio"
+              id="nevera-no"
+              class="checkbox-hidden"
+              name="nevera"
+              value="No"
+            />
+            <label for="nevera-no" class="button mt-4">No</label>
+
+            <input
+              type="radio"
+              id="nevera-1"
+              class="checkbox-hidden"
+              name="nevera"
+              value="1"
+            />
+            <label for="nevera-1" class="button mt-4">1</label>
+
+            <input
+              type="radio"
+              id="nevera-2"
+              class="checkbox-hidden"
+              name="nevera"
+              value="2"
+            />
+            <label for="nevera-2" class="button mt-4">2</label>
+
+            <input
+              type="radio"
+              id="nevera-3"
+              class="checkbox-hidden"
+              name="nevera"
+              value="3 o más"
+            />
+            <label for="nevera-3" class="button mt-4">3 o más</label>
+          </div>
+
+          <div class="button-container">
+            <p class="font-bold">
+              ¿Estás registrado ante la cámara de comercio de tu ciudad?
+            </p>
+
+            <input
+              type="radio"
+              id="registro-si"
+              class="checkbox-hidden"
+              name="registro"
+              value="Sí"
+            />
+            <label for="registro-si" class="button mt-4">Sí</label>
+
+            <input
+              type="radio"
+              id="registro-no"
+              class="checkbox-hidden"
+              name="registro"
+              value="No"
+            />
+            <label for="registro-no" class="button mt-4">No</label>
+          </div>
+
+          <div class="mt-4 tarjeta">
+            <div class="checklist">
+              <Button @click="handleSubmit"></Button>
+              <p v-if="error" class="text-danger mt-1 flex justify-center">
+                {{ error }}
+              </p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </motion.div>
   <Footer class="bottom-0 left-0 right-0"></Footer>
 </template>
 

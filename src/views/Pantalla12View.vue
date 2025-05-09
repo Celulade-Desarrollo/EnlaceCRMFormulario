@@ -5,6 +5,8 @@ import Footer from "../components/UI/Footer.vue";
 import { ref, onMounted } from "vue";
 import { useFormularioStore } from "../router/store";
 import { useRouter } from "vue-router";
+import { fadeInUp } from "../motion/PagesAnimation";
+import { motion } from "motion-v";
 
 const store = useFormularioStore();
 const router = useRouter();
@@ -63,96 +65,97 @@ onMounted(() => {
 
 <template>
   <Heading></Heading>
-
-  <section class="container py-5 registro">
-    <div class="row align-items-center">
-      <div class="col-lg-6 desktop">
-        <picture>
-          <img
-            src="/public/pago.png"
-            alt="Pago"
-            class="img-fluid"
-            loading="lazy"
-            title="Pago"
-          />
-        </picture>
-      </div>
-      <div class="col-lg-6 botones">
-        <div>
-          <h2 class="titulo">Cuentanos un poco acerca de tu negocio</h2>
-          <p class="mb-4 font-bold">
-            Esta información es totalmente confidencial y esta nos permitirá
-            conocerte mejor
-          </p>
+  <motion.div v-bind="fadeInUp">
+    <section class="container py-5 registro">
+      <div class="row align-items-center">
+        <div class="col-lg-6 desktop">
+          <picture>
+            <img
+              src="/public/pago.png"
+              alt="Pago"
+              class="img-fluid"
+              loading="lazy"
+              title="Pago"
+            />
+          </picture>
         </div>
-
-        <div class="mt-4 tarjeta">
-          <p class="mb-4 font-bold">¿Cuanto vendes al día (opcional)?</p>
-          <div class="checklist">
-            <label class="check-item mb-4">
-              <input
-                type="checkbox"
-                name="100"
-                value="100"
-                id="100P"
-                class="single-checkbox"
-              />
-              <span class="checkmark"></span>
-              Menos de $100.000
-            </label>
-            <label class="check-item mb-4">
-              <input
-                type="checkbox"
-                name="cedula"
-                value="extranjeria"
-                id="otros"
-                class="single-checkbox"
-              />
-              <span class="checkmark"></span>
-              Entre $100.000 y $200.000
-            </label>
-            <label class="check-item mb-4">
-              <input
-                type="checkbox"
-                name="cedula"
-                value="extranjeria"
-                id="otros"
-                class="single-checkbox"
-              />
-              <span class="checkmark"></span>
-              Entre $200.000 y $300.000
-            </label>
-            <label class="check-item mb-4">
-              <input
-                type="checkbox"
-                name="cedula"
-                value="extranjeria"
-                id="otros"
-                class="single-checkbox"
-              />
-              <span class="checkmark"></span>
-              Entre $300.000 y $400.000
-            </label>
-            <label class="check-item mb-4">
-              <input
-                type="checkbox"
-                name="cedula"
-                value="extranjeria"
-                id="otros"
-                class="single-checkbox"
-              />
-              <span class="checkmark"></span>
-              Más de $400.000
-            </label>
-            <Button @click="handleSubmit" class="mt-5"></Button>
-            <p v-if="mostrarAlerta" class="text-danger mt-1">
-              {{ mensajeAlerta }}
+        <div class="col-lg-6 botones">
+          <div>
+            <h2 class="titulo">Cuentanos un poco acerca de tu negocio</h2>
+            <p class="mb-4 font-bold">
+              Esta información es totalmente confidencial y esta nos permitirá
+              conocerte mejor
             </p>
+          </div>
+
+          <div class="mt-4 tarjeta">
+            <p class="mb-4 font-bold">¿Cuanto vendes al día (opcional)?</p>
+            <div class="checklist">
+              <label class="check-item mb-4">
+                <input
+                  type="checkbox"
+                  name="100"
+                  value="100"
+                  id="100P"
+                  class="single-checkbox"
+                />
+                <span class="checkmark"></span>
+                Menos de $100.000
+              </label>
+              <label class="check-item mb-4">
+                <input
+                  type="checkbox"
+                  name="cedula"
+                  value="extranjeria"
+                  id="otros"
+                  class="single-checkbox"
+                />
+                <span class="checkmark"></span>
+                Entre $100.000 y $200.000
+              </label>
+              <label class="check-item mb-4">
+                <input
+                  type="checkbox"
+                  name="cedula"
+                  value="extranjeria"
+                  id="otros"
+                  class="single-checkbox"
+                />
+                <span class="checkmark"></span>
+                Entre $200.000 y $300.000
+              </label>
+              <label class="check-item mb-4">
+                <input
+                  type="checkbox"
+                  name="cedula"
+                  value="extranjeria"
+                  id="otros"
+                  class="single-checkbox"
+                />
+                <span class="checkmark"></span>
+                Entre $300.000 y $400.000
+              </label>
+              <label class="check-item mb-4">
+                <input
+                  type="checkbox"
+                  name="cedula"
+                  value="extranjeria"
+                  id="otros"
+                  class="single-checkbox"
+                />
+                <span class="checkmark"></span>
+                Más de $400.000
+              </label>
+              <Button @click="handleSubmit" class="mt-5"></Button>
+              <p v-if="mostrarAlerta" class="text-danger mt-1">
+                {{ mensajeAlerta }}
+              </p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </motion.div>
   <Footer class="absolute bottom-0 left-0 right-0"></Footer>
 </template>
 

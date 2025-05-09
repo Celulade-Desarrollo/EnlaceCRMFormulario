@@ -5,6 +5,8 @@ import Button from "../components/UI/Button.vue";
 import Footer from "../components/UI/Footer.vue";
 import { useFormularioStore } from "../router/store";
 import { useRouter } from "vue-router";
+import { fadeInUp } from "../motion/PagesAnimation";
+import { motion } from "motion-v";
 
 const ciudad = localStorage.getItem("selectedCity");
 const store = useFormularioStore(); // Inicializa Vuex
@@ -49,82 +51,83 @@ onMounted(() => {
 
 <template>
   <Heading></Heading>
+  <motion.div v-bind="fadeInUp">
+    <section class="container py-5 registro">
+      <div class="row align-items-center">
+        <div class="col-lg-6 desktop">
+          <picture>
+            <img
+              src="/public/pago.png"
+              alt="Pago"
+              class="img-fluid"
+              loading="lazy"
+              title="Pago"
+            />
+          </picture>
+        </div>
+        <div class="col-lg-6">
+          <div class="mt-4 tarjeta">
+            <form>
+              <div class="form-group">
+                <h3 class="titulo-8 mb-4 mt-1">
+                  ¿Y en qué parte de {{ ciudad }}?
+                </h3>
+                <label for="direccion" class="input-label mt-4">
+                  <input
+                    v-model="direccion"
+                    class="form-control"
+                    aria-required="true"
+                    name="direccion"
+                    type="text"
+                    placeholder=" "
+                    data-gtm="home-hero-email-field"
+                    autocomplete="off"
+                    id="direccion"
+                    aria-describedby="error-direccion"
+                  />
+                  <span class="floating-label">Ingresa tu dirección </span>
+                </label>
+                <label for="detalles" class="input-label mt-4">
+                  <input
+                    class="form-control"
+                    aria-required="false"
+                    name="detalles"
+                    type="text"
+                    placeholder=" "
+                    data-gtm="home-hero-email-field"
+                    autocomplete="off"
+                    id="detalles"
+                    aria-describedby="error-detalles"
+                  />
+                  <span class="floating-label">Detalles (Opcional) </span>
+                </label>
 
-  <section class="container py-5 registro">
-    <div class="row align-items-center">
-      <div class="col-lg-6 desktop">
-        <picture>
-          <img
-            src="/public/pago.png"
-            alt="Pago"
-            class="img-fluid"
-            loading="lazy"
-            title="Pago"
-          />
-        </picture>
-      </div>
-      <div class="col-lg-6">
-        <div class="mt-4 tarjeta">
-          <form>
-            <div class="form-group">
-              <h3 class="titulo-8 mb-4 mt-1">
-                ¿Y en qué parte de {{ ciudad }}?
-              </h3>
-              <label for="direccion" class="input-label mt-4">
-                <input
-                  v-model="direccion"
-                  class="form-control"
-                  aria-required="true"
-                  name="direccion"
-                  type="text"
-                  placeholder=" "
-                  data-gtm="home-hero-email-field"
-                  autocomplete="off"
-                  id="direccion"
-                  aria-describedby="error-direccion"
-                />
-                <span class="floating-label">Ingresa tu dirección </span>
-              </label>
-              <label for="detalles" class="input-label mt-4">
-                <input
-                  class="form-control"
-                  aria-required="false"
-                  name="detalles"
-                  type="text"
-                  placeholder=" "
-                  data-gtm="home-hero-email-field"
-                  autocomplete="off"
-                  id="detalles"
-                  aria-describedby="error-detalles"
-                />
-                <span class="floating-label">Detalles (Opcional) </span>
-              </label>
-
-              <label for="barrio" class="input-label mt-4">
-                <input
-                  v-model="barrio"
-                  class="form-control"
-                  aria-required="true"
-                  name="barrio"
-                  type="text"
-                  placeholder=" "
-                  data-gtm="home-hero-email-field"
-                  autocomplete="off"
-                  id="barrio"
-                  aria-describedby="error-barrio"
-                />
-                <span class="floating-label">Barrio</span>
-              </label>
-            </div>
-            <Button @click="handleSubmit"></Button>
-            <p v-if="error" class="text-danger mt-1 flex justify-center">
-              {{ error }}
-            </p>
-          </form>
+                <label for="barrio" class="input-label mt-4">
+                  <input
+                    v-model="barrio"
+                    class="form-control"
+                    aria-required="true"
+                    name="barrio"
+                    type="text"
+                    placeholder=" "
+                    data-gtm="home-hero-email-field"
+                    autocomplete="off"
+                    id="barrio"
+                    aria-describedby="error-barrio"
+                  />
+                  <span class="floating-label">Barrio</span>
+                </label>
+              </div>
+              <Button @click="handleSubmit"></Button>
+              <p v-if="error" class="text-danger mt-1 flex justify-center">
+                {{ error }}
+              </p>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </motion.div>
   <Footer class="absolute bottom-0 left-0 right-0" />
 </template>
 

@@ -5,6 +5,8 @@ import Button from "../components/UI/Button.vue";
 import Footer from "../components/UI/Footer.vue";
 import { useRouter } from "vue-router";
 import { useFormularioStore } from "../router/store";
+import { fadeInUp } from "../motion/PagesAnimation";
+import { motion } from "motion-v";
 
 const store = useFormularioStore();
 const router = useRouter();
@@ -103,81 +105,84 @@ onMounted(() => {
 
 <template>
   <Heading />
-  <section class="container registro">
-    <div class="row align-items-center">
-      <div class="col-lg-6 desktop">
-        <picture>
-          <img
-            src="/public/pago.png"
-            alt="Pago"
-            class="img-fluid"
-            loading="lazy"
-            title="Pago"
-          />
-        </picture>
-      </div>
-      <div class="col-lg-6">
-        <div class="mt-4 tarjeta">
-          <form novalidate>
-            <div class="form-group">
-              <h4 class="mb-4 titulo-4 mt-1">Ingresa tu cédula</h4>
-              <label for="numeroCedula" id="label-numeroCedula">
-                <input
-                  id="numeroCedula"
-                  class="form-control"
-                  v-model="cedula"
-                  aria-required="true"
-                  aria-invalid="true"
-                  aria-labelledby="label-numeroCedula"
-                  name="numeroCedula"
-                  type="number"
-                  placeholder="Ej: 1018276538"
-                  autocomplete="off"
-                  required
-                />
-              </label>
-              <span id="cedula-error" class="error-message"></span>
-              <!-- Mensaje de error -->
-            </div>
+  <motion.div v-bind="fadeInUp">
+    <section class="container registro">
+      <div class="row align-items-center">
+        <div class="col-lg-6 desktop">
+          <picture>
+            <img
+              src="/public/pago.png"
+              alt="Pago"
+              class="img-fluid"
+              loading="lazy"
+              title="Pago"
+            />
+          </picture>
+        </div>
+        <div class="col-lg-6">
+          <div class="mt-4 tarjeta">
+            <form novalidate>
+              <div class="form-group">
+                <h4 class="mb-4 titulo-4 mt-1">Ingresa tu cédula</h4>
+                <label for="numeroCedula" id="label-numeroCedula">
+                  <input
+                    id="numeroCedula"
+                    class="form-control"
+                    v-model="cedula"
+                    aria-required="true"
+                    aria-invalid="true"
+                    aria-labelledby="label-numeroCedula"
+                    name="numeroCedula"
+                    type="number"
+                    placeholder="Ej: 1018276538"
+                    autocomplete="off"
+                    required
+                  />
+                </label>
+                <span id="cedula-error" class="error-message"></span>
+                <!-- Mensaje de error -->
+              </div>
 
-            <div class="checklist">
-              <label class="check-item">
-                <input
-                  type="checkbox"
-                  name="autorizacion"
-                  value="tratamientoDatos"
-                  class="checkbox-custom rounded-checkbox single-checkbox"
-                />
-                <span class="checkmark"></span>
-                <p class="">
-                  He leído y autorizo el tratamiento de mis datos personales por
-                  <a class="link-contacto" href="#">Enlace S.A.S y Banco W</a>
-                </p>
-              </label>
-              <label class="check-item mb-4">
-                <input
-                  type="checkbox"
-                  name="autorizacion"
-                  id="wpp"
-                  value="contactoWhatsapp"
-                  class="checkbox-custom rounded-checkbox"
-                />
-                <span class="checkmark"></span>
-                <p class="p-checkmark-2">
-                  Autorizo a <span>Enlace S.A.S y Banco W</span> contactarme vía
-                  <span>Whatsapp</span> sobre mis productos (opcional)
-                </p>
-              </label>
-            </div>
-            <p v-if="error" class="text-danger mt-1 flex justify-center">
-              {{ error }}
-            </p>
-            <Button class="mt-5" @click="handleSubmit"></Button>
-          </form>
+              <div class="checklist">
+                <label class="check-item">
+                  <input
+                    type="checkbox"
+                    name="autorizacion"
+                    value="tratamientoDatos"
+                    class="checkbox-custom rounded-checkbox single-checkbox"
+                  />
+                  <span class="checkmark"></span>
+                  <p class="">
+                    He leído y autorizo el tratamiento de mis datos personales
+                    por
+                    <a class="link-contacto" href="#">Enlace S.A.S y Banco W</a>
+                  </p>
+                </label>
+                <label class="check-item mb-4">
+                  <input
+                    type="checkbox"
+                    name="autorizacion"
+                    id="wpp"
+                    value="contactoWhatsapp"
+                    class="checkbox-custom rounded-checkbox"
+                  />
+                  <span class="checkmark"></span>
+                  <p class="p-checkmark-2">
+                    Autorizo a <span>Enlace S.A.S y Banco W</span> contactarme
+                    vía <span>Whatsapp</span> sobre mis productos (opcional)
+                  </p>
+                </label>
+              </div>
+              <p v-if="error" class="text-danger mt-1 flex justify-center">
+                {{ error }}
+              </p>
+              <Button class="mt-5" @click="handleSubmit"></Button>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </motion.div>
   <Footer class="absolute bottom-0 left-0 right-0"></Footer>
 </template>
 

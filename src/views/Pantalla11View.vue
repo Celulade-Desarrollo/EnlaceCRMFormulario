@@ -2,6 +2,8 @@
 import RouterLink from "../components/UI/Routerlink.vue";
 import Heading from "../components/UI/Heading.vue";
 import { FormKit } from "@formkit/vue";
+import { fadeInUp } from "../motion/PagesAnimation";
+import { motion } from "motion-v";
 
 const handleInicio = () => {
   window.open("/", "_self");
@@ -10,11 +12,11 @@ const handleInicio = () => {
 
 <template>
   <Heading></Heading>
-
-  <section class="container py-5">
-    <div class="row align-items-center">
-      <div class="col-lg-6 desktop">
-        <!--
+  <motion.div v-bind="fadeInUp">
+    <section class="container py-5">
+      <div class="row align-items-center">
+        <div class="col-lg-6 desktop">
+          <!--
   <picture>
     <img
       src="/public/aprobado.png"
@@ -25,41 +27,42 @@ const handleInicio = () => {
     />
   </picture>
   -->
+        </div>
+        <div class="col-lg-6">
+          <div>
+            <h2 class="display-4 titulo text-center">
+              Tu registro ha finalizado <span>exitosamente!</span><br />
+              Gracias por compartirnos tu información
+            </h2>
+          </div>
+          <picture>
+            <img
+              src="/public/celebracion.png"
+              alt="Pago"
+              class="img-fluid mt-auto"
+              loading="lazy"
+              title="Pago"
+            />
+          </picture>
+          <div>
+            <h2 class="display-4 titulo text-center">
+              <span>Pronto nos comunicaremos contigo</span>
+            </h2>
+          </div>
+          <div class="mt-4 tarjeta flex justify-center">
+            <button
+              type="button"
+              id="email-on-hero-submit-btn"
+              class="btn btn-primary mt-2 font-semibold"
+              @click="handleInicio"
+            >
+              Tu solicitud ha sido enviada y será validada.
+            </button>
+          </div>
+        </div>
       </div>
-      <div class="col-lg-6">
-        <div>
-          <h2 class="display-4 titulo text-center">
-            Tu registro ha finalizado <span>exitosamente!</span><br />
-            Gracias por compartirnos tu información
-          </h2>
-        </div>
-        <picture>
-          <img
-            src="/public/celebracion.png"
-            alt="Pago"
-            class="img-fluid mt-auto"
-            loading="lazy"
-            title="Pago"
-          />
-        </picture>
-        <div>
-          <h2 class="display-4 titulo text-center">
-            <span>Pronto nos comunicaremos contigo</span>
-          </h2>
-        </div>
-        <div class="mt-4 tarjeta flex justify-center">
-          <button
-            type="button"
-            id="email-on-hero-submit-btn"
-            class="btn btn-primary mt-2 font-semibold"
-            @click="handleInicio"
-          >
-            Tu solicitud ha sido enviada y será validada.
-          </button>
-        </div>
-      </div>
-    </div>
-  </section>
+    </section>
+  </motion.div>
 </template>
 
 <style scoped>
