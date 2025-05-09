@@ -68,12 +68,15 @@ const validateForm = () => {
 };
 
 const handleSubmit = (event) => {
-  if (!validateForm()) {
-    event.preventDefault(); // Evitar el envío del formulario si no es válido
-  }
   event.preventDefault(); // Evitar el envío del formulario si no es válido
+
+  if (!validateForm()) {
+
+    return; // Evitar el envío del formulario si no es válido
+  }
+  console.log("Getter formullarioCompleto", store.getters.formularioCompleto);
   store.dispatch("completarFormulario"); // Disparador para indicar que el formulario se completó
-  router.push("/negocio");
+  router.push("/datosPersonales");
 };
 
 onMounted(() => {
@@ -157,7 +160,7 @@ onMounted(() => {
                 </p>
               </label>
             </div>
-            <p v-if="error" class="text-danger mt-1">
+            <p v-if="error" class="text-danger mt-1 flex justify-center">
               {{ error }}
             </p>
             <Button class="mt-5" @click="handleSubmit"></Button>

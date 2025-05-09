@@ -114,9 +114,8 @@ const handleSubmit = (event) => {
     setTimeout(() => {
       errorMessage.value = "";
     }, 3000);
+    return;
   }
-
-  // Cuando todo se cumpla, redirigir
   event.preventDefault();
   store.completarFormulario(); // Marca el formulario como completado
   router.push("/cedula"); // Redirige a la siguiente pantalla

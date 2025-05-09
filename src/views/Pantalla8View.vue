@@ -1,23 +1,25 @@
 <script setup>
 import { ref } from "vue"; // Importa ref para crear variables reactivas
-import RouterLink from "../components/UI/Routerlink.vue";
 import Heading from "../components/UI/Heading.vue";
 import Button from "../components/UI/Button.vue";
-import { FormKit } from "@formkit/vue";
-import Alerta from "../components/UI/Alerta.vue";
+import Footer from "../components/UI/Footer.vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
+
 
 const ciudad = localStorage.getItem("selectedCity");
+const store = useStore(); // Inicializa Vuex
+const router = useRouter(); // Inicializa Vue Router
 const direccion = ref(""); // Crea una propiedad reactiva para la dirección
 const barrio = ref(""); // Crea una propiedad reactiva para el barrio
 const error = ref(""); // Crea una propiedad reactiva para el mensaje de error
 
 const handleSubmit = (event) => {
-  event.preventDefault(); // Evita el envío del formulario por defecto
 
   // Validación
   if (!direccion.value || !barrio.value) {
     error.value = "Por favor, ingresa tu dirección y tu barrio.";
-
+    event.preventDefault(); // Evita el envío del formulario por defecto
     setTimeout(() => {
       error.value = "";
     }, 3000);
@@ -26,9 +28,9 @@ const handleSubmit = (event) => {
 
   // Limpiar error si no lo hay
   error.value = "";
-
-  // Redirigir a la nueva página
-  window.open("/Pantalla9View", "_parent");
+  event.preventDefault(); // Evita el envío del formulario por defecto
+  store.dispatch("completarFormulario"); // Disparador para indicar que el formulario se completó
+  router.push("/informacionNegocio");
 };
 </script>
 
@@ -50,10 +52,9 @@ const handleSubmit = (event) => {
       </div>
       <div class="col-lg-6">
         <div class="mt-4 tarjeta">
-          <form @submit="handleSubmit">
+          <form>
             <div class="form-group">
-                <Alerta v-if="error">{{ error }}</Alerta>
-              <h3 class="titulo-8 mb-4 mt-3">
+              <h3 class="titulo-8 mb-4 mt-1">
                 ¿Y en qué parte de {{ ciudad }}?
               </h3>
               <label for="direccion" class="input-label mt-4">
@@ -102,12 +103,16 @@ const handleSubmit = (event) => {
                 <span class="floating-label">Barrio</span>
               </label>
             </div>
-            <Button></Button>
+            <Button @click="handleSubmit"></Button>
+            <p v-if="error" class="text-danger mt-1 flex justify-center">
+              {{ error }}
+            </p>
           </form>
         </div>
       </div>
     </div>
   </section>
+  <Footer class="absolute bottom-0 left-0 right-0" />
 </template>
 
 <style scoped>

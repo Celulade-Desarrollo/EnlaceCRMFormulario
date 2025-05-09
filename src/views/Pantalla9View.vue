@@ -1,25 +1,33 @@
 <script setup>
-import RouterLink from "../components/UI/Routerlink.vue";
 import Heading from "../components/UI/Heading.vue";
 import Button from "../components/UI/Button.vue";
-import { FormKit } from "@formkit/vue";
-import { onMounted } from "vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
+import { ref } from "vue";
+import Footer from "../components/UI/Footer.vue";
 
-const handleCheckboxChange = (event) => {
-  const checkboxes = document.querySelectorAll(".single-checkbox");
-  checkboxes.forEach((checkbox) => {
-    if (checkbox !== event.target) {
-      checkbox.checked = false;
-    }
-  });
+const store = useStore();
+const router = useRouter();
+const error = ref("");
+
+const handleSubmit = (event) => {
+event.preventDefault(); // Evita el envío del formulario por defecto
+
+const neveraSeleccionada = document.querySelector('input[name="nevera"]:checked');
+  const registroSeleccionado = document.querySelector('input[name="registro"]:checked');
+
+  if (!neveraSeleccionada || !registroSeleccionado) {
+    error.value = "Por favor responde todas las preguntas antes de continuar.";
+    return; // Detener si falta una respuesta
+  }
+// Limpiar error si no lo hay
+error.value = "";
+event.preventDefault(); // Evita el envío del formulario por defecto
+store.dispatch("completarFormulario"); // Disparador para indicar que el formulario se completó
+router.push("/ventas");
 };
 
-onMounted(() => {
-  const checkboxes = document.querySelectorAll(".single-checkbox");
-  checkboxes.forEach((checkbox) => {
-    checkbox.addEventListener("change", handleCheckboxChange);
-  });
-});
+
 </script>
 
 <template>
@@ -112,14 +120,17 @@ onMounted(() => {
 
         <div class="mt-4 tarjeta">
           <div class="checklist">
-            <form action="Pantalla12View">
-              <Button></Button>
-            </form>
+
+              <Button @click="handleSubmit"></Button>
+              <p v-if="error" class="text-danger mt-1 flex justify-center">
+                {{ error }}
+              </p>
           </div>
         </div>
       </div>
     </div>
   </section>
+  <Footer class=" bottom-0 left-0 right-0"></Footer>
 </template>
 
 <style scoped>

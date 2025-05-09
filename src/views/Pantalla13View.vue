@@ -1,37 +1,78 @@
 <script setup>
-import { FormKit } from '@formkit/vue';
 import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
 import axios from 'axios';
+
 import Heading from "../components/UI/Heading.vue";
 import Button from "../components/UI/Button.vue";
+import Footer from "../components/UI/Footer.vue";
+
+const store = useStore();
+const router = useRouter();
 
 const departments = ref([]);
 const paises = ref([]);
 const mostrarAlerta = ref(false);
 const mensajeAlerta = ref('');
-const countrySelect = ref(null);
-const departmentSelect = ref(null);
+
+
 const genero = ref(''); // Refs para almacenar los valores de los campos
 const estadoCivil = ref('');
 const fechaNacimiento = ref('');
 const paisSeleccionado = ref('');
 const departamentoSeleccionado = ref('');
+const maxFechaNacimiento = ref('');
 
-const onSubmit = (formData) => {
+const handleSubmit = (event) => {
   if (!genero.value ||
       !estadoCivil.value ||
       !fechaNacimiento.value ||
       !paisSeleccionado.value ||
       !departamentoSeleccionado.value) {
+     // Evitar el envío del formulario si no es válido
+    event.preventDefault();
     mostrarAlerta.value = true;
-    mostrarAlerta.value = 'Por favor completa todos los campos';
+    mensajeAlerta.value = 'Por favor completa todos los campos.';
+    setTimeout(() => {
+      mensajeAlerta.value = "";
+    }, 3000);
     return;
   }
-  mostrarAlerta.value = false;
-  window.location.href = 'Pantalla14View';
+
+  const fechaNacimientoDate = new Date(fechaNacimiento.value);
+  const fechaActual = new Date();
+
+  let edad = fechaActual.getFullYear() - fechaNacimientoDate.getFullYear();
+  const mesDiferencia = fechaActual.getMonth() - fechaNacimientoDate.getMonth();
+  const diaDiferencia = fechaActual.getDate() - fechaNacimientoDate.getDate();
+
+    if (mesDiferencia < 0 || (mesDiferencia === 0 && diaDiferencia < 0)) {
+    edad--;
+  }
+
+  if (edad < 18) {
+    event.preventDefault();
+    mostrarAlerta.value = true;
+    mensajeAlerta.value = 'Debes ser mayor de edad para continuar';
+    return;
+  }
+
+  event.preventDefault();
+  mensajeAlerta.value = false;
+  store.dispatch("completarFormulario"); // Disparador para indicar que el formulario se completó
+  router.push("/datosPersonales2");
 };
 
 onMounted(async () => {
+
+  const hoy = new Date();
+  hoy.setFullYear(hoy.getFullYear() - 18); // Restar 18 años a la fecha actual
+  const yyyy = hoy.getFullYear();
+  const mm = String(hoy.getMonth() + 1).padStart(2, '0'); // Mes actual (0-11)
+  const dd = String(hoy.getDate()).padStart(2, '0'); // Día actual (1-31)
+  maxFechaNacimiento.value = `${yyyy}-${mm}-${dd}`; // Formato YYYY-MM-DD
+  // Cargar los países y departamentos al montar el componente
   try {
     const response = await axios.get('https://restcountries.com/v3.1/all');
     const listaPaises = response.data.map((pais) => ({
@@ -47,14 +88,7 @@ onMounted(async () => {
     }
     
     paises.value = listaPaises;
-    if (countrySelect.value) {
-      listaPaises.forEach(pais => {
-        const option = document.createElement('option');
-        option.value = pais.value;
-        option.text = pais.label;
-        countrySelect.value.appendChild(option);
-      });
-    }
+
   } catch (error) {
     console.error('Error al cargar países:', error)
   }
@@ -68,27 +102,6 @@ onMounted(async () => {
   } catch (err) {
     console.error('Error loading departments:', err);
   }
-  try {
-    const response = await axios.get('https://www.datos.gov.co/resource/xdk5-pm3f.json?$select=departamento&$group=departamento&$order=departamento');
-    const listaDepartamentos = response.data.map(item => ({
-      value: item.departamento,
-      label: item.departamento,
-    }));
-
-    departments.value = listaDepartamentos;
-
-    // Poblamos el select de departamentos
-    if (departmentSelect.value) {
-      listaDepartamentos.forEach(dep => {
-        const option = document.createElement('option');
-        option.value = dep.value;
-        option.text = dep.label;
-        departmentSelect.value.appendChild(option);
-      });
-    }
-  } catch (err) {
-    console.error('Error loading departments:', err);
-  }
 });
 
 
@@ -99,7 +112,7 @@ onMounted(async () => {
   <h2 class="titulo">Datos Personales</h2>
 
   <!-- Select de generos -->
-  <form @submit.prevent="onSubmit">
+  <form >
     <div class="form-group">
       <label for="genero">Género</label>
       <div class="custom-select-wrapper">
@@ -124,107 +137,30 @@ onMounted(async () => {
       </div>
 
       <label for="fechaNacimiento">Fecha de Nacimiento</label>
-      <label for="fechaNacimiento" class="form-example-text">Ejemplo: 1999-01-01</label>
       <div class="custom-date">
-        <input v-model="fechaNacimiento" type="date" name="fechaNacimiento" class="custom-input-date">
+        <input v-model="fechaNacimiento" type="date" name="fechaNacimiento" class="custom-input-date" :max="maxFechaNacimiento">
       </div>
 
       <label for="paisNacimiento">País de Nacimiento</label>
       <div class="custom-select-wrapper">
-        <select v-model="paisSeleccionado" class="custom-select" name="pais" ref="countrySelect">
+        <select v-model="paisSeleccionado" class="custom-select" name="pais">
           <option selected disabled value="">Selecciona tu país</option>
+          <option v-for="pais in paises" :key="pais.value" :value="pais.value">{{ pais.label }}</option>
         </select>
       </div>
 
       <label for="departamento">Departamento</label>
       <div class="custom-select-wrapper">
-        <select v-model="departamentoSeleccionado" class="custom-select" name="departamento" ref="departmentSelect">
+        <select v-model="departamentoSeleccionado" class="custom-select" name="departamento">
           <option selected disabled value="">Selecciona un departamento</option>
+          <option v-for="dep in departments" :key="dep.value" :value="dep.value">{{ dep.label }}</option>
         </select>
       </div>
+      <Button @click="handleSubmit" class="mt-5"></Button>
+      <p v-if="mostrarAlerta" class="text-danger mt-1 flex justify-center">{{ mensajeAlerta }}</p>
     </div>
-    <Button type="submit"></Button>
   </form>
-  <!--  <FormKit type="form" 
-        @submit="onSubmit" 
-        :actions="false"
-        :incomplete-message="'Por favor completa todos los campos'"> -->
-      <!-- <FormKit
-        type="select"
-        label="Género"
-        placeholder="Seleccione"
-        name="genero"
-        :options="{
-          masculino: 'Masculino',
-          venus: 'Femenino',
-          Otro: 'Otro',
-        }"
-        validation="required"
-        validation-visibility="dirty"
-        :validation-messages="{
-          required: 'Seleccione su género',
-      }"
-      /> -->
-      <!-- Select de generos -->
-     <!--  <FormKit
-        type="select"
-        label="Estado Cívil"
-        placeholder="Seleccione"
-        name="estadoCivil"
-        :options="{
-          soltero: 'Soltero/a',
-          casado: 'Casado/a',
-          divorciado: 'Divorciado/a',
-          viudo: 'Viudo/a',
-          unionLibre: 'Unión Libre (o Concubinato)',
-          separado: 'Separado',
-        }"
-        validation="required"
-        validation-visibility="dirty"
-        :validation-messages="{
-          required: 'Seleccione su estado civil',
-        }"
-      /> -->
-     <!--  <FormKit
-        type="date"
-        label="Fecha de Nacimiento"
-        name="fechaNacimiento"
-        help="Ejemplo: 1999-01-01"
-        placeholder="Fecha de Nacimiento"
-        validation="required|date_before:2010-01-01"
-        validation-visibility="dirty"
-        :validation-messages="{
-          required: 'Coloque una fecha válida',
-        }"
-      /> -->
-      <!-- <FormKit
-        type="select"
-        name="pais"
-        label="País"
-        placeholder="País de Nacimiento"
-        :options="paises"
-        validation="required"
-        validation-visibility="dirty"
-        :validation-messages="{
-          required: 'Seleccione un país',
-        }"
-      /> -->
-    <!--   <FormKit
-        type="select"
-        name="departamento"
-        label="Departamento"
-        placeholder="Selecciona un departamento"
-        :options="departments"
-        validation="required"
-        validation-visibility="dirty"
-        :validation-messages="{
-          required: 'Seleccione un departamento',
-        }"
-      /> -->
-      
-      
-    <!-- </FormKit> -->
-
+  <Footer class="absolute bottom-0 left-0 right-0"></Footer>
 </template>
 
 <style scoped>
@@ -236,7 +172,7 @@ onMounted(async () => {
 .custom-select {
   appearance: none;
   border: none;
-  border-bottom: 2px solid #ccc;
+  border-bottom: 2px solid #09008be1;
   background-color: transparent;
   font-size: 16px;
   padding: 8px 30px 8px 0;
@@ -273,7 +209,7 @@ onMounted(async () => {
 .custom-select {
   appearance: none;
   border: none;
-  border-bottom: 2px solid #ccc;
+  border-bottom: 2px solid #09008be1;
   background-color: transparent;
   font-size: 16px;
   padding: 8px 30px 8px 0;
@@ -299,6 +235,24 @@ onMounted(async () => {
   margin-right: 20px;
 }
 
+.form-group button {
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  border-radius: 6.25rem;
+  background: #dd3590;
+  color: #fff;
+  height: 3rem;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  cursor: pointer;
+  outline: none;
+  align-items: center;
+  text-align: center;
+  overflow: hidden;
+  border: none;
+  transform: translate3d(0, 0, 0);
+}
 
 .custom-date {
   position: relative;
@@ -309,7 +263,7 @@ onMounted(async () => {
 .custom-input-date {
   appearance: none;
   border: none;
-  border-bottom: 2px solid #ccc;
+  border-bottom: 2px solid #09008be1;
   background-color: transparent;
   font-size: 16px;
   padding: 8px 0;
