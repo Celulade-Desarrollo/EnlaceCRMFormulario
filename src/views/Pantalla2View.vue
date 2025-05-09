@@ -5,6 +5,8 @@ import Button from "../components/UI/Button.vue";
 import Footer from "../components/UI/Footer.vue";
 import { useRouter } from "vue-router";
 import { useFormularioStore } from "../router/store";
+import { fadeInUp } from "../motion/PagesAnimation";
+import { motion } from "motion-v";
 
 // Inicializar los valores de los campos
 const email = ref("");
@@ -104,89 +106,93 @@ onMounted(() => {
 
 <template>
   <Heading class="mb-[80px]" />
-  <div class="relative">
-    <section class="container registro">
-      <div class="row align-items-center">
-        <div class="col-lg-6 desktop">
-          <picture>
-            <img
-              src="/pago.png"
-              alt="Pago"
-              class="img-fluid"
-              loading="lazy"
-              title="Pago"
-            />
-          </picture>
-        </div>
-
-        <div class="col-lg-6">
-          <div className="flex justify-center">
-            <h2 class="display-4 titulo-2 w-[350px] text-center">
-              Contar con tu fiado enlace es muy fácil !
-            </h2>
+  <motion.div v-bind="fadeInUp">
+    <div class="relative">
+      <section class="container registro">
+        <div class="row align-items-center">
+          <div class="col-lg-6 desktop">
+            <picture>
+              <img
+                src="/pago.png"
+                alt="Pago"
+                class="img-fluid"
+                loading="lazy"
+                title="Pago"
+              />
+            </picture>
           </div>
-          <div class="mt-4 tarjeta">
-            <form id="myForm">
-              <div class="form-group">
-                <p class="mb-4 font-bold">Registra tus datos</p>
-                <label for="email" class="input-label">
-                  <input
-                    id="email"
-                    v-model="email"
-                    class="form-control"
-                    aria-required="true"
-                    name="email"
-                    type="text"
-                    placeholder=" "
-                    autocomplete="off"
-                  />
 
-                  <span class="floating-label"
-                    >Ingresa tu correo electrónico</span
+          <div class="col-lg-6">
+            <div className="flex justify-center">
+              <h2 class="display-4 titulo-2 w-[350px] text-center">
+                Contar con tu fiado enlace es muy fácil !
+              </h2>
+            </div>
+            <div class="mt-4 tarjeta">
+              <form id="myForm">
+                <div class="form-group">
+                  <p class="mb-4 font-bold">Registra tus datos</p>
+
+                  <label for="email" class="input-label">
+                    <input
+                      id="email"
+                      v-model="email"
+                      class="form-control"
+                      aria-required="true"
+                      name="email"
+                      type="text"
+                      placeholder=" "
+                      autocomplete="off"
+                    />
+
+                    <span class="floating-label"
+                      >Ingresa tu correo electrónico</span
+                    >
+                  </label>
+
+                  <label for="confirmaremail" class="input-label mt-4 mb-0">
+                    <input
+                      id="confirmaremail"
+                      v-model="confirmaremail"
+                      class="form-control"
+                      aria-required="true"
+                      name="confirmaremail"
+                      type="text"
+                      placeholder=" "
+                      autocomplete="off"
+                    />
+
+                    <span class="floating-label"
+                      >Confirma tu correo electrónico</span
+                    >
+                  </label>
+                  <p
+                    v-if="errorMessage"
+                    id="error-celular"
+                    class="text-danger mt-1"
                   >
-                </label>
-
-                <label for="confirmaremail" class="input-label mt-4 mb-0">
-                  <input
-                    id="confirmaremail"
-                    v-model="confirmaremail"
-                    class="form-control"
-                    aria-required="true"
-                    name="confirmaremail"
-                    type="text"
-                    placeholder=" "
-                    autocomplete="off"
-                  />
-
-                  <span class="floating-label"
-                    >Confirma tu correo electrónico</span
+                    {{ errorMessage }}
+                  </p>
+                  <span
+                    v-if="emailErrorMessage"
+                    class="text-danger text-sm mt-1 d-block"
                   >
-                </label>
-                <p
-                  v-if="errorMessage"
-                  id="error-celular"
-                  class="text-danger mt-1"
-                >
-                  {{ errorMessage }}
-                </p>
-                <span
-                  v-if="emailErrorMessage"
-                  class="text-danger text-sm mt-1 d-block"
-                >
-                  {{ emailErrorMessage }}
-                </span>
-                <span class="error-message">{{
-                  confirmEmailErrorMessage
-                }}</span>
-              </div>
-              <Button @click="handleSubmit"></Button>
-            </form>
+                    {{ emailErrorMessage }}
+                  </span>
+                  <span class="error-message">{{
+                    confirmEmailErrorMessage
+                  }}</span>
+                </div>
+                <Button @click="handleSubmit"></Button>
+              </form>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
-    <Footer class="absolute bottom-0 left-0 right-0" />
-  </div>
+      </section>
+
+      <Footer class="absolute bottom-0 left-0 right-0" />
+    </div>
+  </motion.div>
 </template>
 
 <style scoped>

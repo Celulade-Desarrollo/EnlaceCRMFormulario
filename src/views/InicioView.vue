@@ -5,6 +5,8 @@ import { useRouter } from "vue-router";
 import Heading from "../components/UI/Heading.vue";
 import Footer from "../components/UI/Footer.vue";
 import { useFormularioStore } from "../router/store";
+import { fadeInUp } from "../motion/PagesAnimation";
+import { motion } from "motion-v";
 
 // Variables reactivas
 const celular = ref("");
@@ -84,168 +86,171 @@ onMounted(() => {
 
 <template>
   <Heading />
-  <section class="container registro">
-    <div class="row align-items-center banner-registro">
-      <div class="col-lg-6 desktop">
-        <picture>
-          <img
-            src="/public/pago.png"
-            alt="Pago"
-            class="img-fluid"
-            loading="lazy"
-            title="Pago"
-          />
-        </picture>
-      </div>
-      <div class="col-lg-6">
-        <div>
-          <h2 class="display-4 titulo">
-            <span>Tu enlace</span> para que tus proveedores te
-            <span>fíen</span> y <span>abastezcas tu tienda</span> con tus
-            productos favoritos
-          </h2>
+  <motion.div v-bind="fadeInUp">
+    <section class="container registro">
+      <div class="row align-items-center banner-registro">
+        <div class="col-lg-6 desktop">
+          <picture>
+            <img
+              src="/public/pago.png"
+              alt="Pago"
+              class="img-fluid"
+              loading="lazy"
+              title="Pago"
+            />
+          </picture>
         </div>
-        <div>
-          <h3 class="h5">
-            Vive más con $0 en cuota de manejo, sin condiciones
-          </h3>
-        </div>
-        <div class="mt-4 tarjeta">
-          <form id="myForm" class="w-full">
-            <div class="form-group">
-              <label for="celular" id="label-celular" class="input-label">
-                <input
-                  class="form-control"
-                  aria-required="true"
-                  aria-invalid="false"
-                  aria-labelledby="label-celular"
-                  name="celular"
-                  v-model="celular"
-                  type="number"
-                  placeholder=""
-                  autocomplete="off"
-                  id="celular"
-                  aria-describedby="error-celular"
-                  ref="celularInput"
-                />
-                <span class="floating-label">Ingresa tu número celular </span>
-                <p v-if="error" id="error-celular" class="text-danger mt-1">
-                  {{ error }}
-                </p>
-                <button
-                  type="submit"
-                  id="email-on-hero-submit-btn"
-                  data-testid="email-on-hero-submit-btn"
-                  data-gtm="home-hero-email-cta-btn"
-                  class="btn btn-primary mt-2 w-full font-semibold"
-                  @click="handleSubmit"
-                >
-                  Registrar mi fiado
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill="none"
-                    viewBox="0 0 21 20"
-                    class="ml-2"
-                    color="currentColor"
-                    role="img"
+        <div class="col-lg-6">
+          <div>
+            <h2 class="display-4 titulo">
+              <span>Tu enlace</span> para que tus proveedores te
+              <span>fíen</span> y <span>abastezcas tu tienda</span> con tus
+              productos favoritos
+            </h2>
+          </div>
+          <div>
+            <h3 class="h5">
+              Vive más con $0 en cuota de manejo, sin condiciones
+            </h3>
+          </div>
+          <div class="mt-4 tarjeta">
+            <form id="myForm" class="w-full">
+              <div class="form-group">
+                <label for="celular" id="label-celular" class="input-label">
+                  <input
+                    class="form-control"
+                    aria-required="true"
+                    aria-invalid="false"
+                    aria-labelledby="label-celular"
+                    name="celular"
+                    v-model="celular"
+                    type="number"
+                    placeholder=""
+                    autocomplete="off"
+                    id="celular"
+                    aria-describedby="error-celular"
+                    ref="celularInput"
+                  />
+                  <span class="floating-label">Ingresa tu número celular </span>
+                  <p v-if="error" id="error-celular" class="text-danger mt-1">
+                    {{ error }}
+                  </p>
+                  <button
+                    type="submit"
+                    id="email-on-hero-submit-btn"
+                    data-testid="email-on-hero-submit-btn"
+                    data-gtm="home-hero-email-cta-btn"
+                    class="btn btn-primary mt-2 w-full font-semibold"
+                    @click="handleSubmit"
                   >
-                    <title>Arrow Right</title>
-                    <g>
-                      <path
-                        d="M18.5 10H2.5M18.5 10L12 16.5M18.5 10L12 3.5"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="square"
-                        stroke-linejoin="round"
-                      ></path>
-                    </g>
-                  </svg>
-                </button>
-              </label>
+                    Registrar mi fiado
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="none"
+                      viewBox="0 0 21 20"
+                      class="ml-2"
+                      color="currentColor"
+                      role="img"
+                    >
+                      <title>Arrow Right</title>
+                      <g>
+                        <path
+                          d="M18.5 10H2.5M18.5 10L12 16.5M18.5 10L12 3.5"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="square"
+                          stroke-linejoin="round"
+                        ></path>
+                      </g>
+                    </svg>
+                  </button>
+                </label>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="container banners">
+      <div class="row">
+        <!-- Banner 1 -->
+        <div class="col-md-4 mb-4">
+          <div class="info-banner">
+            <h2 class="titulo-1">
+              Abastece tu tienda con tus proveedores favoritos
+            </h2>
+            <p class="parrafo">
+              Enlace permite que tus proveedores favoritos te fíen tus productos
+              favoritos.
+            </p>
+            <div class="button-banner">
+              <button
+                type="button"
+                class="btn btn-primary mt-2"
+                @click="focusInput"
+              >
+                Registrar mi fiado
+              </button>
             </div>
-          </form>
+          </div>
         </div>
-      </div>
-    </div>
-  </section>
 
-  <section class="container banners">
-    <div class="row">
-      <!-- Banner 1 -->
-      <div class="col-md-4 mb-4">
-        <div class="info-banner">
-          <h2 class="titulo-1">
-            Abastece tu tienda con tus proveedores favoritos
-          </h2>
-          <p class="parrafo">
-            Enlace permite que tus proveedores favoritos te fíen tus productos
-            favoritos.
-          </p>
-          <div class="button-banner">
-            <button
-              type="button"
-              class="btn btn-primary mt-2"
-              @click="focusInput"
-            >
-              Registrar mi fiado
-            </button>
+        <!-- Banner 2 -->
+        <div class="col-md-4 mb-4 banner2">
+          <div class="info-banner2">
+            <h2 class="titulo-1">Cuotas a 15 días</h2>
+            <p class="parrafo">Paga tu fiado con la venta de tus productos.</p>
+            <div class="button-banner2">
+              <button
+                type="button"
+                class="btn btn-primary mt-2"
+                @click="focusInput"
+              >
+                Registrar mi fiado
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Banner 3 -->
+        <div class="col-md-4 mb-4">
+          <div class="info-banner3">
+            <h2 class="titulo-1">Todo digital y sin complicaciones</h2>
+            <p class="parrafo">
+              Accede de inmediato a tu cupo, 100% digital, sin complicaciones y
+              sin costos ocultos.
+            </p>
+            <div class="button-banner3">
+              <button
+                type="button"
+                class="btn btn-primary mt-2"
+                @click="focusInput"
+              >
+                Registrar mi fiado
+              </button>
+            </div>
           </div>
         </div>
       </div>
+    </section>
 
-      <!-- Banner 2 -->
-      <div class="col-md-4 mb-4 banner2">
-        <div class="info-banner2">
-          <h2 class="titulo-1">Cuotas a 15 días</h2>
-          <p class="parrafo">Paga tu fiado con la venta de tus productos.</p>
-          <div class="button-banner2">
-            <button
-              type="button"
-              class="btn btn-primary mt-2"
-              @click="focusInput"
-            >
-              Registrar mi fiado
-            </button>
-          </div>
-        </div>
+    <section>
+      <div class="texto-botton p-[10px]" id="texto-botton">
+        <h1>
+          <span>Tu fiado</span> es otorgado <span>por Enlace y el Banco W</span>
+        </h1>
+
+        <h2 class="text-[25px]">
+          y te apoya a tu tienda para incrementar tu ventas y fortalecer tu
+          negocio
+        </h2>
       </div>
+    </section>
+  </motion.div>
 
-      <!-- Banner 3 -->
-      <div class="col-md-4 mb-4">
-        <div class="info-banner3">
-          <h2 class="titulo-1">Todo digital y sin complicaciones</h2>
-          <p class="parrafo">
-            Accede de inmediato a tu cupo, 100% digital, sin complicaciones y
-            sin costos ocultos.
-          </p>
-          <div class="button-banner3">
-            <button
-              type="button"
-              class="btn btn-primary mt-2"
-              @click="focusInput"
-            >
-              Registrar mi fiado
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <div class="texto-botton p-[10px]" id="texto-botton">
-      <h1>
-        <span>Tu fiado</span> es otorgado <span>por Enlace y el Banco W</span>
-      </h1>
-
-      <h2 class="text-[25px]">
-        y te apoya a tu tienda para incrementar tu ventas y fortalecer tu
-        negocio
-      </h2>
-    </div>
-  </section>
   <Footer />
 </template>
 

@@ -5,6 +5,8 @@ import Footer from "../components/UI/Footer.vue";
 import { onMounted, ref } from "vue";
 import { useFormularioStore } from "../router/store";
 import { useRouter } from "vue-router";
+import { fadeInUp } from "../motion/PagesAnimation";
+import { motion } from "motion-v";
 
 const error = ref("");
 const store = useFormularioStore();
@@ -102,126 +104,128 @@ const handleSubmit = (event) => {
 
 <template>
   <Heading class="mb-[40px]"></Heading>
-
-  <section class="container py-5 registro">
-    <div class="row align-items-center">
-      <div class="col-lg-6 desktop">
-        <picture>
-          <img
-            src="/public/pago.png"
-            alt="Pago"
-            class="img-fluid"
-            loading="lazy"
-            title="Pago"
-          />
-        </picture>
-      </div>
-      <div class="col-lg-6">
-        <div class="mt-4 tarjeta">
-          <form>
-            <div class="form-group">
-              <h3 class="titulo-10 mb-4">Antes de terminar</h3>
-              <h6 class="mb-4 font-bold">
-                Falta poco. Solo necesitamos que respondas un par de preguntas
-                más
-              </h6>
-              <h4 class="sub-titulo">
-                ¿Eres una Persona Expuesta Politicamente (PEP) o lo has sido en
-                los ultimos años?
-              </h4>
-              <div class="checklist m-0" aria-required="true">
-                <label class="check-item">
-                  <input
-                    type="checkbox"
-                    name="pep"
-                    value="si"
-                    class="single-checkbox"
-                  />
-                  <span class="checkmark"></span>
-                  Si
-                </label>
-                <label class="check-item mb-4">
-                  <input
-                    type="checkbox"
-                    name="pep"
-                    value="no"
-                    class="single-checkbox"
-                  />
-                  <span class="checkmark"></span>
-                  No
-                </label>
+  <motion.div v-bind="fadeInUp">
+    <section class="container py-5 registro">
+      <div class="row align-items-center">
+        <div class="col-lg-6 desktop">
+          <picture>
+            <img
+              src="/public/pago.png"
+              alt="Pago"
+              class="img-fluid"
+              loading="lazy"
+              title="Pago"
+            />
+          </picture>
+        </div>
+        <div class="col-lg-6">
+          <div class="mt-4 tarjeta">
+            <form>
+              <div class="form-group">
+                <h3 class="titulo-10 mb-4">Antes de terminar</h3>
+                <h6 class="mb-4 font-bold">
+                  Falta poco. Solo necesitamos que respondas un par de preguntas
+                  más
+                </h6>
+                <h4 class="sub-titulo">
+                  ¿Eres una Persona Expuesta Politicamente (PEP) o lo has sido
+                  en los ultimos años?
+                </h4>
+                <div class="checklist m-0" aria-required="true">
+                  <label class="check-item">
+                    <input
+                      type="checkbox"
+                      name="pep"
+                      value="si"
+                      class="single-checkbox"
+                    />
+                    <span class="checkmark"></span>
+                    Si
+                  </label>
+                  <label class="check-item mb-4">
+                    <input
+                      type="checkbox"
+                      name="pep"
+                      value="no"
+                      class="single-checkbox"
+                    />
+                    <span class="checkmark"></span>
+                    No
+                  </label>
+                </div>
+                <h4 class="sub-titulo">
+                  ¿Tu pareja, familiar directo o asociado cercano es una Persona
+                  Expuesta Politicamente (PEP) o lo has sido en los ultimos
+                  años?
+                </h4>
+                <p class="font-bold">
+                  Tu familia directa incluye padres, hermanos, abuelos o nietos
+                </p>
+                <div class="checklist m-0" aria-required="true">
+                  <label class="check-item">
+                    <input
+                      type="checkbox"
+                      name="familiar_pep"
+                      value="si"
+                      class="single-checkbox-1"
+                    />
+                    <span class="checkmark"></span>
+                    Si
+                  </label>
+                  <label class="check-item mb-4">
+                    <input
+                      type="checkbox"
+                      name="familiar_pep"
+                      value="no"
+                      class="single-checkbox-1"
+                    />
+                    <span class="checkmark"></span>
+                    No
+                  </label>
+                </div>
+                <h3 class="titulo mb-4">
+                  ¿Realiza operaciones en moneda extranjera?
+                </h3>
+                <div class="checklist m-0" aria-required="true">
+                  <label class="check-item">
+                    <input
+                      type="checkbox"
+                      name="MonedaExtranjeraSi"
+                      value="si"
+                      class="single-checkbox-2"
+                    />
+                    <span class="checkmark"></span>
+                    Si
+                  </label>
+                  <label class="check-item mb-4">
+                    <input
+                      type="checkbox"
+                      name="MonedaExtranjeraNo"
+                      value="no"
+                      class="single-checkbox-2"
+                    />
+                    <span class="checkmark"></span>
+                    No
+                  </label>
+                </div>
+                <p>
+                  Declaro que soy nacido en Colombia, no tengo otras
+                  nacionalidades, y mi domicilio es en Colombia al igual que mi
+                  país de residencia físcal. Con el fin de de dar cumplimiento a
+                  la normatividad de FATCA/CRS certifico lo anterior y me
+                  comprometo a suministrar cualquier cambio de forma oprotuna.
+                </p>
               </div>
-              <h4 class="sub-titulo">
-                ¿Tu pareja, familiar directo o asociado cercano es una Persona
-                Expuesta Politicamente (PEP) o lo has sido en los ultimos años?
-              </h4>
-              <p class="font-bold">
-                Tu familia directa incluye padres, hermanos, abuelos o nietos
+              <Button @click="handleSubmit"></Button>
+              <p v-if="error" class="text-danger mt-1 flex justify-center">
+                {{ error }}
               </p>
-              <div class="checklist m-0" aria-required="true">
-                <label class="check-item">
-                  <input
-                    type="checkbox"
-                    name="familiar_pep"
-                    value="si"
-                    class="single-checkbox-1"
-                  />
-                  <span class="checkmark"></span>
-                  Si
-                </label>
-                <label class="check-item mb-4">
-                  <input
-                    type="checkbox"
-                    name="familiar_pep"
-                    value="no"
-                    class="single-checkbox-1"
-                  />
-                  <span class="checkmark"></span>
-                  No
-                </label>
-              </div>
-              <h3 class="titulo mb-4">
-                ¿Realiza operaciones en moneda extranjera?
-              </h3>
-              <div class="checklist m-0" aria-required="true">
-                <label class="check-item">
-                  <input
-                    type="checkbox"
-                    name="MonedaExtranjeraSi"
-                    value="si"
-                    class="single-checkbox-2"
-                  />
-                  <span class="checkmark"></span>
-                  Si
-                </label>
-                <label class="check-item mb-4">
-                  <input
-                    type="checkbox"
-                    name="MonedaExtranjeraNo"
-                    value="no"
-                    class="single-checkbox-2"
-                  />
-                  <span class="checkmark"></span>
-                  No
-                </label>
-              </div>
-              <p>
-                Declaro que soy nacido en Colombia, no tengo otras
-                nacionalidades, y mi domicilio es en Colombia al igual que mi
-                país de residencia físcal. Con el fin de de dar cumplimiento a
-                la normatividad de FATCA/CRS certifico lo anterior y me
-                comprometo a suministrar cualquier cambio de forma oprotuna.
-              </p>
-            </div>
-            <Button @click="handleSubmit"></Button>
-            <p v-if="error" class="text-danger mt-1 flex justify-center">
-              {{ error }}
-            </p>
-          </form>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </motion.div>
   <Footer class="bottom-0 left-0 right-0"></Footer>
 </template>
 

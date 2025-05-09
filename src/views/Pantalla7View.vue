@@ -6,6 +6,8 @@ import Button from "../components/UI/Button.vue";
 import Footer from "../components/UI/Footer.vue";
 import { useFormularioStore } from "../router/store";
 import { useRouter } from "vue-router";
+import { fadeInUp } from "../motion/PagesAnimation";
+import { motion } from "motion-v";
 
 const store = useFormularioStore();
 const router = useRouter();
@@ -82,57 +84,63 @@ onMounted(() => {
 
 <template>
   <Heading />
-
-  <section class="container py-5 registro">
-    <div class="row align-items-center">
-      <div class="col-lg-6 desktop">
-        <picture>
-          <img
-            src="/public/pago.png"
-            alt="Pago"
-            class="img-fluid"
-            loading="lazy"
-            title="Pago"
-          />
-        </picture>
+  <motion.div v-bind="fadeInUp">
+    <section class="container py-5 registro">
+      <div class="row align-items-center">
+        <div class="col-lg-6 desktop">
+          <picture>
+            <img
+              src="/public/pago.png"
+              alt="Pago"
+              class="img-fluid"
+              loading="lazy"
+              title="Pago"
+            />
+          </picture>
+        </div>
       </div>
-    </div>
-    <!-- Muestra la alerta solo si hay un error -->
+      <!-- Muestra la alerta solo si hay un error -->
 
-    <div class="select-option mt-5">
-      <h3 class="mb-4 titulo-7">¿Cuéntanos dónde está tu negocio?</h3>
-      <p class="mb-4 font-bold">
-        Por norma es necesario que te hagamos esta pregunta
-      </p>
-      <p class="font-bold">Elige un departamento</p>
-      <div class="custom-select-wrapper">
-        <select v-model="selectedDepartment" @change="loadCities" class="custom-select" >
-          <option selected disabled >Seleccione</option>
-          <option
-            v-for="department in departments"
-            :key="department"
-            :value="department"
+      <div class="select-option mt-5">
+        <h3 class="mb-4 titulo-7">¿Cuéntanos dónde está tu negocio?</h3>
+        <p class="mb-4 font-bold">
+          Por norma es necesario que te hagamos esta pregunta
+        </p>
+        <p class="font-bold">Elige un departamento</p>
+        <div class="custom-select-wrapper">
+          <select
+            v-model="selectedDepartment"
+            @change="loadCities"
+            class="custom-select"
           >
-            {{ department }}
-          </option>
-        </select>
+            <option disabled selected>Elige un departamento</option>
+            <option
+              v-for="department in departments"
+              :key="department"
+              :value="department"
+            >
+              {{ department }}
+            </option>
+          </select>
+        </div>
+        <p class="font-bold">Elige una ciudad</p>
+        <div class="custom-select-wrapper">
+          <select v-model="selectedCity" class="custom-select">
+            <option disabled selected>Elige una ciudad</option>
+            <option v-for="city in cities" :key="city" :value="city">
+              {{ city }}
+            </option>
+          </select>
+        </div>
       </div>
-      <p class="font-bold">Elige una ciudad</p>
-      <div class="custom-select-wrapper">
-        <select v-model="selectedCity" name="ciudad" class="custom-select">
-          <option v-for="city in cities" :key="city" :value="city">
-            {{ city }}
-          </option>
-        </select>
-      </div>
-    </div>
 
-    <Button class="mt-5" @click="handleSubmit"></Button>
+      <Button class="mt-5" @click="handleSubmit"></Button>
 
-    <p v-if="error" class="text-danger mt-1 flex justify-center">
-      {{ error }}
-    </p>
-  </section>
+      <p v-if="error" class="text-danger mt-1 flex justify-center">
+        {{ error }}
+      </p>
+    </section>
+  </motion.div>
   <Footer class="absolute bottom-0 left-0 right-0" />
 </template>
 

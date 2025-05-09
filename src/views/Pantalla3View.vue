@@ -5,6 +5,8 @@ import Button from "../components/UI/Button.vue";
 import Footer from "../components/UI/Footer.vue";
 import { useRouter } from "vue-router";
 import { useFormularioStore } from "../router/store";
+import { fadeInUp } from "../motion/PagesAnimation";
+import { motion } from "motion-v";
 
 const nameRegex = /^[a-zA-ZÀ-ÿ\s'-]{2,50}$/;
 
@@ -139,89 +141,91 @@ onMounted(() => {
 
 <template>
   <Heading></Heading>
-  <section class="container py-5 registro">
-    <div class="row align-items-center">
-      <div class="col-lg-6 desktop">
-        <picture>
-          <img
-            src="/pago.png"
-            alt="Pago"
-            class="img-fluid"
-            loading="lazy"
-            title="Pago"
-          />
-        </picture>
-      </div>
+  <motion.div v-bind="fadeInUp">
+    <section class="container py-5 registro">
+      <div class="row align-items-center">
+        <div class="col-lg-6 desktop">
+          <picture>
+            <img
+              src="/pago.png"
+              alt="Pago"
+              class="img-fluid"
+              loading="lazy"
+              title="Pago"
+            />
+          </picture>
+        </div>
 
-      <div class="col-lg-6">
-        <div class="mt-4 tarjeta">
-          <form>
-            <div class="form-group mt-[40px]">
-              <p class="titulo-3 mb-4">
-                Ingresa tu nombre completo tal como aparece en la cédula
-              </p>
-              <p v-if="errorMessage" class="text-danger mt-1">
-                {{ errorMessage }}
-              </p>
+        <div class="col-lg-6">
+          <div class="mt-4 tarjeta">
+            <form>
+              <div class="form-group mt-[40px]">
+                <p class="titulo-3 mb-4">
+                  Ingresa tu nombre completo tal como aparece en la cédula
+                </p>
+                <p v-if="errorMessage" class="text-danger mt-1">
+                  {{ errorMessage }}
+                </p>
 
-              <label for="nombres" class="input-label">
-                <input
-                  id="nombres"
-                  class="form-control"
-                  v-model="nombre"
-                  name="nombres"
-                  type="text"
-                  autocomplete="off"
-                  placeholder=" "
-                  @input="validateNombre"
-                />
-                <span class="floating-label">Ingresa tus nombres</span>
-              </label>
-              <p v-if="nombreError" class="text-danger mt-1">
-                {{ nombreError }}
-              </p>
-              <label for="primerApellido" class="input-label mt-4">
-                <input
-                  id="primerApellido"
-                  class="form-control"
-                  v-model="apellido"
-                  name="primerApellido"
-                  type="text"
-                  autocomplete="off"
-                  placeholder=" "
-                  @input="validateApellido"
-                />
-                <span class="floating-label">Ingresa tu primer apellido</span>
-              </label>
-              <p v-if="apellidoError" class="text-danger mt-1">
-                {{ apellidoError }}
-              </p>
-              <label for="segundoApellido" class="input-label mt-4">
-                <input
-                  id="segundoApellido"
-                  class="form-control"
-                  name="segundoApellido"
-                  type="text"
-                  autocomplete="off"
-                  placeholder=" "
-                  v-model="SegundoApellido"
-                  @input="validateSegundoApellido"
-                />
-                <span class="floating-label"
-                  >Ingresa tu segundo apellido (Opcional)</span
-                >
-              </label>
-              <p v-if="SegundoApellidoError" class="text-danger mt-1">
-                {{ SegundoApellidoError }}
-              </p>
-            </div>
-            <Button @click="handleSubmit"></Button>
-          </form>
+                <label for="nombres" class="input-label">
+                  <input
+                    id="nombres"
+                    class="form-control"
+                    v-model="nombre"
+                    name="nombres"
+                    type="text"
+                    autocomplete="off"
+                    placeholder=" "
+                    @input="validateNombre"
+                  />
+                  <span class="floating-label">Ingresa tus nombres</span>
+                </label>
+                <p v-if="nombreError" class="text-danger mt-1">
+                  {{ nombreError }}
+                </p>
+                <label for="primerApellido" class="input-label mt-4">
+                  <input
+                    id="primerApellido"
+                    class="form-control"
+                    v-model="apellido"
+                    name="primerApellido"
+                    type="text"
+                    autocomplete="off"
+                    placeholder=" "
+                    @input="validateApellido"
+                  />
+                  <span class="floating-label">Ingresa tu primer apellido</span>
+                </label>
+                <p v-if="apellidoError" class="text-danger mt-1">
+                  {{ apellidoError }}
+                </p>
+                <label for="segundoApellido" class="input-label mt-4">
+                  <input
+                    id="segundoApellido"
+                    class="form-control"
+                    name="segundoApellido"
+                    type="text"
+                    autocomplete="off"
+                    placeholder=" "
+                    v-model="SegundoApellido"
+                    @input="validateSegundoApellido"
+                  />
+                  <span class="floating-label"
+                    >Ingresa tu segundo apellido (Opcional)</span
+                  >
+                </label>
+                <p v-if="SegundoApellidoError" class="text-danger mt-1">
+                  {{ SegundoApellidoError }}
+                </p>
+              </div>
+              <Button @click="handleSubmit"></Button>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
-  <Footer />
+    </section>
+    <Footer />
+  </motion.div>
 </template>
 
 <style scoped>

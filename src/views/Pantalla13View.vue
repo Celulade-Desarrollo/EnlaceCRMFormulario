@@ -3,6 +3,8 @@ import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useFormularioStore } from "../router/store";
 import axios from "axios";
+import { fadeInUp } from "../motion/PagesAnimation";
+import { motion } from "motion-v";
 
 import Heading from "../components/UI/Heading.vue";
 import Button from "../components/UI/Button.vue";
@@ -119,77 +121,89 @@ onMounted(async () => {
 
 <template>
   <Heading></Heading>
-  <h2 class="titulo">Datos Personales</h2>
+  <motion.div v-bind="fadeInUp">
+    <h2 class="titulo">Datos Personales</h2>
 
-  <!-- Select de generos -->
-  <form>
-    <div class="form-group">
-      <label for="genero">Género</label>
-      <div class="custom-select-wrapper">
-        <select v-model="genero" name="genero" class="custom-select">
-          <option selected disabled value="">Seleccione</option>
-          <option value="Masculino">Masculino</option>
-          <option value="Femenino">Femenino</option>
-          <option value="Otro">Otro</option>
-        </select>
-      </div>
-      <label for="estadoCivil">Estado civil</label>
-      <div class="custom-select-wrapper">
-        <select  name="estadoCivil" class="custom-select">
-          <option selected disabled value="">Seleccione</option>
-          <option value="soltero">Soltero/a</option>
-          <option value="casado">Casado/a</option>
-          <option value="divorciado">Divorciado/a</option>
-          <option value="viudo">Viudo/a</option>
-          <option value="unionLibre">Unión Libre (o Concubinato)</option>
-          <option value="separado">Separado</option>
-        </select>
-      </div>
-
-      <label for="fechaNacimiento">Fecha de Nacimiento</label>
-      <div class="custom-date">
-        <input
-          v-model="fechaNacimiento"
-          type="date"
-          name="fechaNacimiento"
-          class="custom-input-date"
-          :max="maxFechaNacimiento"
-        />
-      </div>
-
-      <label for="paisNacimiento">País de Nacimiento</label>
-      <div class="custom-select-wrapper">
-        <select v-model="paisSeleccionado" class="custom-select" name="pais">
-          <option selected disabled value="">Selecciona tu país</option>
-          <option v-for="pais in paises" :key="pais.value" :value="pais.value">
-            {{ pais.label }}
-          </option>
-        </select>
-      </div>
-
-      <label for="departamento">Departamento</label>
-      <div class="custom-select-wrapper">
-        <select
-          v-model="departamentoSeleccionado"
-          class="custom-select"
-          name="departamento"
-        >
-          <option selected disabled value="">Selecciona un departamento</option>
-          <option
-            v-for="dep in departments"
-            :key="dep.value"
-            :value="dep.value"
+    <!-- Select de generos -->
+    <form>
+      <div class="form-group">
+        <label for="genero">Género</label>
+        <div class="custom-select-wrapper">
+          <select v-model="genero" name="genero" class="custom-select">
+            <option selected disabled value="">Seleccione</option>
+            <option value="Masculino">Masculino</option>
+            <option value="Femenino">Femenino</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+        <label for="estadoCivil">Estado civil</label>
+        <div class="custom-select-wrapper">
+          <select
+            v-model="estadoCivil"
+            name="estadoCivil"
+            class="custom-select"
           >
-            {{ dep.label }}
-          </option>
-        </select>
+            <option selected disabled value="">Seleccione</option>
+            <option value="soltero">Soltero/a</option>
+            <option value="casado">Casado/a</option>
+            <option value="divorciado">Divorciado/a</option>
+            <option value="viudo">Viudo/a</option>
+            <option value="unionLibre">Unión Libre (o Concubinato)</option>
+            <option value="separado">Separado</option>
+          </select>
+        </div>
+
+        <label for="fechaNacimiento">Fecha de Nacimiento</label>
+        <div class="custom-date">
+          <input
+            v-model="fechaNacimiento"
+            type="date"
+            name="fechaNacimiento"
+            class="custom-input-date"
+            :max="maxFechaNacimiento"
+          />
+        </div>
+
+        <label for="paisNacimiento">País de Nacimiento</label>
+        <div class="custom-select-wrapper">
+          <select v-model="paisSeleccionado" class="custom-select" name="pais">
+            <option selected disabled value="">Selecciona tu país</option>
+            <option
+              v-for="pais in paises"
+              :key="pais.value"
+              :value="pais.value"
+            >
+              {{ pais.label }}
+            </option>
+          </select>
+        </div>
+
+        <label for="departamento">Departamento</label>
+        <div class="custom-select-wrapper">
+          <select
+            v-model="departamentoSeleccionado"
+            class="custom-select"
+            name="departamento"
+          >
+            <option selected disabled value="">
+              Selecciona un departamento
+            </option>
+            <option
+              v-for="dep in departments"
+              :key="dep.value"
+              :value="dep.value"
+            >
+              {{ dep.label }}
+            </option>
+          </select>
+        </div>
+        <Button @click="handleSubmit" class="mt-5"></Button>
+        <p v-if="mostrarAlerta" class="text-danger mt-1 flex justify-center">
+          {{ mensajeAlerta }}
+        </p>
       </div>
-      <Button @click="handleSubmit" class="mt-5"></Button>
-      <p v-if="mostrarAlerta" class="text-danger mt-1 flex justify-center">
-        {{ mensajeAlerta }}
-      </p>
-    </div>
-  </form>
+    </form>
+  </motion.div>
   <Footer class="absolute bottom-0 left-0 right-0"></Footer>
 </template>
 

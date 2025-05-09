@@ -3,6 +3,8 @@ import { ref } from "vue";
 import Heading from "../components/UI/Heading.vue";
 import Button from "../components/UI/Button.vue";
 import { onMounted } from "vue";
+import { fadeInUp } from "../motion/PagesAnimation";
+import { motion } from "motion-v";
 
 const option1Checked = ref(false);
 const option2Checked = ref(false);
@@ -39,36 +41,38 @@ onMounted(() => {
 
 <template>
   <Heading />
-  <section class="container py-5 registro">
-    <div class="mt-4 tarjeta">
-      <div class="">
-        <h1 class="titulo mb-4">¿Cual es tu nacionalidad?</h1>
-        <form @submit="handleFormSubmit">
-          <div class="checklist">
-            <label class="check-item">
-              <input
-                type="checkbox"
-                v-model="option1Checked"
-                class="single-checkbox"
-              />
-              <span class="checkmark font-bold"></span>
-              Colombia </label
-            ><br />
-            <label class="check-item">
-              <input
-                type="checkbox"
-                v-model="option2Checked"
-                class="single-checkbox"
-              />
-              <span class="checkmark font-bold"></span>
-              Otros </label
-            ><br />
-            <Button></Button>
-          </div>
-        </form>
+  <motion.div v-bind="fadeInUp">
+    <section class="container py-5 registro">
+      <div class="mt-4 tarjeta">
+        <div class="">
+          <h1 class="titulo mb-4">¿Cual es tu nacionalidad?</h1>
+          <form @submit="handleFormSubmit">
+            <div class="checklist">
+              <label class="check-item">
+                <input
+                  type="checkbox"
+                  v-model="option1Checked"
+                  class="single-checkbox"
+                />
+                <span class="checkmark font-bold"></span>
+                Colombia </label
+              ><br />
+              <label class="check-item">
+                <input
+                  type="checkbox"
+                  v-model="option2Checked"
+                  class="single-checkbox"
+                />
+                <span class="checkmark font-bold"></span>
+                Otros </label
+              ><br />
+              <Button></Button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </motion.div>
 </template>
 
 <style scoped>
