@@ -1,20 +1,16 @@
-import { createStore } from "vuex";
-
-export default createStore({
-  state: {
+import { defineStore } from "pinia";
+const ultimaRuta = localStorage.getItem("ruta");
+export const useFormularioStore = defineStore("formulario", {
+  state: () => ({
     formularioCompletado: false,
-  },
-  mutations: {
-    setFormularioCompletado(state, valor) {
-      state.formularioCompletado = valor;
-    },
-  },
+    ultimaRutaValida: ultimaRuta,
+  }),
   actions: {
-    completarFormulario({ commit }) {
-      commit("setFormularioCompletado", true);
+    completarFormulario() {
+      this.formularioCompletado = true;
     },
-  },
-  getters: {
-    formularioCompletado: (state) => state.formularioCompletado,
+    actualizarRutaValida(ruta) {
+      this.ultimaRutaValida = ruta;
+    },
   },
 });

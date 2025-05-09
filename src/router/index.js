@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import InicioView from "../views/InicioView.vue";
-import store from "./store";
+import { useFormularioStore } from "./store";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -11,20 +11,20 @@ const router = createRouter({
       component: InicioView,
     },
     {
-      path: "/Pantalla2View",
-      name: "pantalla2",
+      path: "/correoElectronico",
+      name: "correoElectronico",
       component: () => import("../views/Pantalla2View.vue"),
       meta: { requiereFormulario: true },
     },
     {
-      path: "/Pantalla3View",
-      name: "pantalla3",
+      path: "/nombres",
+      name: "nombres",
       component: () => import("../views/Pantalla3View.vue"),
       meta: { requiereFormulario: true },
     },
     {
-      path: "/Pantalla4View",
-      name: "pantalla4",
+      path: "/cedula",
+      name: "cedula",
       component: () => import("../views/Pantalla4View.vue"),
       meta: { requiereFormulario: true },
     },
@@ -41,62 +41,68 @@ const router = createRouter({
       meta: { requiereFormulario: true },
     },
     {
-      path: "/Pantalla7View",
-      name: "pantalla7",
+      path: "/negocio",
+      name: "negocio",
       component: () => import("../views/Pantalla7View.vue"),
       meta: { requiereFormulario: true },
     },
     {
-      path: "/Pantalla8View",
-      name: "pantalla8",
+      path: "/ubicacion",
+      name: "ubicacion",
       component: () => import("../views/Pantalla8View.vue"),
       meta: { requiereFormulario: true },
     },
     {
-      path: "/Pantalla9View",
-      name: "pantalla9",
+      path: "/informacionNegocio",
+      name: "informacionNegocio",
       component: () => import("../views/Pantalla9View.vue"),
       meta: { requiereFormulario: true },
     },
     {
-      path: "/Pantalla10View",
-      name: "pantalla10",
+      path: "/antesDeTerminar",
+      name: "antesDeTerminar",
       component: () => import("../views/Pantalla10View.vue"),
       meta: { requiereFormulario: true },
     },
     {
-      path: "/Pantalla11View",
-      name: "pantalla11",
+      path: "/Terminado",
+      name: "Terminado",
       component: () => import("../views/Pantalla11View.vue"),
       meta: { requiereFormulario: true },
     },
     {
-      path: "/Pantalla12View",
-      name: "pantalla12",
+      path: "/ventas",
+      name: "ventas",
       component: () => import("../views/Pantalla12View.vue"),
       meta: { requiereFormulario: true },
     },
     {
-      path: "/Pantalla13View",
-      name: "pantalla13",
+      path: "/datosPersonales",
+      name: "datosPersonales",
       component: () => import("../views/Pantalla13View.vue"),
       meta: { requiereFormulario: true },
     },
     {
-      path: "/Pantalla14View",
-      name: "pantalla14",
+      path: "/datosPersonales2",
+      name: "datosPersonales2",
       component: () => import("../views/Pantalla14View.vue"),
       meta: { requiereFormulario: true },
     },
   ],
 });
 
-// router.beforeEach((to, from, next) => {
-//   if (to.meta.requiereFormulario && !store.getters.formularioCompletado) {
-//     alert("Completar formulario");
-//   } else {
-//     next();
-//   }
-// });
+router.beforeEach((to, from, next) => {
+  const store = useFormularioStore();
+
+  const requiereFormulario = to.meta.requiereFormulario;
+
+  if (requiereFormulario && !store.formularioCompletado) {
+    store.completarFormulario();
+    next(store.ultimaRutaValida || "/");
+  } else {
+    store.actualizarRutaValida(to.fullPath);
+    next();
+  }
+});
 
 export default router;

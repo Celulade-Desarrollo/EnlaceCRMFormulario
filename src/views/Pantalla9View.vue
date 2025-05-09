@@ -1,24 +1,48 @@
 <script setup>
-import RouterLink from "../components/UI/Routerlink.vue";
 import Heading from "../components/UI/Heading.vue";
 import Button from "../components/UI/Button.vue";
-import { FormKit } from "@formkit/vue";
-import { onMounted } from "vue";
+import { useFormularioStore } from "../router/store";
+import { useRouter } from "vue-router";
+import { ref, onMounted } from "vue";
+import Footer from "../components/UI/Footer.vue";
 
-const handleCheckboxChange = (event) => {
-  const checkboxes = document.querySelectorAll(".single-checkbox");
-  checkboxes.forEach((checkbox) => {
-    if (checkbox !== event.target) {
-      checkbox.checked = false;
-    }
-  });
+const store = useFormularioStore();
+const router = useRouter();
+const error = ref("");
+
+const handleSubmit = (event) => {
+  event.preventDefault(); // Evita el envío del formulario por defecto
+
+  const neveraSeleccionada = document.querySelector(
+    'input[name="nevera"]:checked'
+  );
+  const registroSeleccionado = document.querySelector(
+    'input[name="registro"]:checked'
+  );
+
+  if (!neveraSeleccionada || !registroSeleccionado) {
+    error.value = "Por favor responde todas las preguntas antes de continuar.";
+    return; // Detener si falta una respuesta
+  }
+  // Limpiar error si no lo hay
+  error.value = "";
+  event.preventDefault(); // Evita el envío del formulario por defecto
+  store.completarFormulario(); // Marca el formulario como completado
+  router.push("/ventas"); // Redirige a la siguiente pantalla
 };
-
 onMounted(() => {
-  const checkboxes = document.querySelectorAll(".single-checkbox");
-  checkboxes.forEach((checkbox) => {
-    checkbox.addEventListener("change", handleCheckboxChange);
-  });
+  let miRuta = window.location.pathname;
+
+  // Validar si ya existe "ruta"
+  if (localStorage.getItem.length > 0) {
+    localStorage.removeItem("ruta");
+
+    // Setear la ruta por defecto
+    localStorage.setItem("ruta", miRuta);
+  } else {
+    // Setear la ruta por defecto
+    localStorage.setItem("ruta", miRuta);
+  }
 });
 </script>
 
@@ -112,14 +136,16 @@ onMounted(() => {
 
         <div class="mt-4 tarjeta">
           <div class="checklist">
-            <form action="Pantalla12View">
-              <Button></Button>
-            </form>
+            <Button @click="handleSubmit"></Button>
+            <p v-if="error" class="text-danger mt-1 flex justify-center">
+              {{ error }}
+            </p>
           </div>
         </div>
       </div>
     </div>
   </section>
+  <Footer class="bottom-0 left-0 right-0"></Footer>
 </template>
 
 <style scoped>

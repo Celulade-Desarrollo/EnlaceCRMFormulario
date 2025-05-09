@@ -1,9 +1,13 @@
 <script setup>
 import { onMounted, ref } from "vue";
-import Alerta from "../components/UI/Alerta.vue";
 import Heading from "../components/UI/Heading.vue";
 import Button from "../components/UI/Button.vue";
+import Footer from "../components/UI/Footer.vue";
+import { useRouter } from "vue-router";
+import { useFormularioStore } from "../router/store";
 
+const store = useFormularioStore();
+const router = useRouter();
 const cedula = ref(localStorage.getItem("cedula") || "");
 
 // Referencias para los checkboxes
@@ -39,6 +43,12 @@ const validateForm = () => {
     cedulaError.textContent = "La cédula es un campo obligatorio.";
     cedulaError.style.display = "block";
     valid = false;
+  } else if (cedulaField.value.length < 6 || cedulaField.value.length > 10) {
+    cedulaField.classList.add("error"); // Añadir clase de error
+    cedulaError.textContent = "La cédula debe tener entre 6 y 10 números.";
+    cedulaError.style.display = "block";
+    valid = false;
+    cedulaField.value = "";
   } else {
     cedulaField.classList.remove("error"); // Quitar clase de error
     cedulaError.style.display = "none";
@@ -58,9 +68,13 @@ const validateForm = () => {
 };
 
 const handleSubmit = (event) => {
+  event.preventDefault(); // Evitar el envío del formulario si no es válido
+
   if (!validateForm()) {
-    event.preventDefault(); // Evitar el envío del formulario si no es válido
+    return; // Evitar el envío del formulario si no es válido
   }
+  store.completarFormulario(); // Marca el formulario como completado
+  router.push("/datosPersonales"); // Redirige a la siguiente pantalla
 };
 
 onMounted(() => {
@@ -72,14 +86,24 @@ onMounted(() => {
     checkbox.addEventListener("change", handleCheckboxChange);
   });
 
-  // Vincular el handleSubmit al formulario
-  document.querySelector("form").addEventListener("submit", handleSubmit);
+  let miRuta = window.location.pathname;
+
+  // Validar si ya existe "ruta"
+  if (localStorage.getItem.length > 0) {
+    localStorage.removeItem("ruta");
+
+    // Setear la ruta por defecto
+    localStorage.setItem("ruta", miRuta);
+  } else {
+    // Setear la ruta por defecto
+    localStorage.setItem("ruta", miRuta);
+  }
 });
 </script>
 
 <template>
   <Heading />
-  <section class="container py-5 registro">
+  <section class="container registro">
     <div class="row align-items-center">
       <div class="col-lg-6 desktop">
         <picture>
@@ -92,13 +116,11 @@ onMounted(() => {
           />
         </picture>
       </div>
-      <Alerta v-if="error">{{ error }}</Alerta>
       <div class="col-lg-6">
         <div class="mt-4 tarjeta">
-          <form action="Pantalla7View" novalidate>
+          <form novalidate>
             <div class="form-group">
               <h4 class="mb-4 titulo-4 mt-1">Ingresa tu cédula</h4>
-
               <label for="numeroCedula" id="label-numeroCedula">
                 <input
                   id="numeroCedula"
@@ -129,7 +151,7 @@ onMounted(() => {
                 <span class="checkmark"></span>
                 <p class="">
                   He leído y autorizo el tratamiento de mis datos personales por
-                  <br /><a href="#">Enlace S.A.S y Banco W</a>
+                  <a class="link-contacto" href="#">Enlace S.A.S y Banco W</a>
                 </p>
               </label>
               <label class="check-item mb-4">
@@ -142,22 +164,48 @@ onMounted(() => {
                 />
                 <span class="checkmark"></span>
                 <p class="p-checkmark-2">
-                  Autorizo a <br /><span>Enlace S.A.S y Banco W</span>
-                  contactarme vía <span>Whatsapp</span> sobre mis productos
-                  (opcional)
+                  Autorizo a <span>Enlace S.A.S y Banco W</span> contactarme vía
+                  <span>Whatsapp</span> sobre mis productos (opcional)
                 </p>
               </label>
             </div>
-
-            <Button></Button>
+            <p v-if="error" class="text-danger mt-1 flex justify-center">
+              {{ error }}
+            </p>
+            <Button class="mt-5" @click="handleSubmit"></Button>
           </form>
         </div>
       </div>
     </div>
   </section>
+  <Footer class="absolute bottom-0 left-0 right-0"></Footer>
 </template>
 
 <style scoped>
+input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+}
+
+/* Ocultar flechas para Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.link-contacto {
+  color: #dd3590;
+  text-decoration: none;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.link-contacto:active {
+  color: #09008be1;
+  text-decoration: none;
+  font-weight: bold;
+}
+
 .form-control:focus {
   outline: none;
   box-shadow: none;
@@ -185,11 +233,12 @@ body {
   background-color: transparent;
   border-width: 0 0 1px;
   border-bottom-style: solid;
-  border-bottom-color: rgba(17, 17, 17, 0.2);
+  border-bottom: 2px solid #09008be1;
   color: rgb(17, 17, 17);
   padding: 8px 0;
   width: 100%;
   outline: none;
+  margin-top: 24px;
 }
 
 .container button {
@@ -214,18 +263,19 @@ body {
   color: #111111;
 }
 .titulo-4 {
-  margin: 0 0 16px;
   color: inherit;
   font-weight: bold;
   letter-spacing: -0.03em;
   font-size: 1.875rem;
   line-height: 1.2;
-  margin-top: -100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
 }
 .checklist {
   max-width: 300px;
   margin-top: 30px;
-  margin: 0 auto;
 }
 
 .check-item {
@@ -234,7 +284,7 @@ body {
   margin-bottom: 10px;
   font-size: 16px;
   position: relative;
-  gap: 10px;
+  gap: 20px;
 }
 
 .check-item input[type="checkbox"] {
@@ -242,31 +292,15 @@ body {
   position: absolute;
 }
 
-.checkmark {
-  display: inline-block;
-  width: 60px;
-  height: 30px;
-  border-radius: 50%;
-  background-color: #c9c7c7;
-  margin-right: 10px;
-  position: relative;
-}
-
 .checkbox-custom + .checkmark {
-  width: 60px;
-  height: 30px;
-  border-radius: 30px;
-  margin-right: 30px;
+  width: 50px;
+  height: 20px;
+  border-radius: 40px;
   background-color: #c9c7c7;
 }
 
 .checkbox-custom:checked + .checkmark {
   background-color: #dd3590;
-}
-
-.p-checkmark-2 {
-  font-size: 0.75rem;
-  color: black;
 }
 
 @media (max-width: 767px) {

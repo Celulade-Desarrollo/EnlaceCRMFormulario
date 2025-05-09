@@ -1,23 +1,75 @@
 <script setup>
-import { FormKit } from '@formkit/vue';
 import Heading from "../components/UI/Heading.vue";
 import Button from "../components/UI/Button.vue";
+import Footer from "../components/UI/Footer.vue";
 
-const onSubmit = (formData) => {
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { useFormularioStore } from "../router/store";
 
-  window.location.href = 'Pantalla7View';
+const store = useFormularioStore();
+const router = useRouter();
+
+const nivelEducativo = ref(""); // Refs para almacenar los valores de los campos
+const estrato = ref("");
+const grupoEtnico = ref("");
+const declarasRenta = ref("");
+const rut = ref("");
+const mensajeAlerta = ref("");
+const mostrarAlerta = ref(false);
+
+const handleSubmit = (event) => {
+  if (
+    !nivelEducativo.value ||
+    !estrato.value ||
+    !grupoEtnico.value ||
+    !declarasRenta.value ||
+    !rut.value
+  ) {
+    // Evitar el envío del formulario si no es válido
+    event.preventDefault();
+    mostrarAlerta.value = true;
+    mensajeAlerta.value = "Por favor completa todos los campos.";
+    setTimeout(() => {
+      mensajeAlerta.value = "";
+    }, 3000);
+    return;
+  }
+  event.preventDefault();
+  mensajeAlerta.value = false;
+  store.completarFormulario(); // Marca el formulario como completado
+  router.push("/negocio"); // Redirige a la siguiente pantal
 };
+onMounted(() => {
+  let miRuta = window.location.pathname;
+
+  // Validar si ya existe "ruta"
+  if (localStorage.getItem.length > 0) {
+    localStorage.removeItem("ruta");
+
+    // Setear la ruta por defecto
+    localStorage.setItem("ruta", miRuta);
+  } else {
+    // Setear la ruta por defecto
+    localStorage.setItem("ruta", miRuta);
+  }
+});
 </script>
 
 <template>
   <Heading></Heading>
   <h2 class="titulo">Datos Personales</h2>
-   <form @submit.prevent="onSubmit">
+  <!-- Select de generos -->
+  <form>
     <div class="form-group">
       <label for="nivel educativo">Nivel Educativo</label>
       <div class="custom-select-wrapper">
-        <select name="nivelEducativo" class="custom-select">
-          <option selected disabled >Seleccione</option>
+        <select
+          v-model="nivelEducativo"
+          name="nivelEducativo"
+          class="custom-select"
+        >
+          <option selected disabled value="">Seleccione</option>
           <option value="basico">Básico Primaria</option>
           <option value="bachillerato">Bachillerato</option>
           <option value="tecnico">Técnico</option>
@@ -52,43 +104,33 @@ const onSubmit = (formData) => {
       </div>
       <label for="declaraRenta">¿Declara Renta?</label>
       <div class="custom-select-wrapper">
-        <select name="declarasRenta" class="custom-select">
-          <option selected disabled>Seleccione</option>
+        <select
+          v-model="declarasRenta"
+          name="declarasRenta"
+          class="custom-select"
+        >
+          <option selected disabled value="">Seleccione</option>
           <option value="si">Sí</option>
           <option value="no">No</option>
         </select>
       </div>
-      <label for="rut">¿Esta obligado a tener RUT por tu actividad económica?</label>
+      <label for="rut"
+        >¿Esta obligado a tener RUT por tu actividad económica?</label
+      >
       <div class="custom-select-wrapper">
-        <select name="Rut" class="custom-select">
-          <option selected disabled >Seleccione</option>
+        <select v-model="rut" name="Rut" class="custom-select">
+          <option selected disabled value="">Seleccione</option>
           <option value="si">Sí</option>
           <option value="no">No</option>
         </select>
       </div>
+      <Button @click="handleSubmit" class="mt-5"></Button>
+      <p v-if="mostrarAlerta" class="text-danger mt-1 flex justify-center">
+        {{ mensajeAlerta }}
+      </p>
     </div>
-    <Button type="submit"></Button>
   </form>
- 
-     <!--  <FormKit
-        type="select"
-        name="grupoEtnico"
-        label="Grupo Étnico"
-        placeholder="Seleccione"
-        :options="{
-          afrocolombiano: 'Afrocolombiano',
-          indigena: 'Indígena',
-          raizal: 'Raizal',
-          palenquero: 'Palenquero',
-          gitano: 'Gitano',
-          otro: 'Otro',
-        }"
-        validation="required"
-        validation-visibility="dirty"
-        :validation-messages="{
-          required: 'Seleccione un campo',
-        }"
-      /> -->
+  <Footer class="absolute bottom-0 left-0 right-0"></Footer>
 </template>
 
 <style scoped>
@@ -127,7 +169,7 @@ const onSubmit = (formData) => {
 
 .form-group label:not(:first-child) {
   margin-top: 16px;
-} 
+}
 
 .custom-select-wrapper {
   position: relative;
@@ -137,7 +179,7 @@ const onSubmit = (formData) => {
 .custom-select {
   appearance: none;
   border: none;
-  border-bottom: 2px solid #ccc;
+  border-bottom: 2px solid #09008be1;
   background-color: transparent;
   font-size: 16px;
   padding: 8px 30px 8px 0;
@@ -164,15 +206,14 @@ const onSubmit = (formData) => {
 }
 
 .titulo {
-    margin: 16px;
-    color: inherit;
-    font-weight: bold;
-    letter-spacing: -0.03em;
-    font-size: 1.875rem;
-    line-height: 1.2;
+  margin: 16px;
+  color: inherit;
+  font-weight: bold;
+  letter-spacing: -0.03em;
+  font-size: 1.875rem;
+  line-height: 1.2;
 }
 
 @media (max-width: 767px) {
-
 }
 </style>

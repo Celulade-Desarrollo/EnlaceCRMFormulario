@@ -1,41 +1,144 @@
 <script setup>
-import { ref } from "vue";
+import { ref, watch, onMounted } from "vue";
 import Heading from "../components/UI/Heading.vue";
-import Alerta from "../components/UI/Alerta.vue";
 import Button from "../components/UI/Button.vue";
 import Footer from "../components/UI/Footer.vue";
+import { useRouter } from "vue-router";
+import { useFormularioStore } from "../router/store";
+
+const nameRegex = /^[a-zA-ZÀ-ÿ\s'-]{2,50}$/;
 
 const clearUndefined = (value) => {
   return value === undefined || value === null ? "" : value;
 };
 
 // Inicializar los valores de los campos
-const nombre = ref(clearUndefined(localStorage.getItem("nombres")));
-const apellido = ref(clearUndefined(localStorage.getItem("apellido")));
+const nombre = ref("");
+const apellido = ref("");
+const SegundoApellido = ref("");
+const router = useRouter();
+const store = useFormularioStore();
 
 // Variables para mostrar errores
 const errorMessage = ref("");
+const nombreError = ref("");
+const apellidoError = ref("");
+const SegundoApellidoError = ref("");
+
+const validateNombre = () => {
+  if (/[^a-zA-ZÀ-ÿ\s'-]/.test(nombre.value)) {
+    nombre.value = nombre.value.replace(/[^a-zA-ZÀ-ÿ\s'-]/g, "");
+  }
+  if (!nombre.value || !nameRegex.test(nombre.value)) {
+    nombreError.value =
+      "Por favor, ingresa un nombre válido, sin tildes y solo letras.";
+  } else {
+    nombreError.value = ""; // Limpiar el mensaje de error si es válido
+  }
+};
+
+const validateApellido = () => {
+  if (/[^a-zA-ZÀ-ÿ\s'-]/.test(apellido.value)) {
+    apellido.value = apellido.value.replace(/[^a-zA-ZÀ-ÿ\s'-]/g, "");
+  }
+  if (!apellido.value || !nameRegex.test(apellido.value)) {
+    apellidoError.value =
+      "Por favor, ingresa un apellido válido, sin tildes y solo letras.";
+  } else {
+    apellidoError.value = ""; // Limpiar el mensaje de error si es válido
+  }
+};
+
+const validateSegundoApellido = () => {
+  if (/[^a-zA-ZÀ-ÿ\s'-]/.test(SegundoApellido.value)) {
+    SegundoApellido.value = SegundoApellido.value.replace(
+      /[^a-zA-ZÀ-ÿ\s'-]/g,
+      ""
+    );
+  }
+  if (SegundoApellido.value && !nameRegex.test(SegundoApellido.value)) {
+    SegundoApellidoError.value =
+      "Por favor, ingresa un apellido válido, sin tildes y solo letras.";
+  } else {
+    SegundoApellidoError.value = ""; // Limpiar el mensaje de error si es válido
+  }
+};
+
+watch([nombre, apellido, SegundoApellido], () => {
+  validateNombre();
+  validateApellido();
+  validateSegundoApellido();
+});
 
 // Función para manejar el envío del formulario
 const handleSubmit = (event) => {
   // Resetear el mensaje de error
   errorMessage.value = "";
+  nombreError.value = "";
+  apellidoError.value = "";
+  SegundoApellidoError.value = "";
 
-  // Validar si los campos están vacíos
-  if (!nombre.value || !apellido.value) {
-    errorMessage.value = "Por favor, completa todos los campos obligatorios.";
-    event.preventDefault(); // Evitar el envío del formulario
+  let isValid = true;
+
+  if (!nombre.value || !nameRegex.test(nombre.value)) {
+    nombreError.value =
+      "Por favor, ingresa un nombre válido, sin tildes y solo letras.";
+    isValid = false;
+    setTimeout(() => {
+      nombreError.value = "";
+    }, 3000);
   }
 
-  setTimeout(() => {
-    errorMessage.value = "";
-  }, 3000);
+  if (!apellido.value || !nameRegex.test(apellido.value)) {
+    apellidoError.value =
+      "Por favor, ingresa un apellido válido, sin tildes y solo letras.";
+    isValid = false;
+    setTimeout(() => {
+      apellidoError.value = "";
+    }, 3000);
+  }
+
+  if (SegundoApellido.value && !nameRegex.test(SegundoApellido.value)) {
+    SegundoApellidoError.value =
+      "Por favor, ingresa un apellido válido, sin tildes y solo letras.";
+    isValid = false;
+    setTimeout(() => {
+      SegundoApellidoError.value = "";
+    }, 3000);
+  }
+
+  // Validar si los campos están vacíos
+  if (!isValid) {
+    event.preventDefault(); // Evitar el envío del formulario
+    errorMessage.value = "Por favor, completa todos los campos correctamente.";
+    setTimeout(() => {
+      errorMessage.value = "";
+    }, 3000);
+    return;
+  }
+  event.preventDefault();
+  store.completarFormulario(); // Marca el formulario como completado
+  router.push("/cedula"); // Redirige a la siguiente pantalla
 };
+
+onMounted(() => {
+  let miRuta = window.location.pathname;
+
+  // Validar si ya existe "ruta"
+  if (localStorage.getItem.length > 0) {
+    localStorage.removeItem("ruta");
+
+    // Setear la ruta por defecto
+    localStorage.setItem("ruta", miRuta);
+  } else {
+    // Setear la ruta por defecto
+    localStorage.setItem("ruta", miRuta);
+  }
+});
 </script>
 
 <template>
   <Heading></Heading>
-
   <section class="container py-5 registro">
     <div class="row align-items-center">
       <div class="col-lg-6 desktop">
@@ -50,15 +153,17 @@ const handleSubmit = (event) => {
         </picture>
       </div>
 
-      <Alerta v-if="errorMessage">{{ errorMessage }}</Alerta>
-
       <div class="col-lg-6">
         <div class="mt-4 tarjeta">
-          <form action="Pantalla13View" @submit="handleSubmit">
+          <form>
             <div class="form-group mt-[40px]">
               <p class="titulo-3 mb-4">
                 Ingresa tu nombre completo tal como aparece en la cédula
               </p>
+              <p v-if="errorMessage" class="text-danger mt-1">
+                {{ errorMessage }}
+              </p>
+
               <label for="nombres" class="input-label">
                 <input
                   id="nombres"
@@ -68,11 +173,13 @@ const handleSubmit = (event) => {
                   type="text"
                   autocomplete="off"
                   placeholder=" "
-                  required
+                  @input="validateNombre"
                 />
                 <span class="floating-label">Ingresa tus nombres</span>
               </label>
-
+              <p v-if="nombreError" class="text-danger mt-1">
+                {{ nombreError }}
+              </p>
               <label for="primerApellido" class="input-label mt-4">
                 <input
                   id="primerApellido"
@@ -82,11 +189,13 @@ const handleSubmit = (event) => {
                   type="text"
                   autocomplete="off"
                   placeholder=" "
-                  required
+                  @input="validateApellido"
                 />
                 <span class="floating-label">Ingresa tu primer apellido</span>
               </label>
-
+              <p v-if="apellidoError" class="text-danger mt-1">
+                {{ apellidoError }}
+              </p>
               <label for="segundoApellido" class="input-label mt-4">
                 <input
                   id="segundoApellido"
@@ -95,13 +204,18 @@ const handleSubmit = (event) => {
                   type="text"
                   autocomplete="off"
                   placeholder=" "
+                  v-model="SegundoApellido"
+                  @input="validateSegundoApellido"
                 />
                 <span class="floating-label"
                   >Ingresa tu segundo apellido (Opcional)</span
                 >
               </label>
+              <p v-if="SegundoApellidoError" class="text-danger mt-1">
+                {{ SegundoApellidoError }}
+              </p>
             </div>
-            <Button></Button>
+            <Button @click="handleSubmit"></Button>
           </form>
         </div>
       </div>

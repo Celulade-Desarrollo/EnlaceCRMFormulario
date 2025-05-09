@@ -1,8 +1,10 @@
 <script setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, watch, onMounted } from "vue";
 import Heading from "../components/UI/Heading.vue";
 import Button from "../components/UI/Button.vue";
 import Footer from "../components/UI/Footer.vue";
+import { useRouter } from "vue-router";
+import { useFormularioStore } from "../router/store";
 
 // Inicializar los valores de los campos
 const email = ref("");
@@ -10,6 +12,8 @@ const confirmaremail = ref("");
 const errorMessage = ref("");
 const emailErrorMessage = ref("");
 const confirmEmailErrorMessage = ref("");
+const router = useRouter();
+const store = useFormularioStore();
 
 // Función para limpiar valores undefined o null
 const clearUndefined = (value) => {
@@ -23,24 +27,33 @@ const validateEmail = () => {
   const emailValue = clearUndefined(email.value);
   const confirmEmailValue = clearUndefined(confirmaremail.value);
 
-  // Limpiar mensajes de error
+  let isValid = true;
+
   emailErrorMessage.value = "";
   confirmEmailErrorMessage.value = "";
 
   if (emailValue && !emailRegex.test(emailValue)) {
-    emailErrorMessage.value = "Por favor, ingresa un correo electrónico válido."
+    emailErrorMessage.value =
+      "Por favor, ingresa un correo electrónico válido.";
+    isValid = false;
   }
 
   if (confirmEmailValue && !emailRegex.test(confirmEmailValue)) {
-    emailErrorMessage.value = "Por favor, ingresa un correo electrónico válido."
+    confirmEmailErrorMessage.value =
+      "Por favor, ingresa un correo electrónico válido.";
+    isValid = false;
   }
 
   if (
     emailRegex.test(emailValue) &&
     emailRegex.test(confirmEmailValue) &&
-    emailValue !== confirmEmailValue) {
+    emailValue !== confirmEmailValue
+  ) {
     confirmEmailErrorMessage.value = "Los correos electrónicos no coinciden.";
+    isValid = false;
   }
+
+  return isValid;
 };
 
 // Validar en tiempo real mientras se escriben los correos
@@ -51,9 +64,7 @@ const handleSubmit = (event) => {
   const emailValue = clearUndefined(email.value);
   const confirmEmailValue = clearUndefined(confirmaremail.value);
 
-  // Limpiar mensajes de error
-  emailErrorMessage.value = "";
-  confirmEmailErrorMessage.value = "";
+  errorMessage.value = "";
 
   if (!emailValue || !confirmEmailValue) {
     event.preventDefault();
@@ -62,17 +73,31 @@ const handleSubmit = (event) => {
     setTimeout(() => {
       errorMessage.value = "";
     }, 3000);
-  } else if (emailValue !== confirmEmailValue) {
-    event.preventDefault();
-    confirmEmailErrorMessage.value = "Los correos electrónicos no coinciden.";
+
+    return;
   }
+
+  if (!validateEmail()) {
+    event.preventDefault(); // evita enviar si hay errores
+    return;
+  }
+  event.preventDefault();
+  store.completarFormulario(); // Marca el formulario como completado
+  router.push("/nombres"); // Redirige a la siguiente pantalla
 };
 
-// Montar el event listener para el envío del formulario
 onMounted(() => {
-  const form = document.getElementById("myForm");
-  if (form) {
-    form.addEventListener("submit", handleSubmit);
+  let miRuta = window.location.pathname;
+
+  // Validar si ya existe "ruta"
+  if (localStorage.getItem.length > 0) {
+    localStorage.removeItem("ruta");
+
+    // Setear la ruta por defecto
+    localStorage.setItem("ruta", miRuta);
+  } else {
+    // Setear la ruta por defecto
+    localStorage.setItem("ruta", miRuta);
   }
 });
 </script>
@@ -93,6 +118,7 @@ onMounted(() => {
             />
           </picture>
         </div>
+
         <div class="col-lg-6">
           <div className="flex justify-center">
             <h2 class="display-4 titulo-2 w-[350px] text-center">
@@ -100,7 +126,7 @@ onMounted(() => {
             </h2>
           </div>
           <div class="mt-4 tarjeta">
-            <form action="Pantalla3View" id="myForm">
+            <form id="myForm">
               <div class="form-group">
                 <p class="mb-4 font-bold">Registra tus datos</p>
                 <label for="email" class="input-label">
@@ -114,11 +140,10 @@ onMounted(() => {
                     placeholder=" "
                     autocomplete="off"
                   />
-   
+
                   <span class="floating-label"
                     >Ingresa tu correo electrónico</span
                   >
-  
                 </label>
 
                 <label for="confirmaremail" class="input-label mt-4 mb-0">
@@ -136,19 +161,25 @@ onMounted(() => {
                   <span class="floating-label"
                     >Confirma tu correo electrónico</span
                   >
-
                 </label>
-                <p v-if="errorMessage" id="error-celular" class="text-danger mt-1">
-                    {{ errorMessage }}
+                <p
+                  v-if="errorMessage"
+                  id="error-celular"
+                  class="text-danger mt-1"
+                >
+                  {{ errorMessage }}
                 </p>
-                <span v-if="emailErrorMessage" class="text-danger text-sm mt-1 d-block">
-                    {{ emailErrorMessage }}
-                  </span>
+                <span
+                  v-if="emailErrorMessage"
+                  class="text-danger text-sm mt-1 d-block"
+                >
+                  {{ emailErrorMessage }}
+                </span>
                 <span class="error-message">{{
                   confirmEmailErrorMessage
                 }}</span>
               </div>
-              <Button></Button>
+              <Button @click="handleSubmit"></Button>
             </form>
           </div>
         </div>
