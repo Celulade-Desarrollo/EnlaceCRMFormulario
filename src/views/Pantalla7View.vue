@@ -4,10 +4,10 @@ import axios from "axios";
 import Heading from "../components/UI/Heading.vue";
 import Button from "../components/UI/Button.vue";
 import Footer from "../components/UI/Footer.vue";
-import { useStore } from "vuex";
+import { useFormularioStore } from "../router/store";
 import { useRouter } from "vue-router";
 
-const store = useStore();
+const store = useFormularioStore();
 const router = useRouter();
 const departments = ref([]);
 const cities = ref([]);
@@ -41,7 +41,6 @@ const loadCities = async () => {
 };
 
 const handleSubmit = (event) => {
-
   // Validación
   if (!selectedDepartment.value || !selectedCity.value) {
     error.value = "Por favor, selecciona tu departamento y ciudad.";
@@ -61,12 +60,23 @@ const handleSubmit = (event) => {
 
   // Redirigir a la nueva página
   event.preventDefault(); // Evitar el envío del formulario si no es válido
-  store.dispatch("completarFormulario"); // Disparador para indicar que el formulario se completó
-  router.push("/locacion");
+  store.completarFormulario(); // Marca el formulario como completado
+  router.push("/ubicacion"); // Redirige a la siguiente pantalla
 };
 
 onMounted(() => {
   loadDepartments();
+  let miRuta = window.location.pathname;
+  // Validar si ya existe "ruta"
+  if (localStorage.getItem.length > 0) {
+    localStorage.removeItem("ruta");
+
+    // Setear la ruta por defecto
+    localStorage.setItem("ruta", miRuta);
+  } else {
+    // Setear la ruta por defecto
+    localStorage.setItem("ruta", miRuta);
+  }
 });
 </script>
 
@@ -88,7 +98,6 @@ onMounted(() => {
       </div>
     </div>
     <!-- Muestra la alerta solo si hay un error -->
-
 
     <div class="select-option mt-5">
       <h3 class="mb-4 titulo-7">¿Cuéntanos dónde está tu negocio?</h3>
@@ -123,9 +132,8 @@ onMounted(() => {
       </div>
     </div>
 
+    <Button class="mt-5" @click="handleSubmit"></Button>
 
-      <Button class="mt-5" @click="handleSubmit"></Button>
- 
     <p v-if="error" class="text-danger mt-1 flex justify-center">
       {{ error }}
     </p>

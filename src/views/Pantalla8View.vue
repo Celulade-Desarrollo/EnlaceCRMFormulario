@@ -1,21 +1,19 @@
 <script setup>
-import { ref } from "vue"; // Importa ref para crear variables reactivas
+import { ref, onMounted } from "vue"; // Importa ref para crear variables reactivas
 import Heading from "../components/UI/Heading.vue";
 import Button from "../components/UI/Button.vue";
 import Footer from "../components/UI/Footer.vue";
-import { useStore } from "vuex";
+import { useFormularioStore } from "../router/store";
 import { useRouter } from "vue-router";
 
-
 const ciudad = localStorage.getItem("selectedCity");
-const store = useStore(); // Inicializa Vuex
+const store = useFormularioStore(); // Inicializa Vuex
 const router = useRouter(); // Inicializa Vue Router
 const direccion = ref(""); // Crea una propiedad reactiva para la dirección
 const barrio = ref(""); // Crea una propiedad reactiva para el barrio
 const error = ref(""); // Crea una propiedad reactiva para el mensaje de error
 
 const handleSubmit = (event) => {
-
   // Validación
   if (!direccion.value || !barrio.value) {
     error.value = "Por favor, ingresa tu dirección y tu barrio.";
@@ -29,9 +27,24 @@ const handleSubmit = (event) => {
   // Limpiar error si no lo hay
   error.value = "";
   event.preventDefault(); // Evita el envío del formulario por defecto
-  store.dispatch("completarFormulario"); // Disparador para indicar que el formulario se completó
-  router.push("/informacionNegocio");
+  store.completarFormulario(); // Marca el formulario como completado
+  router.push("/informacionNegocio"); // Redirige a la siguiente pantalla
 };
+
+onMounted(() => {
+  let miRuta = window.location.pathname;
+
+  // Validar si ya existe "ruta"
+  if (localStorage.getItem.length > 0) {
+    localStorage.removeItem("ruta");
+
+    // Setear la ruta por defecto
+    localStorage.setItem("ruta", miRuta);
+  } else {
+    // Setear la ruta por defecto
+    localStorage.setItem("ruta", miRuta);
+  }
+});
 </script>
 
 <template>
@@ -70,7 +83,7 @@ const handleSubmit = (event) => {
                   id="direccion"
                   aria-describedby="error-direccion"
                 />
-                <span class="floating-label" >Ingresa tu dirección </span>
+                <span class="floating-label">Ingresa tu dirección </span>
               </label>
               <label for="detalles" class="input-label mt-4">
                 <input
@@ -86,7 +99,7 @@ const handleSubmit = (event) => {
                 />
                 <span class="floating-label">Detalles (Opcional) </span>
               </label>
-              
+
               <label for="barrio" class="input-label mt-4">
                 <input
                   v-model="barrio"
@@ -172,7 +185,6 @@ const handleSubmit = (event) => {
   outline: none;
   box-shadow: none;
 }
-
 
 body {
   font-family: Verdana, Geneva, Tahoma, sans-serif;

@@ -3,11 +3,11 @@ import Heading from "../components/UI/Heading.vue";
 import Button from "../components/UI/Button.vue";
 import Footer from "../components/UI/Footer.vue";
 import { onMounted, ref } from "vue";
-import { useStore } from "vuex";
+import { useFormularioStore } from "../router/store";
 import { useRouter } from "vue-router";
 
 const error = ref("");
-const store = useStore();
+const store = useFormularioStore();
 const router = useRouter();
 
 const handleCheckboxChange = (event) => {
@@ -35,24 +35,7 @@ const handleCheckboxChange2 = (event) => {
       checkbox.checked = false;
     }
   });
-}
-
-onMounted(() => {
-  const checkboxes = document.querySelectorAll(".single-checkbox");
-  checkboxes.forEach((checkbox) => {
-    checkbox.addEventListener("change", handleCheckboxChange);
-  });
-
-  const checkboxes1 = document.querySelectorAll(".single-checkbox-1");
-  checkboxes1.forEach((checkbox) => {
-    checkbox.addEventListener("change", handleCheckboxChange1);
-  });
-
-  const checkboxes2 = document.querySelectorAll(".single-checkbox-2");
-  checkboxes2.forEach((checkbox) => {
-    checkbox.addEventListener("change", handleCheckboxChange1);
-  });
-});
+};
 
 const validateCheckboxes = () => {
   const group1Checked = Array.from(
@@ -68,7 +51,6 @@ const validateCheckboxes = () => {
 };
 
 const handleSubmit = (event) => {
-
   if (!validateCheckboxes()) {
     event.preventDefault(); // Prevent form submissio
     error.value =
@@ -83,8 +65,38 @@ const handleSubmit = (event) => {
   // Limpiar error si no lo hay
   error.value = "";
   event.preventDefault(); // Evita el envío del formulario por defecto
-  store.dispatch("completarFormulario"); // Disparador para indicar que el formulario se completó
-  router.push("/Terminado");
+  store.completarFormulario(); // Marca el formulario como completado
+  router.push("/Terminado"); // Redirige a la siguiente pantalla
+
+  onMounted(() => {
+    const checkboxes = document.querySelectorAll(".single-checkbox");
+    checkboxes.forEach((checkbox) => {
+      checkbox.addEventListener("change", handleCheckboxChange);
+    });
+
+    const checkboxes1 = document.querySelectorAll(".single-checkbox-1");
+    checkboxes1.forEach((checkbox) => {
+      checkbox.addEventListener("change", handleCheckboxChange1);
+    });
+
+    const checkboxes2 = document.querySelectorAll(".single-checkbox-2");
+    checkboxes2.forEach((checkbox) => {
+      checkbox.addEventListener("change", handleCheckboxChange2);
+    });
+
+    let miRuta = window.location.pathname;
+
+    // Validar si ya existe "ruta"
+    if (localStorage.getItem.length > 0) {
+      localStorage.removeItem("ruta");
+
+      // Setear la ruta por defecto
+      localStorage.setItem("ruta", miRuta);
+    } else {
+      // Setear la ruta por defecto
+      localStorage.setItem("ruta", miRuta);
+    }
+  });
 };
 </script>
 
@@ -106,7 +118,7 @@ const handleSubmit = (event) => {
       </div>
       <div class="col-lg-6">
         <div class="mt-4 tarjeta">
-          <form >
+          <form>
             <div class="form-group">
               <h3 class="titulo-10 mb-4">Antes de terminar</h3>
               <h6 class="mb-4 font-bold">
@@ -210,7 +222,7 @@ const handleSubmit = (event) => {
       </div>
     </div>
   </section>
-  <Footer class=" bottom-0 left-0 right-0"></Footer>
+  <Footer class="bottom-0 left-0 right-0"></Footer>
 </template>
 
 <style scoped>
@@ -240,7 +252,6 @@ const handleSubmit = (event) => {
   outline: none;
   box-shadow: none;
 }
-
 
 body {
   font-family: Verdana, Geneva, Tahoma, sans-serif;

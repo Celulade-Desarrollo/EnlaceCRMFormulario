@@ -3,10 +3,10 @@ import { onMounted, ref } from "vue";
 import Heading from "../components/UI/Heading.vue";
 import Button from "../components/UI/Button.vue";
 import Footer from "../components/UI/Footer.vue";
-import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import { useFormularioStore } from "../router/store";
 
-const store = useStore();
+const store = useFormularioStore();
 const router = useRouter();
 const cedula = ref(localStorage.getItem("cedula") || "");
 
@@ -71,12 +71,10 @@ const handleSubmit = (event) => {
   event.preventDefault(); // Evitar el envío del formulario si no es válido
 
   if (!validateForm()) {
-
     return; // Evitar el envío del formulario si no es válido
   }
-  console.log("Getter formullarioCompleto", store.getters.formularioCompleto);
-  store.dispatch("completarFormulario"); // Disparador para indicar que el formulario se completó
-  router.push("/datosPersonales");
+  store.completarFormulario(); // Marca el formulario como completado
+  router.push("/datosPersonales"); // Redirige a la siguiente pantalla
 };
 
 onMounted(() => {
@@ -88,7 +86,18 @@ onMounted(() => {
     checkbox.addEventListener("change", handleCheckboxChange);
   });
 
-  // Vincular el handleSubmit al formulario
+  let miRuta = window.location.pathname;
+
+  // Validar si ya existe "ruta"
+  if (localStorage.getItem.length > 0) {
+    localStorage.removeItem("ruta");
+
+    // Setear la ruta por defecto
+    localStorage.setItem("ruta", miRuta);
+  } else {
+    // Setear la ruta por defecto
+    localStorage.setItem("ruta", miRuta);
+  }
 });
 </script>
 

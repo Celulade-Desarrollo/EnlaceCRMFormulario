@@ -53,9 +53,7 @@ const handleSubmit = async (event) => {
       store.completarFormulario(); // Marca el formulario como completado
       router.push("/correoElectronico"); // Redirige a la siguiente pantalla
       error.value = ""; // Limpia el mensaje de error si el número es válido
-    } catch (error) {
-      alert("Lo sentimos hubo un error");
-    }
+    } catch (error) {}
   }
   // await fetchData(); // Llama a la función fetchData para obtener datos
 };
@@ -81,8 +79,6 @@ onMounted(() => {
     // Setear la ruta por defecto
     localStorage.setItem("ruta", miRuta);
   }
-
-  alert(miRuta);
 });
 </script>
 

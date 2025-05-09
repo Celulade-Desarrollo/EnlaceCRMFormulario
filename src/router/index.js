@@ -47,8 +47,8 @@ const router = createRouter({
       meta: { requiereFormulario: true },
     },
     {
-      path: "/locacion",
-      name: "locacion",
+      path: "/ubicacion",
+      name: "ubicacion",
       component: () => import("../views/Pantalla8View.vue"),
       meta: { requiereFormulario: true },
     },

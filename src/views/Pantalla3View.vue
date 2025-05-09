@@ -134,8 +134,6 @@ onMounted(() => {
     // Setear la ruta por defecto
     localStorage.setItem("ruta", miRuta);
   }
-
-  alert(miRuta);
 });
 </script>
 

@@ -1,39 +1,40 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import { useStore } from 'vuex';
-import axios from 'axios';
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { useFormularioStore } from "../router/store";
+import axios from "axios";
 
 import Heading from "../components/UI/Heading.vue";
 import Button from "../components/UI/Button.vue";
 import Footer from "../components/UI/Footer.vue";
 
-const store = useStore();
+const store = useFormularioStore();
 const router = useRouter();
 
 const departments = ref([]);
 const paises = ref([]);
 const mostrarAlerta = ref(false);
-const mensajeAlerta = ref('');
+const mensajeAlerta = ref("");
 
-
-const genero = ref(''); // Refs para almacenar los valores de los campos
-const estadoCivil = ref('');
-const fechaNacimiento = ref('');
-const paisSeleccionado = ref('');
-const departamentoSeleccionado = ref('');
-const maxFechaNacimiento = ref('');
+const genero = ref(""); // Refs para almacenar los valores de los campos
+const estadoCivil = ref("");
+const fechaNacimiento = ref("");
+const paisSeleccionado = ref("");
+const departamentoSeleccionado = ref("");
+const maxFechaNacimiento = ref("");
 
 const handleSubmit = (event) => {
-  if (!genero.value ||
-      !estadoCivil.value ||
-      !fechaNacimiento.value ||
-      !paisSeleccionado.value ||
-      !departamentoSeleccionado.value) {
-     // Evitar el envío del formulario si no es válido
+  if (
+    !genero.value ||
+    !estadoCivil.value ||
+    !fechaNacimiento.value ||
+    !paisSeleccionado.value ||
+    !departamentoSeleccionado.value
+  ) {
+    // Evitar el envío del formulario si no es válido
     event.preventDefault();
     mostrarAlerta.value = true;
-    mensajeAlerta.value = 'Por favor completa todos los campos.';
+    mensajeAlerta.value = "Por favor completa todos los campos.";
     setTimeout(() => {
       mensajeAlerta.value = "";
     }, 3000);
@@ -47,64 +48,73 @@ const handleSubmit = (event) => {
   const mesDiferencia = fechaActual.getMonth() - fechaNacimientoDate.getMonth();
   const diaDiferencia = fechaActual.getDate() - fechaNacimientoDate.getDate();
 
-    if (mesDiferencia < 0 || (mesDiferencia === 0 && diaDiferencia < 0)) {
+  if (mesDiferencia < 0 || (mesDiferencia === 0 && diaDiferencia < 0)) {
     edad--;
   }
 
   if (edad < 18) {
     event.preventDefault();
     mostrarAlerta.value = true;
-    mensajeAlerta.value = 'Debes ser mayor de edad para continuar';
+    mensajeAlerta.value = "Debes ser mayor de edad para continuar";
     return;
   }
 
   event.preventDefault();
   mensajeAlerta.value = false;
-  store.dispatch("completarFormulario"); // Disparador para indicar que el formulario se completó
-  router.push("/datosPersonales2");
+  store.completarFormulario(); // Marca el formulario como completado
+  router.push("/datosPersonales2"); // Redirige a la siguiente pantalla
 };
 
 onMounted(async () => {
-
   const hoy = new Date();
   hoy.setFullYear(hoy.getFullYear() - 18); // Restar 18 años a la fecha actual
   const yyyy = hoy.getFullYear();
-  const mm = String(hoy.getMonth() + 1).padStart(2, '0'); // Mes actual (0-11)
-  const dd = String(hoy.getDate()).padStart(2, '0'); // Día actual (1-31)
+  const mm = String(hoy.getMonth() + 1).padStart(2, "0"); // Mes actual (0-11)
+  const dd = String(hoy.getDate()).padStart(2, "0"); // Día actual (1-31)
   maxFechaNacimiento.value = `${yyyy}-${mm}-${dd}`; // Formato YYYY-MM-DD
   // Cargar los países y departamentos al montar el componente
   try {
-    const response = await axios.get('https://restcountries.com/v3.1/all');
+    const response = await axios.get("https://restcountries.com/v3.1/all");
     const listaPaises = response.data.map((pais) => ({
       value: pais.cca2,
       label: pais.name.common,
     }));
-    
+
     // Encontrar Colombia y moverla al principio de la lista
-    const indiceColombia = listaPaises.findIndex(pais => pais.value === 'CO');
+    const indiceColombia = listaPaises.findIndex((pais) => pais.value === "CO");
     if (indiceColombia !== -1) {
       const colombia = listaPaises.splice(indiceColombia, 1)[0];
       listaPaises.unshift(colombia); // Añadir Colombia al principio
     }
-    
-    paises.value = listaPaises;
 
+    paises.value = listaPaises;
   } catch (error) {
-    console.error('Error al cargar países:', error)
+    console.error("Error al cargar países:", error);
   }
-  
+
   try {
-    const response = await axios.get('https://www.datos.gov.co/resource/xdk5-pm3f.json?$select=departamento&$group=departamento&$order=departamento');
-    departments.value = response.data.map(item => ({
+    const response = await axios.get(
+      "https://www.datos.gov.co/resource/xdk5-pm3f.json?$select=departamento&$group=departamento&$order=departamento"
+    );
+    departments.value = response.data.map((item) => ({
       value: item.departamento,
       label: item.departamento,
     }));
   } catch (err) {
-    console.error('Error loading departments:', err);
+    console.error("Error loading departments:", err);
+  }
+  let miRuta = window.location.pathname;
+  // Validar si ya existe "ruta"
+  if (localStorage.getItem.length > 0) {
+    localStorage.removeItem("ruta");
+
+    // Setear la ruta por defecto
+    localStorage.setItem("ruta", miRuta);
+  } else {
+    // Setear la ruta por defecto
+    localStorage.setItem("ruta", miRuta);
   }
 });
-
-
 </script>
 
 <template>
@@ -112,7 +122,7 @@ onMounted(async () => {
   <h2 class="titulo">Datos Personales</h2>
 
   <!-- Select de generos -->
-  <form >
+  <form>
     <div class="form-group">
       <label for="genero">Género</label>
       <div class="custom-select-wrapper">
@@ -138,26 +148,46 @@ onMounted(async () => {
 
       <label for="fechaNacimiento">Fecha de Nacimiento</label>
       <div class="custom-date">
-        <input v-model="fechaNacimiento" type="date" name="fechaNacimiento" class="custom-input-date" :max="maxFechaNacimiento">
+        <input
+          v-model="fechaNacimiento"
+          type="date"
+          name="fechaNacimiento"
+          class="custom-input-date"
+          :max="maxFechaNacimiento"
+        />
       </div>
 
       <label for="paisNacimiento">País de Nacimiento</label>
       <div class="custom-select-wrapper">
         <select v-model="paisSeleccionado" class="custom-select" name="pais">
           <option selected disabled value="">Selecciona tu país</option>
-          <option v-for="pais in paises" :key="pais.value" :value="pais.value">{{ pais.label }}</option>
+          <option v-for="pais in paises" :key="pais.value" :value="pais.value">
+            {{ pais.label }}
+          </option>
         </select>
       </div>
 
       <label for="departamento">Departamento</label>
       <div class="custom-select-wrapper">
-        <select v-model="departamentoSeleccionado" class="custom-select" name="departamento">
+        <select
+          v-model="departamentoSeleccionado"
+          class="custom-select"
+          name="departamento"
+        >
           <option selected disabled value="">Selecciona un departamento</option>
-          <option v-for="dep in departments" :key="dep.value" :value="dep.value">{{ dep.label }}</option>
+          <option
+            v-for="dep in departments"
+            :key="dep.value"
+            :value="dep.value"
+          >
+            {{ dep.label }}
+          </option>
         </select>
       </div>
       <Button @click="handleSubmit" class="mt-5"></Button>
-      <p v-if="mostrarAlerta" class="text-danger mt-1 flex justify-center">{{ mensajeAlerta }}</p>
+      <p v-if="mostrarAlerta" class="text-danger mt-1 flex justify-center">
+        {{ mensajeAlerta }}
+      </p>
     </div>
   </form>
   <Footer class="absolute bottom-0 left-0 right-0"></Footer>
@@ -199,7 +229,7 @@ onMounted(async () => {
 
 .form-group label:not(:first-child) {
   margin-top: 16px;
-} 
+}
 
 .custom-select-wrapper {
   position: relative;
@@ -228,7 +258,6 @@ onMounted(async () => {
   outline: none;
   box-shadow: none;
 }
-
 
 .form-group {
   margin-left: 20px;
@@ -290,17 +319,14 @@ onMounted(async () => {
 }
 
 .titulo {
-    margin: 16px;
-    color: inherit;
-    font-weight: bold;
-    letter-spacing: -0.03em;
-    font-size: 1.875rem;
-    line-height: 1.2;
+  margin: 16px;
+  color: inherit;
+  font-weight: bold;
+  letter-spacing: -0.03em;
+  font-size: 1.875rem;
+  line-height: 1.2;
 }
 
-
-
 @media (max-width: 767px) {
-
 }
 </style>

@@ -1,33 +1,49 @@
 <script setup>
 import Heading from "../components/UI/Heading.vue";
 import Button from "../components/UI/Button.vue";
-import { useStore } from "vuex";
+import { useFormularioStore } from "../router/store";
 import { useRouter } from "vue-router";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import Footer from "../components/UI/Footer.vue";
 
-const store = useStore();
+const store = useFormularioStore();
 const router = useRouter();
 const error = ref("");
 
 const handleSubmit = (event) => {
-event.preventDefault(); // Evita el envío del formulario por defecto
+  event.preventDefault(); // Evita el envío del formulario por defecto
 
-const neveraSeleccionada = document.querySelector('input[name="nevera"]:checked');
-  const registroSeleccionado = document.querySelector('input[name="registro"]:checked');
+  const neveraSeleccionada = document.querySelector(
+    'input[name="nevera"]:checked'
+  );
+  const registroSeleccionado = document.querySelector(
+    'input[name="registro"]:checked'
+  );
 
   if (!neveraSeleccionada || !registroSeleccionado) {
     error.value = "Por favor responde todas las preguntas antes de continuar.";
     return; // Detener si falta una respuesta
   }
-// Limpiar error si no lo hay
-error.value = "";
-event.preventDefault(); // Evita el envío del formulario por defecto
-store.dispatch("completarFormulario"); // Disparador para indicar que el formulario se completó
-router.push("/ventas");
+  // Limpiar error si no lo hay
+  error.value = "";
+  event.preventDefault(); // Evita el envío del formulario por defecto
+  store.completarFormulario(); // Marca el formulario como completado
+  router.push("/ventas"); // Redirige a la siguiente pantalla
 };
+onMounted(() => {
+  let miRuta = window.location.pathname;
 
+  // Validar si ya existe "ruta"
+  if (localStorage.getItem.length > 0) {
+    localStorage.removeItem("ruta");
 
+    // Setear la ruta por defecto
+    localStorage.setItem("ruta", miRuta);
+  } else {
+    // Setear la ruta por defecto
+    localStorage.setItem("ruta", miRuta);
+  }
+});
 </script>
 
 <template>
@@ -120,17 +136,16 @@ router.push("/ventas");
 
         <div class="mt-4 tarjeta">
           <div class="checklist">
-
-              <Button @click="handleSubmit"></Button>
-              <p v-if="error" class="text-danger mt-1 flex justify-center">
-                {{ error }}
-              </p>
+            <Button @click="handleSubmit"></Button>
+            <p v-if="error" class="text-danger mt-1 flex justify-center">
+              {{ error }}
+            </p>
           </div>
         </div>
       </div>
     </div>
   </section>
-  <Footer class=" bottom-0 left-0 right-0"></Footer>
+  <Footer class="bottom-0 left-0 right-0"></Footer>
 </template>
 
 <style scoped>
