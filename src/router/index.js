@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import InicioView from "../views/InicioView.vue";
-import store from "./store";
+import store from "./store"; // Importa el store de Vuex
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -65,26 +65,26 @@ const router = createRouter({
       meta: { requiereFormulario: true },
     },
     {
-      path: "/Pantalla11View",
-      name: "pantalla11",
+      path: "/Terminado",
+      name: "Terminado",
       component: () => import("../views/Pantalla11View.vue"),
       meta: { requiereFormulario: true },
     },
     {
-      path: "/Pantalla12View",
-      name: "pantalla12",
+      path: "/ventas",
+      name: "ventas",
       component: () => import("../views/Pantalla12View.vue"),
       meta: { requiereFormulario: true },
     },
     {
-      path: "/Pantalla13View",
-      name: "pantalla13",
+      path: "/datosPersonales",
+      name: "datosPersonales",
       component: () => import("../views/Pantalla13View.vue"),
       meta: { requiereFormulario: true },
     },
     {
-      path: "/Pantalla14View",
-      name: "pantalla14",
+      path: "/datosPersonales2",
+      name: "datosPersonales2",
       component: () => import("../views/Pantalla14View.vue"),
       meta: { requiereFormulario: true },
     },

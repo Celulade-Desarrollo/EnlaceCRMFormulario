@@ -1,20 +1,50 @@
 <script setup>
-import { FormKit } from '@formkit/vue';
 import Heading from "../components/UI/Heading.vue";
 import Button from "../components/UI/Button.vue";
+import Footer from "../components/UI/Footer.vue";
 
-const onSubmit = (formData) => {
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
 
-  window.location.href = 'Pantalla7View';
+const store = useStore();
+const router = useRouter();
+
+const nivelEducativo = ref(''); // Refs para almacenar los valores de los campos
+const estrato = ref('');
+const grupoEtnico = ref('');
+const declarasRenta = ref('');
+const rut = ref('');
+const mensajeAlerta = ref('');
+const mostrarAlerta = ref(false);
+
+const handleSubmit = (event) => {
+    if (!nivelEducativo.value ||
+      !estrato.value ||
+      !grupoEtnico.value ||
+      !declarasRenta.value ||
+      !rut.value) {
+     // Evitar el envío del formulario si no es válido
+    event.preventDefault();
+    mostrarAlerta.value = true;
+    mensajeAlerta.value = 'Por favor completa todos los campos.';
+    setTimeout(() => {
+      mensajeAlerta.value = "";
+    }, 3000);
+    return;
+  }
+  event.preventDefault();
+  mensajeAlerta.value = false;
+  store.dispatch("completarFormulario"); // Disparador para indicar que el formulario se completó
+  router.push("/negocio");
 };
 </script>
 
 <template>
   <Heading></Heading>
   <h2 class="titulo">Datos Personales</h2>
-  <!-- TODO: Validar si fromkit es necesario -->
   <!-- Select de generos -->
-  <form @submit.prevent="onSubmit">
+  <form>
     <div class="form-group">
       <label for="nivel educativo">Nivel Educativo</label>
       <div class="custom-select-wrapper">
@@ -63,33 +93,16 @@ const onSubmit = (formData) => {
       <label for="rut">¿Esta obligado a tener RUT por tu actividad económica?</label>
       <div class="custom-select-wrapper">
         <select v-model="rut" name="Rut" class="custom-select">
+          <option selected disabled value="">Seleccione</option>
           <option value="si">Sí</option>
           <option value="no">No</option>
         </select>
       </div>
+        <Button @click="handleSubmit" class="mt-5"></Button>
+        <p v-if="mostrarAlerta" class="text-danger mt-1 flex justify-center">{{ mensajeAlerta }}</p>
     </div>
-    <Button type="submit"></Button>
   </form>
- 
-     <!--  <FormKit
-        type="select"
-        name="grupoEtnico"
-        label="Grupo Étnico"
-        placeholder="Seleccione"
-        :options="{
-          afrocolombiano: 'Afrocolombiano',
-          indigena: 'Indígena',
-          raizal: 'Raizal',
-          palenquero: 'Palenquero',
-          gitano: 'Gitano',
-          otro: 'Otro',
-        }"
-        validation="required"
-        validation-visibility="dirty"
-        :validation-messages="{
-          required: 'Seleccione un campo',
-        }"
-      /> -->
+  <Footer class="absolute bottom-0 left-0 right-0"></Footer>
 </template>
 
 <style scoped>
@@ -138,7 +151,7 @@ const onSubmit = (formData) => {
 .custom-select {
   appearance: none;
   border: none;
-  border-bottom: 2px solid #ccc;
+  border-bottom: 2px solid #09008be1;
   background-color: transparent;
   font-size: 16px;
   padding: 8px 30px 8px 0;

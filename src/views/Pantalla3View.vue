@@ -114,11 +114,10 @@ const handleSubmit = (event) => {
     setTimeout(() => {
       errorMessage.value = "";
     }, 3000);
+    return;
   }
-
-  // Cuando todo se cumpla, redirigir
   event.preventDefault();
-  store.dispatch("completarFormulario"); // Disparador para indicar que el formulario se completó
+  store.dispatch("completarFormulario");
   router.push("/cedula");
 };
 </script>

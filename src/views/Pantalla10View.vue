@@ -84,7 +84,7 @@ const handleSubmit = (event) => {
   error.value = "";
   event.preventDefault(); // Evita el envío del formulario por defecto
   store.dispatch("completarFormulario"); // Disparador para indicar que el formulario se completó
-  router.push("/antesDeTerminar");
+  router.push("/Terminado");
 };
 </script>
 

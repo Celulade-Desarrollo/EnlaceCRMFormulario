@@ -54,7 +54,7 @@ const handleSubmit = (event) => {
         <div class="mt-4 tarjeta">
           <form>
             <div class="form-group">
-              <h3 class="titulo-8 mb-4 mt-3">
+              <h3 class="titulo-8 mb-4 mt-1">
                 ¿Y en qué parte de {{ ciudad }}?
               </h3>
               <label for="direccion" class="input-label mt-4">

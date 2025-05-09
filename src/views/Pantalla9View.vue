@@ -24,7 +24,7 @@ const neveraSeleccionada = document.querySelector('input[name="nevera"]:checked'
 error.value = "";
 event.preventDefault(); // Evita el envío del formulario por defecto
 store.dispatch("completarFormulario"); // Disparador para indicar que el formulario se completó
-router.push("/antesDeTerminar");
+router.push("/ventas");
 };
 
 

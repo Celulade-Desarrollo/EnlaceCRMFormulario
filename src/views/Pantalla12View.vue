@@ -1,11 +1,18 @@
 <script setup>
-    import RouterLink from "../components/UI/Routerlink.vue"; 
-    import Heading from "../components/UI/Heading.vue";
-    import Button from "../components/UI/Button.vue";
-    import { FormKit } from "@formkit/vue";
-    import { onMounted } from 'vue';   
-    
-    const handleCheckboxChange = (event) => {
+import Heading from "../components/UI/Heading.vue";
+import Button from "../components/UI/Button.vue";
+import Footer from "../components/UI/Footer.vue";
+import { ref, onMounted } from 'vue'; 
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';  
+
+const store = useStore();
+const router = useRouter();
+
+const mostrarAlerta = ref(false);
+const mensajeAlerta = ref("");
+
+const handleCheckboxChange = (event) => {
   const checkboxes = document.querySelectorAll('.single-checkbox');
   checkboxes.forEach(checkbox => {
     if (checkbox !== event.target) {
@@ -20,6 +27,26 @@ onMounted(() => {
     checkbox.addEventListener('change', handleCheckboxChange);
   });
 });
+
+const handleSubmit = (event) => {
+  event.preventDefault();
+
+  const checkboxes = document.querySelectorAll('.single-checkbox');
+  const algunoSeleccionado = Array.from(checkboxes).some(cb => cb.checked);
+
+  if (!algunoSeleccionado) {
+    mostrarAlerta.value = true;
+    mensajeAlerta.value = 'Por favor selecciona una opción.';
+    setTimeout(() => {
+      mostrarAlerta.value = false;
+    }, 3000);
+    return;
+  }
+
+  // Marcar el formulario como completado
+  store.dispatch("completarFormulario");
+  router.push("/antesDeTerminar");
+};
 </script>
 
 <template>   
@@ -66,15 +93,14 @@ onMounted(() => {
                 <span class="checkmark"></span>
                 Más de $400.000
             </label>
-            <form action="Pantalla10View">
-                <Button></Button>
-            </form>
+            <Button @click="handleSubmit" class="mt-5"></Button>
+            <p v-if="mostrarAlerta" class="text-danger mt-1">{{ mensajeAlerta }}</p>
         </div>
   </div>
 </div>
 </div>
 </section>
-
+  <Footer class="absolute bottom-0 left-0 right-0"></Footer>
 </template>
 
 <style scoped>
