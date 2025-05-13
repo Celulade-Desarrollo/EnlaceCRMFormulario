@@ -106,8 +106,10 @@ onMounted(() => {
 <template>
   <Heading />
   <motion.div v-bind="fadeInUp">
-    <section class="container registro">
-      <div class="row align-items-center p-5">
+    <section
+      class="container registro p-0 flex flex-col h-[100vh] justify-between overflow-hidden"
+    >
+      <div class="row align-items-center p-3">
         <div class="col-lg-6 desktop">
           <picture>
             <img
@@ -181,7 +183,7 @@ onMounted(() => {
           </div>
         </div>
       </div>
-      <Footer class="bottom-0 left-0 right-0"></Footer>
+      <Footer></Footer>
     </section>
   </motion.div>
 </template>

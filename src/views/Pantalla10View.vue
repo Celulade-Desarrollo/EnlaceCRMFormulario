@@ -52,6 +52,36 @@ const validateCheckboxes = () => {
   return group1Checked && group2Checked && group3Checked;
 };
 
+onMounted(() => {
+  const checkboxes = document.querySelectorAll(".single-checkbox");
+  checkboxes.forEach((checkbox) => {
+    checkbox.addEventListener("change", handleCheckboxChange);
+  });
+
+  const checkboxes1 = document.querySelectorAll(".single-checkbox-1");
+  checkboxes1.forEach((checkbox) => {
+    checkbox.addEventListener("change", handleCheckboxChange1);
+  });
+
+  const checkboxes2 = document.querySelectorAll(".single-checkbox-2");
+  checkboxes2.forEach((checkbox) => {
+    checkbox.addEventListener("change", handleCheckboxChange2);
+  });
+
+  let miRuta = window.location.pathname;
+
+  // Validar si ya existe "ruta"
+  if (localStorage.getItem.length > 0) {
+    localStorage.removeItem("ruta");
+
+    // Setear la ruta por defecto
+    localStorage.setItem("ruta", miRuta);
+  } else {
+    // Setear la ruta por defecto
+    localStorage.setItem("ruta", miRuta);
+  }
+});
+
 const handleSubmit = (event) => {
   if (!validateCheckboxes()) {
     event.preventDefault(); // Prevent form submissio
@@ -69,36 +99,6 @@ const handleSubmit = (event) => {
   event.preventDefault(); // Evita el envío del formulario por defecto
   store.completarFormulario(); // Marca el formulario como completado
   router.push("/Terminado"); // Redirige a la siguiente pantalla
-
-  onMounted(() => {
-    const checkboxes = document.querySelectorAll(".single-checkbox");
-    checkboxes.forEach((checkbox) => {
-      checkbox.addEventListener("change", handleCheckboxChange);
-    });
-
-    const checkboxes1 = document.querySelectorAll(".single-checkbox-1");
-    checkboxes1.forEach((checkbox) => {
-      checkbox.addEventListener("change", handleCheckboxChange1);
-    });
-
-    const checkboxes2 = document.querySelectorAll(".single-checkbox-2");
-    checkboxes2.forEach((checkbox) => {
-      checkbox.addEventListener("change", handleCheckboxChange2);
-    });
-
-    let miRuta = window.location.pathname;
-
-    // Validar si ya existe "ruta"
-    if (localStorage.getItem.length > 0) {
-      localStorage.removeItem("ruta");
-
-      // Setear la ruta por defecto
-      localStorage.setItem("ruta", miRuta);
-    } else {
-      // Setear la ruta por defecto
-      localStorage.setItem("ruta", miRuta);
-    }
-  });
 };
 </script>
 

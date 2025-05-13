@@ -138,7 +138,7 @@ onMounted(() => {
           </p>
         </div>
       </form>
-      <Footer class="absolute bottom-0 left-0 right-0"></Footer>
+      <Footer></Footer>
     </section>
   </motion.div>
 </template>
