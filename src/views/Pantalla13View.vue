@@ -180,16 +180,7 @@ onMounted(async () => {
               class="custom-select"
               name="departamento"
             >
-              <option selected disabled value="">
-                Selecciona un departamento
-              </option>
-              <option
-                v-for="dep in departments"
-                :key="dep.value"
-                :value="dep.value"
-              >
-                {{ dep.label }}
-              </option>
+              <option value="colombia">Colombia</option>
             </select>
           </div>
           <Button @click="handleSubmit" class="mt-5"></Button>
