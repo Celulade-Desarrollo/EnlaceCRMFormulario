@@ -107,7 +107,7 @@ onMounted(() => {
   <Heading />
   <motion.div v-bind="fadeInUp">
     <section class="container registro">
-      <div class="row align-items-center">
+      <div class="row align-items-center p-5">
         <div class="col-lg-6 desktop">
           <picture>
             <img
@@ -123,7 +123,7 @@ onMounted(() => {
           <div class="mt-4 tarjeta">
             <form novalidate>
               <div class="form-group">
-                <h4 class="mb-4 titulo-4 mt-1">Ingresa tu cédula</h4>
+                <h4 class="mb-5 titulo-4 mt-1">Ingresa tu cédula</h4>
                 <label for="numeroCedula" id="label-numeroCedula">
                   <input
                     id="numeroCedula"
@@ -181,9 +181,9 @@ onMounted(() => {
           </div>
         </div>
       </div>
+      <Footer class="bottom-0 left-0 right-0"></Footer>
     </section>
   </motion.div>
-  <Footer class="absolute bottom-0 left-0 right-0"></Footer>
 </template>
 
 <style scoped>
@@ -264,7 +264,13 @@ body {
 }
 
 .container {
-  background-color: white;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
+  padding: 0;
+  background-color: rgb(255, 255, 255);
   color: #111111;
 }
 .titulo-4 {
