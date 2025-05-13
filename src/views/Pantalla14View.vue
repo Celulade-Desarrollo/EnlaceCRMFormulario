@@ -206,6 +206,8 @@ onMounted(() => {
   outline: none;
   box-shadow: none;
 }
+
+
 .form-group {
   margin-left: 20px;
   margin-right: 20px;
