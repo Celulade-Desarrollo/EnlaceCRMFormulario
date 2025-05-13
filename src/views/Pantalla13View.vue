@@ -117,6 +117,8 @@ onMounted(async () => {
     localStorage.setItem("ruta", miRuta);
   }
 });
+
+
 </script>
 
 <template>
@@ -175,19 +177,28 @@ onMounted(async () => {
 
           <label for="departamento">Departamento</label>
           <div class="custom-select-wrapper">
-            <select
-              v-model="departamentoSeleccionado"
-              class="custom-select"
-              name="departamento"
+          <select
+            v-model="departamentoSeleccionado"
+            class="custom-select"
+            name="departamento"
+          >
+            <option selected disabled value="">
+              Selecciona un departamento
+            </option>
+            <option
+              v-for="dep in departments"
+              :key="dep.value"
+              :value="dep.value"
             >
-              <option value="colombia">Colombia</option>
-            </select>
-          </div>
-          <Button @click="handleSubmit" class="mt-5"></Button>
-          <p v-if="mostrarAlerta" class="text-danger mt-1 flex justify-center">
-            {{ mensajeAlerta }}
-          </p>
+              {{ dep.label }}
+            </option>
+          </select>
         </div>
+        <Button @click="handleSubmit" class="mt-5"></Button>
+        <p v-if="mostrarAlerta" class="text-danger mt-1 flex justify-center">
+          {{ mensajeAlerta }}
+        </p>
+      </div>
       </form>
       <Footer class="bottom-0 left-0 right-0"></Footer>
     </section>
