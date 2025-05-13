@@ -75,7 +75,7 @@ onMounted(async () => {
   const dd = String(hoy.getDate()).padStart(2, "0"); // Día actual (1-31)
   maxFechaNacimiento.value = `${yyyy}-${mm}-${dd}`; // Formato YYYY-MM-DD
   // Cargar los países y departamentos al montar el componente
-  try {
+ /*  try {
     const response = await axios.get("https://restcountries.com/v3.1/all");
     const listaPaises = response.data.map((pais) => ({
       value: pais.cca2,
@@ -92,7 +92,7 @@ onMounted(async () => {
     paises.value = listaPaises;
   } catch (error) {
     console.error("Error al cargar países:", error);
-  }
+  } */
 
   try {
     const response = await axios.get(
@@ -117,6 +117,8 @@ onMounted(async () => {
     localStorage.setItem("ruta", miRuta);
   }
 });
+
+
 </script>
 
 <template>
@@ -165,48 +167,38 @@ onMounted(async () => {
             />
           </div>
 
-          <label for="paisNacimiento">País de Nacimiento</label>
-          <div class="custom-select-wrapper">
-            <select
-              v-model="paisSeleccionado"
-              class="custom-select"
-              name="pais"
-            >
-              <option selected disabled value="">Selecciona tu país</option>
-              <option
-                v-for="pais in paises"
-                :key="pais.value"
-                :value="pais.value"
-              >
-                {{ pais.label }}
-              </option>
-            </select>
-          </div>
+        <label for="paisNacimiento">País de Nacimiento</label>
+        <div class="custom-select-wrapper">
+          <select v-model="paisSeleccionado" class="custom-select" name="pais">
+            <option selected disabled value="">Selecciona tu país</option>
+            <option value="colombia">Colombia</option> 
+          </select>
+        </div>
 
           <label for="departamento">Departamento</label>
           <div class="custom-select-wrapper">
-            <select
-              v-model="departamentoSeleccionado"
-              class="custom-select"
-              name="departamento"
+          <select
+            v-model="departamentoSeleccionado"
+            class="custom-select"
+            name="departamento"
+          >
+            <option selected disabled value="">
+              Selecciona un departamento
+            </option>
+            <option
+              v-for="dep in departments"
+              :key="dep.value"
+              :value="dep.value"
             >
-              <option selected disabled value="">
-                Selecciona un departamento
-              </option>
-              <option
-                v-for="dep in departments"
-                :key="dep.value"
-                :value="dep.value"
-              >
-                {{ dep.label }}
-              </option>
-            </select>
-          </div>
-          <Button @click="handleSubmit" class="mt-5"></Button>
-          <p v-if="mostrarAlerta" class="text-danger mt-1 flex justify-center">
-            {{ mensajeAlerta }}
-          </p>
+              {{ dep.label }}
+            </option>
+          </select>
         </div>
+        <Button @click="handleSubmit" class="mt-5"></Button>
+        <p v-if="mostrarAlerta" class="text-danger mt-1 flex justify-center">
+          {{ mensajeAlerta }}
+        </p>
+      </div>
       </form>
       <Footer class="bottom-0 left-0 right-0"></Footer>
     </section>

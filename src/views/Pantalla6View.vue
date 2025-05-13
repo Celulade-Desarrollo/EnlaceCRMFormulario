@@ -7,12 +7,12 @@ import { FormKit } from "@formkit/vue";
 import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
 
-const config = {
+/* const config = {
   cUrl: "https://api.countrystatecity.in/v1/countries",
   cKey: "SWNxMFI5MzlqQzhoR3JqTXZTQWVJWVluZVNpeEU5UVVGUFVsNFJrbA==",
-};
+}; */
 
-const countrySelect = ref(null);
+/* const countrySelect = ref(null);
 
 function loadCountries() {
   let apiEndPoint = config.cUrl;
@@ -30,7 +30,7 @@ function loadCountries() {
     .catch((error) => console.error("Error loading countries:", error));
 }
 
-onMounted(loadCountries);
+onMounted(loadCountries); */
 </script>
 
 <template>
@@ -59,6 +59,7 @@ onMounted(loadCountries);
           ref="countrySelect"
         >
           <option selected disabled>Selecciona tu país</option>
+          <option value="colombia">Colombia</option>
         </select>
       </div>
 
