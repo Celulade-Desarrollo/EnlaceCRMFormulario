@@ -52,7 +52,9 @@ onMounted(() => {
 <template>
   <Heading></Heading>
   <motion.div v-bind="fadeInUp">
-    <section class="container py-5 registro">
+    <section
+      class="container registro p-0 flex flex-col h-[100vh] justify-between overflow-hidden"
+    >
       <div class="row align-items-center">
         <div class="col-lg-6 desktop">
           <picture>
@@ -126,9 +128,9 @@ onMounted(() => {
           </div>
         </div>
       </div>
+      <Footer />
     </section>
   </motion.div>
-  <Footer class="absolute bottom-0 left-0 right-0" />
 </template>
 
 <style scoped>

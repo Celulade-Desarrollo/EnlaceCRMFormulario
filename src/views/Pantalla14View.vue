@@ -63,82 +63,84 @@ onMounted(() => {
   <motion.div v-bind="fadeInUp">
     <h2 class="titulo">Datos Personales</h2>
     <!-- Select de generos -->
-    <form>
-      <div class="form-group">
-        <label for="nivel educativo">Nivel Educativo</label>
-        <div class="custom-select-wrapper">
-          <select
-            v-model="nivelEducativo"
-            name="nivelEducativo"
-            class="custom-select"
+    <section class="h-[100vh] flex flex-col justify-between overflow-hidden">
+      <form>
+        <div class="form-group">
+          <label for="nivel educativo">Nivel Educativo</label>
+          <div class="custom-select-wrapper">
+            <select
+              v-model="nivelEducativo"
+              name="nivelEducativo"
+              class="custom-select"
+            >
+              <option selected disabled value="">Seleccione</option>
+              <option value="basico">Básico Primaria</option>
+              <option value="bachillerato">Bachillerato</option>
+              <option value="tecnico">Técnico</option>
+              <option value="tecnologo">Tecnólogo</option>
+              <option value="profesional">Profesional</option>
+              <option value="posgrado">Posgrado</option>
+            </select>
+          </div>
+          <label for="estrato">Estrato</label>
+          <div class="custom-select-wrapper">
+            <select v-model="estrato" name="estrato" class="custom-select">
+              <option selected disabled value="">Seleccione</option>
+              <option value="1">Estrato 1</option>
+              <option value="2">Estrato 2</option>
+              <option value="3">Estrato 3</option>
+              <option value="4">Estrato 4</option>
+              <option value="5">Estrato 5</option>
+              <option value="6">Estrato 6</option>
+            </select>
+          </div>
+          <label for="grupo etnico">Grupo Étnico</label>
+          <div class="custom-select-wrapper">
+            <select
+              v-model="grupoEtnico"
+              name="grupoEtnico"
+              class="custom-select"
+            >
+              <option selected disabled value="">Seleccione</option>
+              <option value="afrocolombiano">Afrocolombiano</option>
+              <option value="indigena">Indígena</option>
+              <option value="raizal">Raizal</option>
+              <option value="palenquero">Palenquero</option>
+              <option value="gitano">Gitano</option>
+              <option value="otro">Otro</option>
+            </select>
+          </div>
+          <label for="declaraRenta">¿Declara Renta?</label>
+          <div class="custom-select-wrapper">
+            <select
+              v-model="declarasRenta"
+              name="declarasRenta"
+              class="custom-select"
+            >
+              <option selected disabled value="">Seleccione</option>
+              <option value="si">Sí</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+          <label for="rut"
+            >¿Esta obligado a tener RUT por tu actividad económica?</label
           >
-            <option selected disabled value="">Seleccione</option>
-            <option value="basico">Básico Primaria</option>
-            <option value="bachillerato">Bachillerato</option>
-            <option value="tecnico">Técnico</option>
-            <option value="tecnologo">Tecnólogo</option>
-            <option value="profesional">Profesional</option>
-            <option value="posgrado">Posgrado</option>
-          </select>
+          <div class="custom-select-wrapper">
+            <select v-model="rut" name="Rut" class="custom-select">
+              <option selected disabled value="">Seleccione</option>
+              <option value="si">Sí</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+          <Button @click="handleSubmit" class="mt-5"></Button>
+          <p v-if="mostrarAlerta" class="text-danger mt-1 flex justify-center">
+            {{ mensajeAlerta }}
+          </p>
         </div>
-        <label for="estrato">Estrato</label>
-        <div class="custom-select-wrapper">
-          <select v-model="estrato" name="estrato" class="custom-select">
-            <option selected disabled value="">Seleccione</option>
-            <option value="1">Estrato 1</option>
-            <option value="2">Estrato 2</option>
-            <option value="3">Estrato 3</option>
-            <option value="4">Estrato 4</option>
-            <option value="5">Estrato 5</option>
-            <option value="6">Estrato 6</option>
-          </select>
-        </div>
-        <label for="grupo etnico">Grupo Étnico</label>
-        <div class="custom-select-wrapper">
-          <select
-            v-model="grupoEtnico"
-            name="grupoEtnico"
-            class="custom-select"
-          >
-            <option selected disabled value="">Seleccione</option>
-            <option value="afrocolombiano">Afrocolombiano</option>
-            <option value="indigena">Indígena</option>
-            <option value="raizal">Raizal</option>
-            <option value="palenquero">Palenquero</option>
-            <option value="gitano">Gitano</option>
-            <option value="otro">Otro</option>
-          </select>
-        </div>
-        <label for="declaraRenta">¿Declara Renta?</label>
-        <div class="custom-select-wrapper">
-          <select
-            v-model="declarasRenta"
-            name="declarasRenta"
-            class="custom-select"
-          >
-            <option selected disabled value="">Seleccione</option>
-            <option value="si">Sí</option>
-            <option value="no">No</option>
-          </select>
-        </div>
-        <label for="rut"
-          >¿Esta obligado a tener RUT por tu actividad económica?</label
-        >
-        <div class="custom-select-wrapper">
-          <select v-model="rut" name="Rut" class="custom-select">
-            <option selected disabled value="">Seleccione</option>
-            <option value="si">Sí</option>
-            <option value="no">No</option>
-          </select>
-        </div>
-        <Button @click="handleSubmit" class="mt-5"></Button>
-        <p v-if="mostrarAlerta" class="text-danger mt-1 flex justify-center">
-          {{ mensajeAlerta }}
-        </p>
-      </div>
-    </form>
+      </form>
+      <Footer class="absolute bottom-0 left-0 right-0"></Footer>
+    </section>
   </motion.div>
-  <Footer class="absolute bottom-0 left-0 right-0"></Footer>
 </template>
 
 <style scoped>
@@ -206,7 +208,6 @@ onMounted(() => {
   outline: none;
   box-shadow: none;
 }
-
 
 .form-group {
   margin-left: 20px;

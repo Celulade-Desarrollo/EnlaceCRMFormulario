@@ -66,7 +66,9 @@ onMounted(() => {
 <template>
   <Heading></Heading>
   <motion.div v-bind="fadeInUp">
-    <section class="container py-5 registro">
+    <section
+      class="container registro h-[100vh] flex flex-col justify-between overflow-hidden p-0"
+    >
       <div class="row align-items-center">
         <div class="col-lg-6 desktop">
           <picture>
@@ -79,7 +81,7 @@ onMounted(() => {
             />
           </picture>
         </div>
-        <div class="col-lg-6 botones">
+        <div class="col-lg-6 botones p-5">
           <div>
             <h2 class="titulo">Cuentanos un poco acerca de tu negocio</h2>
             <p class="mb-4 font-bold">
@@ -154,9 +156,9 @@ onMounted(() => {
           </div>
         </div>
       </div>
+      <Footer class="absolute bottom-0 left-0 right-0"></Footer>
     </section>
   </motion.div>
-  <Footer class="absolute bottom-0 left-0 right-0"></Footer>
 </template>
 
 <style scoped>

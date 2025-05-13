@@ -85,7 +85,9 @@ onMounted(() => {
 <template>
   <Heading />
   <motion.div v-bind="fadeInUp">
-    <section class="container py-5 registro">
+    <section
+      class="container registro h-[100vh] flex flex-col justify-between overflow-hidden p-0"
+    >
       <div class="row align-items-center">
         <div class="col-lg-6 desktop">
           <picture>
@@ -101,7 +103,7 @@ onMounted(() => {
       </div>
       <!-- Muestra la alerta solo si hay un error -->
 
-      <div class="select-option mt-5">
+      <div class="select-option mt-5 p-5">
         <h3 class="mb-4 titulo-7">¿Cuéntanos dónde está tu negocio?</h3>
         <p class="mb-4 font-bold">
           Por norma es necesario que te hagamos esta pregunta
@@ -134,14 +136,16 @@ onMounted(() => {
         </div>
       </div>
 
-      <Button class="mt-5" @click="handleSubmit"></Button>
+      <div class="p-5">
+        <Button class="mt-5" @click="handleSubmit"></Button>
+      </div>
 
       <p v-if="error" class="text-danger mt-1 flex justify-center">
         {{ error }}
       </p>
+      <Footer />
     </section>
   </motion.div>
-  <Footer class="absolute bottom-0 left-0 right-0" />
 </template>
 
 <style scoped>
