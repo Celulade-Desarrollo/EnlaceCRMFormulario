@@ -24,23 +24,10 @@ const handleCheckboxChange = (event) => {
 };
 
 const handleSubmit = (event) => {
-  event.preventDefault();
-
-  const checkboxes = document.querySelectorAll(".single-checkbox");
-  const algunoSeleccionado = Array.from(checkboxes).some((cb) => cb.checked);
-
-  if (!algunoSeleccionado) {
-    mostrarAlerta.value = true;
-    mensajeAlerta.value = "Por favor selecciona una opción.";
-    setTimeout(() => {
-      mostrarAlerta.value = false;
-    }, 3000);
-    return;
-  }
 
   // Marcar el formulario como completado
   store.completarFormulario(); // Marca el formulario como completado
-  router.push("/truora"); // Redirige a la siguiente pantalla
+  router.push("/antesDeTerminar"); // Redirige a la siguiente pantalla
 };
 onMounted(() => {
   const checkboxes = document.querySelectorAll(".single-checkbox");
@@ -83,71 +70,15 @@ onMounted(() => {
         </div>
         <div class="col-lg-6 botones p-5">
           <div>
-            <h2 class="titulo">Cuentanos un poco acerca de tu negocio</h2>
+            <h2 class="titulo">Intregacion con Truora</h2>
             <p class="mb-4 font-bold">
-              Esta información es totalmente confidencial y esta nos permitirá
-              conocerte mejor
+
             </p>
           </div>
 
           <div class="mt-4 tarjeta">
-            <p class="mb-4 font-bold">¿Cuanto vendes al día (opcional)?</p>
             <div class="checklist">
-              <label class="check-item mb-4">
-                <input
-                  type="checkbox"
-                  name="100"
-                  value="100"
-                  id="100P"
-                  class="single-checkbox"
-                />
-                <span class="checkmark"></span>
-                Menos de $100.000
-              </label>
-              <label class="check-item mb-4">
-                <input
-                  type="checkbox"
-                  name="cedula"
-                  value="extranjeria"
-                  id="otros"
-                  class="single-checkbox"
-                />
-                <span class="checkmark"></span>
-                Entre $100.000 y $200.000
-              </label>
-              <label class="check-item mb-4">
-                <input
-                  type="checkbox"
-                  name="cedula"
-                  value="extranjeria"
-                  id="otros"
-                  class="single-checkbox"
-                />
-                <span class="checkmark"></span>
-                Entre $200.000 y $300.000
-              </label>
-              <label class="check-item mb-4">
-                <input
-                  type="checkbox"
-                  name="cedula"
-                  value="extranjeria"
-                  id="otros"
-                  class="single-checkbox"
-                />
-                <span class="checkmark"></span>
-                Entre $300.000 y $400.000
-              </label>
-              <label class="check-item mb-4">
-                <input
-                  type="checkbox"
-                  name="cedula"
-                  value="extranjeria"
-                  id="otros"
-                  class="single-checkbox"
-                />
-                <span class="checkmark"></span>
-                Más de $400.000
-              </label>
+      
               <a
                 href="https://identity.truora.com/preview/IPFf58ef097af96942b9769cea7565b4034"
                 style="

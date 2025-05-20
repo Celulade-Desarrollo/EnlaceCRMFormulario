@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import axios from "axios";
 import Heading from "../components/UI/Heading.vue";
 import Button from "../components/UI/Button.vue";
@@ -11,83 +11,84 @@ import { motion } from "motion-v";
 
 const store = useFormularioStore();
 const router = useRouter();
+
 const departments = ref([]);
 const cities = ref([]);
-const selectedDepartment = ref(null);
-const selectedCity = ref(null);
+const selectedDepartment = ref(""); // Será el ID del departamento
+const selectedCity = ref("");
+const selectedDepartmentName = ref(""); // Nombre del departamento
 const error = ref("");
 
+// Cargar departamentos desde API Colombia
 const loadDepartments = async () => {
   try {
-    const response = await axios.get(
-      "https://www.datos.gov.co/resource/xdk5-pm3f.json?$select=departamento&$group=departamento&$order=departamento"
-    );
-    departments.value = response.data.map((item) => item.departamento);
+    const response = await axios.get("https://api-colombia.com/api/v1/Department");
+    departments.value = response.data; // Arreglo completo de objetos
   } catch (err) {
     error.value = "Error al cargar los departamentos.";
     console.error("Error loading departments:", err);
   }
 };
 
+// Cargar ciudades al seleccionar un departamento
 const loadCities = async () => {
   if (!selectedDepartment.value) return;
   try {
     const response = await axios.get(
-      `https://www.datos.gov.co/resource/xdk5-pm3f.json?$select=municipio&$where=departamento='${selectedDepartment.value}'&$order=municipio`
+      `https://api-colombia.com/api/v1/Department/${selectedDepartment.value}/cities`
     );
-    cities.value = response.data.map((item) => item.municipio);
+    cities.value = response.data.map((city) => city.name);
   } catch (err) {
     error.value = "Error al cargar las ciudades.";
     console.error("Error loading cities:", err);
   }
 };
 
+// Cargar ciudades cada vez que se seleccione un nuevo departamento
+watch(selectedDepartment, (newVal) => {
+  const dept = departments.value.find((d) => d.id === newVal);
+  selectedDepartmentName.value = dept ? dept.name : "";
+  loadCities();
+});
+
+// Manejar el envío del formulario
 const handleSubmit = (event) => {
-  // Validación
   if (!selectedDepartment.value || !selectedCity.value) {
     error.value = "Por favor, selecciona tu departamento y ciudad.";
-    event.preventDefault(); // Evita el envío del formulario por defecto
-
+    event.preventDefault();
     setTimeout(() => {
       error.value = "";
     }, 3000);
     return false;
   }
 
-  // Guardar ciudad seleccionada en localStorage
+  // Guardar ciudad en localStorage
   localStorage.setItem("selectedCity", selectedCity.value);
+  localStorage.setItem("selectedDepartment", selectedDepartmentName.value);
 
-  // Limpiar error si no lo hay
   error.value = "";
-
-  // Redirigir a la nueva página
-  event.preventDefault(); // Evitar el envío del formulario si no es válido
-  store.completarFormulario(); // Marca el formulario como completado
-  router.push("/ubicacion"); // Redirige a la siguiente pantalla
+  event.preventDefault();
+  store.completarFormulario();
+  router.push("/ubicacion");
 };
 
+// Inicialización
 onMounted(() => {
   loadDepartments();
-  let miRuta = window.location.pathname;
-  // Validar si ya existe "ruta"
-  if (localStorage.getItem.length > 0) {
-    localStorage.removeItem("ruta");
 
-    // Setear la ruta por defecto
-    localStorage.setItem("ruta", miRuta);
-  } else {
-    // Setear la ruta por defecto
-    localStorage.setItem("ruta", miRuta);
+  const miRuta = window.location.pathname;
+  if (localStorage.getItem("ruta")) {
+    localStorage.removeItem("ruta");
   }
+  localStorage.setItem("ruta", miRuta);
 });
 </script>
+
 
 <template>
   <Heading />
   <motion.div v-bind="fadeInUp">
-    <section
-      class="container registro h-[100vh] flex flex-col justify-between overflow-hidden p-0"
-    >
+    <section class="container registro h-[100vh] flex flex-col justify-between overflow-hidden p-0">
       <div class="row align-items-center">
         <div class="col-lg-6 desktop">
           <picture>
@@ -101,34 +102,32 @@ onMounted(() => {
           </picture>
         </div>
       </div>
-      <!-- Muestra la alerta solo si hay un error -->
 
       <div class="select-option mt-5 p-5">
         <h3 class="mb-4 titulo-7">¿Cuéntanos dónde está tu negocio?</h3>
-        <p class="mb-4 font-bold">
-          Por norma es necesario que te hagamos esta pregunta
-        </p>
+        <p class="mb-4 font-bold">Por norma es necesario que te hagamos esta pregunta</p>
+        
         <p class="font-bold">Elige un departamento</p>
         <div class="custom-select-wrapper">
           <select
             v-model="selectedDepartment"
-            @change="loadCities"
             class="custom-select"
           >
-            <option disabled selected>Elige un departamento</option>
+            <option disabled value="">Elige un departamento</option>
             <option
               v-for="department in departments"
-              :key="department"
-              :value="department"
+              :key="department.id"
+              :value="department.id"
             >
-              {{ department }}
+              {{ department.name }}
             </option>
           </select>
         </div>
+
         <p class="font-bold">Elige una ciudad</p>
         <div class="custom-select-wrapper">
           <select v-model="selectedCity" class="custom-select">
-            <option disabled selected>Elige una ciudad</option>
+            <option disabled value="">Elige una ciudad</option>
             <option v-for="city in cities" :key="city" :value="city">
               {{ city }}
             </option>
