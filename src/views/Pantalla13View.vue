@@ -14,16 +14,30 @@ const store = useFormularioStore();
 const router = useRouter();
 
 const departments = ref([]);
-const paises = ref([]);
+const departamentoSeleccionado = ref("");
+const paisSeleccionado = ref("");
+const errorMessage = ref("");
 const mostrarAlerta = ref(false);
 const mensajeAlerta = ref("");
 
-const genero = ref(""); // Refs para almacenar los valores de los campos
+const genero = ref("");
 const estadoCivil = ref("");
 const fechaNacimiento = ref("");
-const paisSeleccionado = ref("");
-const departamentoSeleccionado = ref("");
 const maxFechaNacimiento = ref("");
+
+// Cargar departamentos y formatearlos
+const loadDepartments = async () => {
+  try {
+    const response = await axios.get("https://api-colombia.com/api/v1/Department");
+    departments.value = response.data.map((dep) => ({
+      value: dep.name,
+      label: dep.name,
+    }));
+  } catch (err) {
+    errorMessage.value = "Error al cargar los departamentos.";
+    console.error("Error loading departments:", err);
+  }
+};
 
 const handleSubmit = (event) => {
   if (
@@ -33,7 +47,6 @@ const handleSubmit = (event) => {
     !paisSeleccionado.value ||
     !departamentoSeleccionado.value
   ) {
-    // Evitar el envío del formulario si no es válido
     event.preventDefault();
     mostrarAlerta.value = true;
     mensajeAlerta.value = "Por favor completa todos los campos.";
@@ -63,48 +76,20 @@ const handleSubmit = (event) => {
 
   event.preventDefault();
   mensajeAlerta.value = false;
-  store.completarFormulario(); // Marca el formulario como completado
-  router.push("/datosPersonales2"); // Redirige a la siguiente pantalla
+  store.completarFormulario();
+  router.push("/datosPersonales2");
 };
 
 onMounted(async () => {
   const hoy = new Date();
-  hoy.setFullYear(hoy.getFullYear() - 18); // Restar 18 años a la fecha actual
+  hoy.setFullYear(hoy.getFullYear() - 18);
   const yyyy = hoy.getFullYear();
-  const mm = String(hoy.getMonth() + 1).padStart(2, "0"); // Mes actual (0-11)
-  const dd = String(hoy.getDate()).padStart(2, "0"); // Día actual (1-31)
-  maxFechaNacimiento.value = `${yyyy}-${mm}-${dd}`; // Formato YYYY-MM-DD
-  // Cargar los países y departamentos al montar el componente
- /*  try {
-    const response = await axios.get("https://restcountries.com/v3.1/all");
-    const listaPaises = response.data.map((pais) => ({
-      value: pais.cca2,
-      label: pais.name.common,
-    }));
+  const mm = String(hoy.getMonth() + 1).padStart(2, "0");
+  const dd = String(hoy.getDate()).padStart(2, "0");
+  maxFechaNacimiento.value = `${yyyy}-${mm}-${dd}`;
 
-    // Encontrar Colombia y moverla al principio de la lista
-    const indiceColombia = listaPaises.findIndex((pais) => pais.value === "CO");
-    if (indiceColombia !== -1) {
-      const colombia = listaPaises.splice(indiceColombia, 1)[0];
-      listaPaises.unshift(colombia); // Añadir Colombia al principio
-    }
+  await loadDepartments();
 
-    paises.value = listaPaises;
-  } catch (error) {
-    console.error("Error al cargar países:", error);
-  } */
-
-  try {
-    const response = await axios.get(
-      "https://www.datos.gov.co/resource/xdk5-pm3f.json?$select=departamento&$group=departamento&$order=departamento"
-    );
-    departments.value = response.data.map((item) => ({
-      value: item.departamento,
-      label: item.departamento,
-    }));
-  } catch (err) {
-    console.error("Error loading departments:", err);
-  }
   let miRuta = window.location.pathname;
   // Validar si ya existe "ruta"
   if (localStorage.getItem.length > 0) {
@@ -122,11 +107,10 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Heading></Heading>
+  <Heading />
   <motion.div v-bind="fadeInUp">
     <h2 class="titulo">Datos Personales</h2>
 
-    <!-- Select de generos -->
     <section class="h-[100vh] flex flex-col justify-between overflow-hidden">
       <form>
         <div class="form-group">
@@ -139,13 +123,10 @@ onMounted(async () => {
               <option value="Otro">Otro</option>
             </select>
           </div>
+
           <label for="estadoCivil">Estado civil</label>
           <div class="custom-select-wrapper">
-            <select
-              v-model="estadoCivil"
-              name="estadoCivil"
-              class="custom-select"
-            >
+            <select v-model="estadoCivil" name="estadoCivil" class="custom-select">
               <option selected disabled value="">Seleccione</option>
               <option value="soltero">Soltero/a</option>
               <option value="casado">Casado/a</option>
@@ -167,40 +148,41 @@ onMounted(async () => {
             />
           </div>
 
-        <label for="paisNacimiento">País de Nacimiento</label>
-        <div class="custom-select-wrapper">
-          <select v-model="paisSeleccionado" class="custom-select" name="pais">
-            <option selected disabled value="">Selecciona tu país</option>
-            <option value="colombia">Colombia</option> 
-          </select>
-        </div>
+          <label for="paisNacimiento">País de Nacimiento</label>
+          <div class="custom-select-wrapper">
+            <select v-model="paisSeleccionado" class="custom-select" name="pais">
+              <option selected disabled value="">Selecciona tu país</option>
+              <option value="colombia">Colombia</option>
+            </select>
+          </div>
 
           <label for="departamento">Departamento</label>
           <div class="custom-select-wrapper">
-          <select
-            v-model="departamentoSeleccionado"
-            class="custom-select"
-            name="departamento"
-          >
-            <option selected disabled value="">
-              Selecciona un departamento
-            </option>
-            <option
-              v-for="dep in departments"
-              :key="dep.value"
-              :value="dep.value"
+            <select
+              v-model="departamentoSeleccionado"
+              class="custom-select"
+              name="departamento"
             >
-              {{ dep.label }}
-            </option>
-          </select>
+              <option selected disabled value="">
+                Selecciona un departamento
+              </option>
+              <option
+                v-for="dep in departments"
+                :key="dep.value"
+                :value="dep.value"
+              >
+                {{ dep.label }}
+              </option>
+            </select>
+          </div>
+
+          <Button @click="handleSubmit" class="mt-5" />
+          <p v-if="mostrarAlerta" class="text-danger mt-1 flex justify-center">
+            {{ mensajeAlerta }}
+          </p>
         </div>
-        <Button @click="handleSubmit" class="mt-5"></Button>
-        <p v-if="mostrarAlerta" class="text-danger mt-1 flex justify-center">
-          {{ mensajeAlerta }}
-        </p>
-      </div>
       </form>
-      <Footer class="bottom-0 left-0 right-0"></Footer>
+      <Footer class="bottom-0 left-0 right-0" />
     </section>
   </motion.div>
 </template>
