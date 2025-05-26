@@ -148,16 +148,7 @@ onMounted(() => {
                 <span class="checkmark"></span>
                 Más de $400.000
               </label>
-              <a
-                href="https://identity.truora.com/preview/IPFf58ef097af96942b9769cea7565b4034"
-                style="
-                  text-decoration: none; background: #01022E;
-                  color: #ffffff; border-radius: 6px;
-                  display: inline-block; padding: 8px 32px;
-                "
-              >
-                Validación con Truora
-              </a>
+
               <Button @click="handleSubmit" class="mt-5"></Button>
               <p v-if="mostrarAlerta" class="text-danger mt-1">
                 {{ mensajeAlerta }}

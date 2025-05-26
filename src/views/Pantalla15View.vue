@@ -70,29 +70,27 @@ onMounted(() => {
         </div>
         <div class="col-lg-6 botones p-5">
           <div>
-            <h2 class="titulo">Intregacion con Truora</h2>
+            <h2 class="titulo">Validaremos su identidad...</h2>
             <p class="mb-4 font-bold">
-
+                <picture>
+                  <img
+                    src="/validacionUsuario.jpg"
+                    alt="Pago"
+                    class="img-fluid"
+                    loading="lazy"
+                    title="Pago"
+                  />
+                </picture>
             </p>
           </div>
 
           <div class="mt-4 tarjeta">
-            <div class="checklist">
-      
-              <a
-                href="https://identity.truora.com/preview/IPFf58ef097af96942b9769cea7565b4034"
-                style="
-                  text-decoration: none; background: #01022E;
-                  color: #ffffff; border-radius: 6px;
-                  display: inline-block; padding: 8px 32px;
-                "
-              >
-                Validación con Truora
+            <div class="validar-truora">
+              <a 
+                href="https://identity.truora.com/preview/IPFf58ef097af96942b9769cea7565b4034" 
+                style=" text-decoration: none; background: #DD3590; color: #ffffff; border-radius: 6px; display: inline-block; padding: 8px 32px; font-weight: bold; " > 
+                Validar cedula 
               </a>
-              <Button @click="handleSubmit" class="mt-5"></Button>
-              <p v-if="mostrarAlerta" class="text-danger mt-1">
-                {{ mensajeAlerta }}
-              </p>
             </div>
           </div>
         </div>
@@ -240,6 +238,12 @@ span {
 p {
   color: black;
 }
+.validar-truora {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+} 
 /* Estilo para los elementos de la lista */
 .check-item {
   display: flex;
