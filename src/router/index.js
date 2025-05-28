@@ -62,13 +62,11 @@ const router = createRouter({
       path: "/antesDeTerminar",
       name: "antesDeTerminar",
       component: () => import("../views/Pantalla10View.vue"),
-      meta: { requiereFormulario: true },
     },
     {
       path: "/Terminado",
       name: "Terminado",
       component: () => import("../views/Pantalla11View.vue"),
-      meta: { requiereFormulario: true },
     },
     {
       path: "/ventas",

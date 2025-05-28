@@ -49,7 +49,7 @@ const validateEmail = () => {
   if (
     emailRegex.test(emailValue) &&
     emailRegex.test(confirmEmailValue) &&
-    emailValue !== confirmEmailValue
+    emailValue.toLowerCase() !== confirmEmailValue.toLowerCase()
   ) {
     confirmEmailErrorMessage.value = "Los correos electrónicos no coinciden.";
     isValid = false;
