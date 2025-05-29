@@ -62,7 +62,6 @@ const router = createRouter({
       path: "/antesDeTerminar",
       name: "antesDeTerminar",
       component: () => import("../views/Pantalla10View.vue"),
-      meta: { requiereFormulario: true },
     },
     {
       path: "/Terminado",
@@ -92,7 +91,6 @@ const router = createRouter({
       path: "/truora",
       name: "truora",
       component: () => import("../views/Pantalla15View.vue"),
-      meta: { requiereFormulario: true },
     },
   ],
 });

@@ -107,6 +107,8 @@ onMounted(() => {
               <option value="raizal">Raizal</option>
               <option value="palenquero">Palenquero</option>
               <option value="gitano">Gitano</option>
+              <option value="ninguno">Ninguno</option>
+
               <option value="otro">Otro</option>
             </select>
           </div>
