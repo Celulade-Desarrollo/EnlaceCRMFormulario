@@ -94,6 +94,8 @@ const router = createRouter({
   ],
 });
 
+/*
+
 router.beforeEach((to, from, next) => {
   const store = useFormularioStore();
 
@@ -108,4 +110,6 @@ router.beforeEach((to, from, next) => {
   }
 });
 
+
+*/
 export default router;
