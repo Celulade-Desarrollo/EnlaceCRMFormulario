@@ -67,7 +67,6 @@ const router = createRouter({
       path: "/Terminado",
       name: "Terminado",
       component: () => import("../views/Pantalla11View.vue"),
-      meta: { requiereFormulario: true },
     },
     {
       path: "/ventas",
