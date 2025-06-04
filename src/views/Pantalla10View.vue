@@ -148,6 +148,7 @@ const handleSubmit = (event) => {
                       name="pep"
                       value="no"
                       class="single-checkbox"
+                      checked
                     />
                     <span class="checkmark"></span>
                     No
@@ -178,6 +179,7 @@ const handleSubmit = (event) => {
                       name="familiar_pep"
                       value="no"
                       class="single-checkbox-1"
+                      checked
                     />
                     <span class="checkmark"></span>
                     No
@@ -203,6 +205,7 @@ const handleSubmit = (event) => {
                       name="MonedaExtranjeraNo"
                       value="no"
                       class="single-checkbox-2"
+                      checked
                     />
                     <span class="checkmark"></span>
                     No
