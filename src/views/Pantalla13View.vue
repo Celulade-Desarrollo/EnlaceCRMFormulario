@@ -24,6 +24,9 @@ const fechaNacimiento = ref("");
 const paisSeleccionado = ref("");
 const departamentoSeleccionado = ref("");
 const maxFechaNacimiento = ref("");
+const nombrePareja = ref("");
+const apellidoPareja = ref("");
+const cedulaPareja = ref("");
 
 const handleSubmit = (event) => {
   if (
@@ -118,7 +121,6 @@ onMounted(async () => {
   }
 });
 
-
 </script>
 
 <template>
@@ -127,7 +129,7 @@ onMounted(async () => {
     <h2 class="titulo">Datos Personales</h2>
 
     <!-- Select de generos -->
-    <section class="h-[100vh] flex flex-col justify-between overflow-hidden">
+    <section class="min-h-screen flex flex-col justify-between">
       <form>
         <div class="form-group">
           <label for="genero">Género</label>
@@ -155,7 +157,45 @@ onMounted(async () => {
               <option value="separado">Separado</option>
             </select>
           </div>
+          <div v-if="estadoCivil === 'casado' || estadoCivil === 'unionLibre'">
+              <div>
+                <label for="nombrePareja" class="input-label" >
+                  <input 
+                    type="text" 
+                    id="nombrePareja" 
+                    v-model="nombrePareja" 
+                    class="form-control" 
+                    placeholder=" "
+                  />
+                  <span class="floating-label">Nombre de la pareja:</span>
+                </label>
+              </div>
 
+              <div>
+                <label for="apellidoPareja" class="input-label">
+                  <input 
+                    type="text" 
+                    id="apellidoPareja" 
+                    v-model="apellidoPareja"
+                    class="form-control" 
+                    placeholder=" "
+                  />
+                   <span class="floating-label">Apellido de la pareja:</span>
+                </label>
+              </div>
+              <div>
+                <label for="cedulaPareja" class="input-label">
+                <input 
+                  type="number"
+                  id="cedulaPareja"
+                  v-model.number="cedulaPareja"
+                  class="form-control" 
+                  placeholder=" "
+                />
+                <span class="floating-label">Cedula de la pareja:</span>
+                </label>
+              </div>
+        </div>
           <label for="fechaNacimiento">Fecha de Nacimiento</label>
           <div class="custom-date">
             <input
@@ -206,6 +246,50 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+.form-control {
+  width: 100%;
+  padding: 10px 0;
+  font-size: 16px;
+  border: none;
+  border-bottom: 2px solid #09008be1;
+  background: transparent;
+  font-family: sans-serif;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+.input-label {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin-top: 24px;
+}
+.floating-label {
+  position: absolute;
+  left: 0;
+  top: 0px;
+  color: black;
+  font-size: 16px;
+  pointer-events: none;
+  transition: 0.3s ease all;
+  font-family: sans-serif;
+}
+
+/* Animación al enfocar o escribir */
+.form-control:focus + .floating-label,
+.form-control:not(:placeholder-shown) + .floating-label {
+  top: -15px;
+  font-size: 12px;
+  color: black;
+}
+
+.input-label:hover .form-control {
+  border-bottom-color: #ff00f2;
+}
+.form-control:focus {
+  border-bottom-color: #0064e6cc;
+  outline: none;
+  box-shadow: none;
+}
 .custom-select-wrapper {
   position: relative;
   margin-bottom: 24px;
