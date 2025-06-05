@@ -5,15 +5,16 @@ import { useFormularioStore } from "../router/store";
 import axios from "axios";
 import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
-import { useFormStore } from '../stores/formStore.js';
-
 import Heading from "../components/UI/Heading.vue";
 import Button from "../components/UI/Button.vue";
 import Footer from "../components/UI/Footer.vue";
+import { useFormStore } from '../stores/formStore.js'
+
+//formulario global
+const formStore = useFormStore()
 
 const store = useFormularioStore();
 const router = useRouter();
-const formStore = useFormStore();
 const departments = ref([]);
 const paises = ref([]);
 const mostrarAlerta = ref(false);
@@ -56,7 +57,66 @@ const handleSubmit = (event) => {
     }, 3000);
     return;
   }
-
+   if (
+    (estadoCivil.value === "casado" || estadoCivil.value === "unionLibre") &&
+    (
+      !nombrePareja.value ||
+      !apellidoPareja.value ||
+      !cedulaPareja.value
+    )
+  ) {
+    event.preventDefault();
+    mostrarAlerta.value = true;
+    mensajeAlerta.value = "Por favor completa los datos de tu pareja.";
+    setTimeout(() => {
+      mensajeAlerta.value = "";
+    }, 3000);
+    return;
+  }
+   if (
+    (estadoCivil.value === "casado" || estadoCivil.value === "unionLibre") &&
+    (
+      String(cedulaPareja.value).length < 6 || String(cedulaPareja.value).length > 10
+    )
+  ) {
+    event.preventDefault();
+    mostrarAlerta.value = true;
+    mensajeAlerta.value = "La cédula de tu pareja debe tener entre 6 y 10 números.";
+    setTimeout(() => {
+      mensajeAlerta.value = "";
+    }, 3000);
+    return;
+  }
+   if (
+    (estadoCivil.value === "casado" || estadoCivil.value === "unionLibre") &&
+    (
+      !nombrePareja.value ||
+      !apellidoPareja.value ||
+      !cedulaPareja.value
+    )
+  ) {
+    event.preventDefault();
+    mostrarAlerta.value = true;
+    mensajeAlerta.value = "Por favor completa los datos de tu pareja.";
+    setTimeout(() => {
+      mensajeAlerta.value = "";
+    }, 3000);
+    return;
+  }
+   if (
+    (estadoCivil.value === "casado" || estadoCivil.value === "unionLibre") &&
+    (
+      String(cedulaPareja.value).length < 6 || String(cedulaPareja.value).length > 10
+    )
+  ) {
+    event.preventDefault();
+    mostrarAlerta.value = true;
+    mensajeAlerta.value = "La cédula de tu pareja debe tener entre 6 y 10 números.";
+    setTimeout(() => {
+      mensajeAlerta.value = "";
+    }, 3000);
+    return;
+  }
   const fechaNacimientoDate = new Date(fechaNacimiento.value);
   const fechaActual = new Date();
 
@@ -91,6 +151,15 @@ const handleSubmit = (event) => {
   }
 
   store.completarFormulario(); // Marca el formulario como completado
+  formStore.updateField('Genero', genero.value)
+  formStore.updateField('Estado_Civil', estadoCivil.value)
+  formStore.updateField('Fecha_de_Nacimiento', fechaNacimiento.value)
+  formStore.updateField('Pais_de_Nacimiento', paisSeleccionado.value)
+  formStore.updateField('Departamento_de_Nacimiento', departamentoSeleccionado.value)
+  formStore.updateField('Nombre_Conyuge', nombrePareja.value)
+  formStore.updateField('Apellido_Conyuge', apellidoPareja.value)
+  formStore.updateField('Cedula_Conyuge', cedulaPareja.value)
+
   router.push("/datosPersonales2"); // Redirige a la siguiente pantalla
 };
 

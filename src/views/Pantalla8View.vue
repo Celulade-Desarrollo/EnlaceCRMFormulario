@@ -7,14 +7,17 @@ import { useFormularioStore } from "../router/store";
 import { useRouter } from "vue-router";
 import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
+import { useFormStore } from '../stores/formStore.js'
 
-const ciudad = localStorage.getItem("selectedCity");
+//formulario global
+const formStore = useFormStore()
+
 const store = useFormularioStore(); // Inicializa Vuex
 const router = useRouter(); // Inicializa Vue Router
 const direccion = ref(""); // Crea una propiedad reactiva para la dirección
 const barrio = ref(""); // Crea una propiedad reactiva para el barrio
 const error = ref(""); // Crea una propiedad reactiva para el mensaje de error
-
+const detalles = ref("");
 const handleSubmit = (event) => {
   // Validación
   if (!direccion.value || !barrio.value) {
@@ -30,8 +33,11 @@ const handleSubmit = (event) => {
   error.value = "";
   event.preventDefault(); // Evita el envío del formulario por defecto
   store.completarFormulario(); // Marca el formulario como completado
+  formStore.updateField('Direccion', direccion.value)
+  formStore.updateField('Detalles', detalles.value)
+  formStore.updateField('Barrio', barrio.value)
   router.push("/informacionNegocio"); // Redirige a la siguiente pantalla
-};
+};// Crea una propiedad reactiva para el barrio
 
 onMounted(() => {
   let miRuta = window.location.pathname;

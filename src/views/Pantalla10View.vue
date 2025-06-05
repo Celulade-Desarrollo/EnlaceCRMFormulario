@@ -8,6 +8,7 @@ import { useRouter } from "vue-router";
 import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
 import { useFormStore } from '../stores/formStore.js'
+import axios from 'axios';
 
 const formStore = useFormStore()
 const datosFinales = ref({})
@@ -17,7 +18,7 @@ const store = useFormularioStore();
 const router = useRouter();
 
 // Resultado:
-console.log(datosFinales)
+console.log(datosFinales.value)
 
 const handleCheckboxChange = (event) => {
   const checkboxes = document.querySelectorAll(".single-checkbox");
@@ -91,9 +92,8 @@ onMounted(() => {
   }
 });
 
-const handleSubmit = (event) => {
-  if (!validateCheckboxes())
-  {
+const handleSubmit = async (event) => {
+  if (!validateCheckboxes()) {
     event.preventDefault(); // Prevent form submissio
   const persona = document.querySelector(".single-checkbox:checked")?.value;
   const familiar = document.querySelector(".single-checkbox-1:checked")?.value;
@@ -116,12 +116,21 @@ const handleSubmit = (event) => {
   // Limpiar error si no lo hay
   error.value = "";
   event.preventDefault(); // Evita el envío del formulario por defecto
-  store.completarFormulario(); // Marca el formulario como completado
-  console.log('Datos listos para enviar:', datosFinales.value)
-  router.push("/Terminado"); // Redirige a la siguiente pantalla
+  store.completarFormulario();  // Marca el formulario como completado   
   formStore.updateField('Persona_Expuesta_Politicamente', document.querySelector(".single-checkbox:checked")?.value);
   formStore.updateField('Familiar_PEP', document.querySelector(".single-checkbox-1:checked")?.value);
   formStore.updateField('Moneda_Extranjera', document.querySelector(".single-checkbox-2:checked")?.value);
+
+  //   try {
+  //   const response = await axios.post('http://localhost:8080/api/flujoRegistroEnlace', datosFinales.value)
+
+  //   console.log('Respuesta del backend:', response.data)
+  //   alert(' Datos enviados correctamente')
+  // } catch (error) {
+  //   console.error(' Error al enviar los datos:', error)
+  // }
+  console.log('Datos listos para enviar:', datosFinales.value)
+  router.push("/Terminado"); // Redirige a la siguiente pantalla
 };
 </script>
 

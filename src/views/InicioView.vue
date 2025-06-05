@@ -57,7 +57,7 @@ const handleSubmit = async (event) => {
     try {
       event.preventDefault(); // Evita el envío del formulario por defecto
       store.completarFormulario(); // Marca el formulario como completado
-      formStore.updateField('Numero_Celular', celular.value)
+      formStore.updateField('Numero_Celular', celular.value.toString())
       router.push("/correoElectronico"); // Redirige a la siguiente pantalla
       error.value = ""; // Limpia el mensaje de error si el número es válido
     } catch (error) {}
