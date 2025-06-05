@@ -7,7 +7,7 @@ import { useRouter } from "vue-router";
 import { useFormularioStore } from "../router/store";
 import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
-
+import { useFormStore } from '../stores/formStore.js'
 // Inicializar los valores de los campos
 const email = ref("");
 const confirmaremail = ref("");
@@ -16,7 +16,8 @@ const emailErrorMessage = ref("");
 const confirmEmailErrorMessage = ref("");
 const router = useRouter();
 const store = useFormularioStore();
-
+//formulario global
+const formStore = useFormStore()
 // Función para limpiar valores undefined o null
 const clearUndefined = (value) => {
   return value === undefined || value === null ? "" : value;
@@ -85,6 +86,7 @@ const handleSubmit = (event) => {
   }
   event.preventDefault();
   store.completarFormulario(); // Marca el formulario como completado
+  formStore.updateField('Correo_Electronico', confirmaremail.value)
   router.push("/nombres"); // Redirige a la siguiente pantalla
 };
 

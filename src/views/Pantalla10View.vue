@@ -7,10 +7,17 @@ import { useFormularioStore } from "../router/store";
 import { useRouter } from "vue-router";
 import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
+import { useFormStore } from '../stores/formStore.js'
+
+const formStore = useFormStore()
+const datosFinales = ref({})
 
 const error = ref("");
 const store = useFormularioStore();
 const router = useRouter();
+
+// Resultado:
+console.log(datosFinales)
 
 const handleCheckboxChange = (event) => {
   const checkboxes = document.querySelectorAll(".single-checkbox");
@@ -53,6 +60,8 @@ const validateCheckboxes = () => {
 };
 
 onMounted(() => {
+  datosFinales.value = formStore.getFinalData()
+
   const checkboxes = document.querySelectorAll(".single-checkbox");
   checkboxes.forEach((checkbox) => {
     checkbox.addEventListener("change", handleCheckboxChange);
@@ -98,6 +107,7 @@ const handleSubmit = (event) => {
   error.value = "";
   event.preventDefault(); // Evita el envío del formulario por defecto
   store.completarFormulario(); // Marca el formulario como completado
+  console.log('Datos listos para enviar:', datosFinales.value)
   router.push("/Terminado"); // Redirige a la siguiente pantalla
 };
 </script>
