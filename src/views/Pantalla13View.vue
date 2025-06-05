@@ -145,10 +145,14 @@ const handleSubmit = (event) => {
   formStore.updateField('Departamento_de_Nacimiento', departamentoSeleccionado.value);
 
   if (estadoCivil.value === "casado" || estadoCivil.value === "unionLibre") {
-    formStore.updateField('Nombre_Pareja', nombrePareja.value);
-    formStore.updateField('Apellido_Pareja', apellidoPareja.value);
-    formStore.updateField('Cedula_Pareja', cedulaPareja.value);
-  }
+   formStore.updateField('Nombre_Conyuge', nombrePareja.value);
+    formStore.updateField('Apellido_Conyuge', apellidoPareja.value);
+    formStore.updateField('Cedula_Conyuge', cedulaPareja.value.toString());
+  } else {
+    formStore.updateField('Nombre_Conyuge', "no");
+    formStore.updateField('Apellido_Conyuge', "no");
+    formStore.updateField('Cedula_Conyuge', "no");
+}
 
   store.completarFormulario(); // Marca el formulario como completado
   formStore.updateField('Genero', genero.value)
@@ -156,9 +160,6 @@ const handleSubmit = (event) => {
   formStore.updateField('Fecha_de_Nacimiento', fechaNacimiento.value)
   formStore.updateField('Pais_de_Nacimiento', paisSeleccionado.value)
   formStore.updateField('Departamento_de_Nacimiento', departamentoSeleccionado.value)
-  formStore.updateField('Nombre_Conyuge', nombrePareja.value)
-  formStore.updateField('Apellido_Conyuge', apellidoPareja.value)
-  formStore.updateField('Cedula_Conyuge', cedulaPareja.value)
 
   router.push("/datosPersonales2"); // Redirige a la siguiente pantalla
 };
