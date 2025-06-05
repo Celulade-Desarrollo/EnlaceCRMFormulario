@@ -92,10 +92,20 @@ onMounted(() => {
 });
 
 const handleSubmit = (event) => {
-  if (!validateCheckboxes()) {
+  if (!validateCheckboxes())
+  {
     event.preventDefault(); // Prevent form submissio
+  const persona = document.querySelector(".single-checkbox:checked")?.value;
+  const familiar = document.querySelector(".single-checkbox-1:checked")?.value;
+  const moneda = document.querySelector(".single-checkbox-2:checked")?.value;
+
+  const personaValue = clearUndefined(persona);
+  const familiarValue = clearUndefined(familiar);
+  const monedaValue = clearUndefined(moneda);
+
     error.value =
       "Por favor, selecciona al menos una opción de los tres grupos.";
+
 
     setTimeout(() => {
       error.value = "";
@@ -109,6 +119,9 @@ const handleSubmit = (event) => {
   store.completarFormulario(); // Marca el formulario como completado
   console.log('Datos listos para enviar:', datosFinales.value)
   router.push("/Terminado"); // Redirige a la siguiente pantalla
+  formStore.updateField('Persona_Expuesta_Politicamente', document.querySelector(".single-checkbox:checked")?.value);
+  formStore.updateField('Familiar_PEP', document.querySelector(".single-checkbox-1:checked")?.value);
+  formStore.updateField('Moneda_Extranjera', document.querySelector(".single-checkbox-2:checked")?.value);
 };
 </script>
 

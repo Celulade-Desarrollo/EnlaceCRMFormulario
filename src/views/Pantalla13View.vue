@@ -5,6 +5,7 @@ import { useFormularioStore } from "../router/store";
 import axios from "axios";
 import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
+import { useFormStore } from '../stores/formStore.js';
 
 import Heading from "../components/UI/Heading.vue";
 import Button from "../components/UI/Button.vue";
@@ -12,13 +13,13 @@ import Footer from "../components/UI/Footer.vue";
 
 const store = useFormularioStore();
 const router = useRouter();
-
+const formStore = useFormStore();
 const departments = ref([]);
 const paises = ref([]);
 const mostrarAlerta = ref(false);
 const mensajeAlerta = ref("");
 
-const genero = ref(""); // Refs para almacenar los valores de los campos
+const genero = ref(""); 
 const estadoCivil = ref("");
 const fechaNacimiento = ref("");
 const paisSeleccionado = ref("");
@@ -29,19 +30,29 @@ const apellidoPareja = ref("");
 const cedulaPareja = ref("");
 
 const handleSubmit = (event) => {
+  event.preventDefault(); // Evita el envío desde el inicio
+
   if (
     !genero.value ||
     !estadoCivil.value ||
     !fechaNacimiento.value ||
     !paisSeleccionado.value ||
-    !departamentoSeleccionado.value
+    !departamentoSeleccionado.value ||
+    ((estadoCivil.value === "casado" || estadoCivil.value === "unionLibre") &&
+      (!nombrePareja.value || !apellidoPareja.value || !cedulaPareja.value))
   ) {
-    // Evitar el envío del formulario si no es válido
-    event.preventDefault();
+    // Guardar los datos hasta donde existan
+    formStore.updateField('Genero', genero.value);
+    formStore.updateField('Estado_Civil', estadoCivil.value);
+    formStore.updateField('Fecha_de_Nacimiento', fechaNacimiento.value);
+    formStore.updateField('Pais_de_Nacimiento', paisSeleccionado.value);
+    formStore.updateField('Departamento_de_Nacimiento', departamentoSeleccionado.value);
+
     mostrarAlerta.value = true;
     mensajeAlerta.value = "Por favor completa todos los campos.";
     setTimeout(() => {
       mensajeAlerta.value = "";
+      mostrarAlerta.value = false;
     }, 3000);
     return;
   }
@@ -58,44 +69,58 @@ const handleSubmit = (event) => {
   }
 
   if (edad < 18) {
-    event.preventDefault();
     mostrarAlerta.value = true;
     mensajeAlerta.value = "Debes ser mayor de edad para continuar";
     return;
   }
 
-  event.preventDefault();
-  mensajeAlerta.value = false;
+  mensajeAlerta.value = "";
+  mostrarAlerta.value = false;
+
+  // Guardar todos los datos
+  formStore.updateField('Genero', genero.value);
+  formStore.updateField('Estado_Civil', estadoCivil.value);
+  formStore.updateField('Fecha_de_Nacimiento', fechaNacimiento.value);
+  formStore.updateField('Pais_de_Nacimiento', paisSeleccionado.value);
+  formStore.updateField('Departamento_de_Nacimiento', departamentoSeleccionado.value);
+
+  if (estadoCivil.value === "casado" || estadoCivil.value === "unionLibre") {
+    formStore.updateField('Nombre_Pareja', nombrePareja.value);
+    formStore.updateField('Apellido_Pareja', apellidoPareja.value);
+    formStore.updateField('Cedula_Pareja', cedulaPareja.value);
+  }
+
   store.completarFormulario(); // Marca el formulario como completado
   router.push("/datosPersonales2"); // Redirige a la siguiente pantalla
 };
 
 onMounted(async () => {
   const hoy = new Date();
-  hoy.setFullYear(hoy.getFullYear() - 18); // Restar 18 años a la fecha actual
+  hoy.setFullYear(hoy.getFullYear() - 18);
   const yyyy = hoy.getFullYear();
-  const mm = String(hoy.getMonth() + 1).padStart(2, "0"); // Mes actual (0-11)
-  const dd = String(hoy.getDate()).padStart(2, "0"); // Día actual (1-31)
-  maxFechaNacimiento.value = `${yyyy}-${mm}-${dd}`; // Formato YYYY-MM-DD
-  // Cargar los países y departamentos al montar el componente
- /*  try {
+  const mm = String(hoy.getMonth() + 1).padStart(2, "0");
+  const dd = String(hoy.getDate()).padStart(2, "0");
+  maxFechaNacimiento.value = `${yyyy}-${mm}-${dd}`;
+
+  /*
+  try {
     const response = await axios.get("https://restcountries.com/v3.1/all");
     const listaPaises = response.data.map((pais) => ({
       value: pais.cca2,
       label: pais.name.common,
     }));
 
-    // Encontrar Colombia y moverla al principio de la lista
     const indiceColombia = listaPaises.findIndex((pais) => pais.value === "CO");
     if (indiceColombia !== -1) {
       const colombia = listaPaises.splice(indiceColombia, 1)[0];
-      listaPaises.unshift(colombia); // Añadir Colombia al principio
+      listaPaises.unshift(colombia);
     }
 
     paises.value = listaPaises;
   } catch (error) {
     console.error("Error al cargar países:", error);
-  } */
+  }
+  */
 
   try {
     const response = await axios.get(
@@ -108,20 +133,19 @@ onMounted(async () => {
   } catch (err) {
     console.error("Error loading departments:", err);
   }
+
   let miRuta = window.location.pathname;
-  // Validar si ya existe "ruta"
-  if (localStorage.getItem.length > 0) {
+
+  // Corregir validación de existencia de "ruta"
+  if (localStorage.getItem("ruta")) {
     localStorage.removeItem("ruta");
-
-    // Setear la ruta por defecto
-    localStorage.setItem("ruta", miRuta);
-  } else {
-    // Setear la ruta por defecto
-    localStorage.setItem("ruta", miRuta);
   }
-});
 
+  localStorage.setItem("ruta", miRuta);
+});
 </script>
+
+
 
 <template>
   <Heading></Heading>

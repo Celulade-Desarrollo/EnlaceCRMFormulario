@@ -8,6 +8,7 @@ import { useFormularioStore } from "../router/store";
 import { useRouter } from "vue-router";
 import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
+import { useFormStore } from '../stores/formStore.js';
 
 const store = useFormularioStore();
 const router = useRouter();
@@ -16,6 +17,7 @@ const cities = ref([]);
 const selectedDepartment = ref(null);
 const selectedCity = ref(null);
 const error = ref("");
+const formStore = useFormStore();
 
 const loadDepartments = async () => {
   try {
@@ -47,6 +49,10 @@ const handleSubmit = (event) => {
   if (!selectedDepartment.value || !selectedCity.value) {
     error.value = "Por favor, selecciona tu departamento y ciudad.";
     event.preventDefault(); // Evita el envío del formulario por defecto
+    const selectedDepartment = document.querySelector('input[name="nevera"]:checked');
+    const selectedCity = document.querySelector('input[name="nevera"]:checked');
+
+
 
     setTimeout(() => {
       error.value = "";
@@ -55,7 +61,9 @@ const handleSubmit = (event) => {
   }
 
   // Guardar ciudad seleccionada en localStorage
+  localStorage.setItem("selectedDepartment", selectedDepartment.value);
   localStorage.setItem("selectedCity", selectedCity.value);
+
 
   // Limpiar error si no lo hay
   error.value = "";
@@ -64,6 +72,8 @@ const handleSubmit = (event) => {
   event.preventDefault(); // Evitar el envío del formulario si no es válido
   store.completarFormulario(); // Marca el formulario como completado
   router.push("/ubicacion"); // Redirige a la siguiente pantalla
+  formStore.updateField('Ubicacion_del_Negocio_Departamento', selectedDepartment.value);
+  formStore.updateField('Ubicacion_del_Negocio_Ciudad', selectedCity.value);
 };
 
 onMounted(() => {

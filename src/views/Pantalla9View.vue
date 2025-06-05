@@ -7,13 +7,17 @@ import { ref, onMounted } from "vue";
 import Footer from "../components/UI/Footer.vue";
 import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
+import { useFormStore } from '../stores/formStore.js'
 
 const store = useFormularioStore();
 const router = useRouter();
 const error = ref("");
+const formStore = useFormStore()
 
 const handleSubmit = (event) => {
   event.preventDefault(); // Evita el envío del formulario por defecto
+  const numeroneveras = document.querySelector('input[name="nevera"]:checked');
+  const registro = document.querySelector('input[name="registro"]:checked');
 
   const neveraSeleccionada = document.querySelector(
     'input[name="nevera"]:checked'
@@ -31,6 +35,8 @@ const handleSubmit = (event) => {
   event.preventDefault(); // Evita el envío del formulario por defecto
   store.completarFormulario(); // Marca el formulario como completado
   router.push("/ventas"); // Redirige a la siguiente pantalla
+  formStore.updateField('Numero_de_neveras', numeroneveras.value)
+  formStore.updateField('Registro_camara_comercio', registro.value)
 };
 onMounted(() => {
   let miRuta = window.location.pathname;

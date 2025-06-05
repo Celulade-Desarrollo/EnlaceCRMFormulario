@@ -8,11 +8,13 @@ import { useRouter } from "vue-router";
 import { useFormularioStore } from "../router/store";
 import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
+import { useFormStore } from '../stores/formStore.js';
 
 const store = useFormularioStore();
 const router = useRouter();
+const formStore = useFormStore();
 
-const nivelEducativo = ref(""); // Refs para almacenar los valores de los campos
+const nivelEducativo = ref(""); 
 const estrato = ref("");
 const grupoEtnico = ref("");
 const declarasRenta = ref("");
@@ -21,6 +23,8 @@ const mensajeAlerta = ref("");
 const mostrarAlerta = ref(false);
 
 const handleSubmit = (event) => {
+  event.preventDefault(); // evitar comportamiento por defecto desde el inicio
+
   if (
     !nivelEducativo.value ||
     !estrato.value ||
@@ -28,35 +32,48 @@ const handleSubmit = (event) => {
     !declarasRenta.value ||
     !rut.value
   ) {
-    // Evitar el envío del formulario si no es válido
-    event.preventDefault();
+    // Guardar valores hasta donde estén disponibles
+    formStore.updateField('Nivel_Educativo', nivelEducativo.value);
+    formStore.updateField('Estrato', estrato.value);
+    formStore.updateField('Grupo_Etnico', grupoEtnico.value);
+    formStore.updateField('Declara_Renta', declarasRenta.value);
+    formStore.updateField('Esta_obligado_a_tener_RUT_por_tu_actividad_economica', rut.value);
+
     mostrarAlerta.value = true;
     mensajeAlerta.value = "Por favor completa todos los campos.";
     setTimeout(() => {
       mensajeAlerta.value = "";
+      mostrarAlerta.value = false;
     }, 3000);
     return;
   }
-  event.preventDefault();
-  mensajeAlerta.value = false;
-  store.completarFormulario(); // Marca el formulario como completado
-  router.push("/negocio"); // Redirige a la siguiente pantal
+
+  mensajeAlerta.value = "";
+  mostrarAlerta.value = false;
+
+  // Guardar todos los datos correctamente
+  formStore.updateField('Nivel_Educativo', nivelEducativo.value);
+  formStore.updateField('Estrato', estrato.value);
+  formStore.updateField('Grupo_Etnico', grupoEtnico.value);
+  formStore.updateField('Declara_Renta', declarasRenta.value);
+  formStore.updateField('Esta_obligado_a_tener_RUT_por_tu_actividad_economica', rut.value);
+
+  store.completarFormulario();
+  router.push("/negocio");
 };
+
 onMounted(() => {
-  let miRuta = window.location.pathname;
+  const miRuta = window.location.pathname;
 
-  // Validar si ya existe "ruta"
-  if (localStorage.getItem.length > 0) {
+  // Corregido: validación correcta del localStorage
+  if (localStorage.getItem("ruta")) {
     localStorage.removeItem("ruta");
-
-    // Setear la ruta por defecto
-    localStorage.setItem("ruta", miRuta);
-  } else {
-    // Setear la ruta por defecto
-    localStorage.setItem("ruta", miRuta);
   }
+
+  localStorage.setItem("ruta", miRuta);
 });
 </script>
+
 
 <template>
   <Heading></Heading>
