@@ -18,29 +18,54 @@ const selectedDepartment = ref(null);
 const selectedCity = ref(null);
 const error = ref("");
 const formStore = useFormStore();
+const departmentsRaw = ref([]);
+const selectedDepartmentId = ref(null);// solo los nombres
+const citiesRaw = ref([]); 
+const selectedCityId = ref(null);
 
 const loadDepartments = async () => {
   try {
     const response = await axios.get(
-      "https://www.datos.gov.co/resource/xdk5-pm3f.json?$select=departamento&$group=departamento&$order=departamento"
+      "http://localhost:3000/api/ubicacion/departamentos"
     );
-    departments.value = response.data.map((item) => item.departamento);
+        departmentsRaw.value = response.data;
+    departments.value = response.data.map((item) => item.nombre);
   } catch (err) {
     error.value = "Error al cargar los departamentos.";
-    console.error("Error loading departments:", err);
+    console.error("Error al cargar los departamentos:", err);
   }
 };
 
+const handleDepartmentChange = () => {
+  const dept = departmentsRaw.value.find(
+    (d) => d.nombre === selectedDepartment.value
+  );
+  selectedDepartmentId.value = dept?.id || null;
+
+  loadCities();
+};
+
+const handleCityChange = () => {
+  const city = citiesRaw.value.find(
+    (c) => c.nombre.trim().toLowerCase() === selectedCity.value.trim().toLowerCase()
+  );
+  selectedCityId.value = city?.id || null;
+
+  console.log("Ciudad seleccionada:", selectedCity.value);
+  console.log("ID de ciudad:", selectedCityId.value);
+};
+
 const loadCities = async () => {
-  if (!selectedDepartment.value) return;
+  if (!selectedDepartmentId.value) return;
   try {
     const response = await axios.get(
-      `https://www.datos.gov.co/resource/xdk5-pm3f.json?$select=municipio&$where=departamento='${selectedDepartment.value}'&$order=municipio`
+      `http://localhost:3000/api/ubicacion/ciudades/${selectedDepartmentId.value}`
     );
-    cities.value = response.data.map((item) => item.municipio);
+    citiesRaw.value = response.data;
+    cities.value = response.data.map((item) => item.nombre);
   } catch (err) {
     error.value = "Error al cargar las ciudades.";
-    console.error("Error loading cities:", err);
+    console.error("Error al cargar las ciudades:", err);
   }
 };
 
@@ -52,8 +77,6 @@ const handleSubmit = (event) => {
     const selectedDepartment = document.querySelector('input[name="nevera"]:checked');
     const selectedCity = document.querySelector('input[name="nevera"]:checked');
 
-
-
     setTimeout(() => {
       error.value = "";
     }, 3000);
@@ -63,6 +86,7 @@ const handleSubmit = (event) => {
   // Guardar ciudad seleccionada en localStorage
   localStorage.setItem("selectedDepartment", selectedDepartment.value);
   localStorage.setItem("selectedCity", selectedCity.value);
+  localStorage.setItem("selectedCityId", selectedCityId.value);
 
 
   // Limpiar error si no lo hay
@@ -74,6 +98,7 @@ const handleSubmit = (event) => {
   router.push("/ubicacion"); // Redirige a la siguiente pantalla
   formStore.updateField('Ubicacion_del_Negocio_Departamento', selectedDepartment.value);
   formStore.updateField('Ubicacion_del_Negocio_Ciudad', selectedCity.value);
+  
 };
 
 onMounted(() => {
@@ -122,22 +147,22 @@ onMounted(() => {
         <div class="custom-select-wrapper">
           <select
             v-model="selectedDepartment"
-            @change="loadCities"
+            @change="handleDepartmentChange"
             class="custom-select"
           >
             <option disabled selected>Elige un departamento</option>
             <option
-              v-for="department in departments"
-              :key="department"
-              :value="department"
+              v-for="nombre in departments"
+              :key="nombre"
+              :value="nombre"
             >
-              {{ department }}
+              {{ nombre }}
             </option>
           </select>
         </div>
         <p class="font-bold">Elige una ciudad</p>
         <div class="custom-select-wrapper">
-          <select v-model="selectedCity" class="custom-select">
+          <select v-model="selectedCity"  @change="handleCityChange" class="custom-select">
             <option disabled selected>Elige una ciudad</option>
             <option v-for="city in cities" :key="city" :value="city">
               {{ city }}

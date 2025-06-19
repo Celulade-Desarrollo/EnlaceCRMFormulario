@@ -32,13 +32,6 @@ const handleSubmit = (event) => {
     !declarasRenta.value ||
     !rut.value
   ) {
-    // Guardar valores hasta donde estén disponibles
-    formStore.updateField('Nivel_Educativo', nivelEducativo.value);
-    formStore.updateField('Estrato', estrato.value);
-    formStore.updateField('Grupo_Etnico', grupoEtnico.value);
-    formStore.updateField('Declara_Renta', declarasRenta.value);
-    formStore.updateField('Esta_obligado_a_tener_RUT_por_tu_actividad_economica', rut.value);
-
     mostrarAlerta.value = true;
     mensajeAlerta.value = "Por favor completa todos los campos.";
     setTimeout(() => {
@@ -48,15 +41,15 @@ const handleSubmit = (event) => {
     return;
   }
 
-  mensajeAlerta.value = "";
-  mostrarAlerta.value = false;
-
   // Guardar todos los datos correctamente
   formStore.updateField('Nivel_Educativo', nivelEducativo.value);
   formStore.updateField('Estrato', estrato.value);
   formStore.updateField('Grupo_Etnico', grupoEtnico.value);
-  formStore.updateField('Declara_Renta', declarasRenta.value);
-  formStore.updateField('Esta_obligado_a_tener_RUT_por_tu_actividad_economica', rut.value);
+  formStore.updateField('Declara_Renta', declarasRenta.value === "si" ? 1 : 0);
+  formStore.updateField('Esta_obligado_a_tener_RUT_por_tu_actividad_economica', rut.value === "si" ? 1 : 0);
+
+  mensajeAlerta.value = "";
+  mostrarAlerta.value = false;
 
   store.completarFormulario();
   router.push("/negocio");

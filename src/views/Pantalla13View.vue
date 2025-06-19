@@ -148,11 +148,7 @@ const handleSubmit = (event) => {
    formStore.updateField('Nombre_Conyuge', nombrePareja.value);
     formStore.updateField('Apellido_Conyuge', apellidoPareja.value);
     formStore.updateField('Cedula_Conyuge', cedulaPareja.value.toString());
-  } else {
-    formStore.updateField('Nombre_Conyuge', "no");
-    formStore.updateField('Apellido_Conyuge', "no");
-    formStore.updateField('Cedula_Conyuge', "no");
-}
+  } 
 
   store.completarFormulario(); // Marca el formulario como completado
   formStore.updateField('Genero', genero.value)
@@ -194,14 +190,14 @@ onMounted(async () => {
 
   try {
     const response = await axios.get(
-      "https://www.datos.gov.co/resource/xdk5-pm3f.json?$select=departamento&$group=departamento&$order=departamento"
+      "http://localhost:3000/api/ubicacion/departamentos"
     );
     departments.value = response.data.map((item) => ({
-      value: item.departamento,
-      label: item.departamento,
+      value: item.nombre,
+      label: item.nombre,
     }));
   } catch (err) {
-    console.error("Error loading departments:", err);
+    console.error("Error al cargar los departamentos:", err);
   }
 
   let miRuta = window.location.pathname;

@@ -36,7 +36,7 @@ const handleSubmit = (event) => {
   store.completarFormulario(); // Marca el formulario como completado
   router.push("/ventas"); // Redirige a la siguiente pantalla
   formStore.updateField('Numero_de_neveras', numeroneveras.value)
-  formStore.updateField('Registro_camara_comercio', registro.value)
+  formStore.updateField('Registrado_Camara_Comercio', registro.value)
 };
 onMounted(() => {
   let miRuta = window.location.pathname;

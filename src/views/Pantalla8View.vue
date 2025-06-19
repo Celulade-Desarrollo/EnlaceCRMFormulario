@@ -8,6 +8,7 @@ import { useRouter } from "vue-router";
 import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
 import { useFormStore } from '../stores/formStore.js'
+import axios from "axios";
 
 //formulario global
 const formStore = useFormStore()
@@ -18,6 +19,10 @@ const direccion = ref(""); // Crea una propiedad reactiva para la dirección
 const barrio = ref(""); // Crea una propiedad reactiva para el barrio
 const error = ref(""); // Crea una propiedad reactiva para el mensaje de error
 const detalles = ref("");
+
+const barrios = ref([]);
+const selectedBarrio = ref(null);
+
 const handleSubmit = (event) => {
   // Validación
   if (!direccion.value || !barrio.value) {
@@ -35,24 +40,29 @@ const handleSubmit = (event) => {
   store.completarFormulario(); // Marca el formulario como completado
   formStore.updateField('Direccion', direccion.value)
   formStore.updateField('Detalles', detalles.value)
-  formStore.updateField('Barrio', barrio.value)
+  formStore.updateField('Barrio', selectedBarrio.value)
+
   router.push("/informacionNegocio"); // Redirige a la siguiente pantalla
 };// Crea una propiedad reactiva para el barrio
 
-onMounted(() => {
+onMounted(async () => {
   let miRuta = window.location.pathname;
 
-  // Validar si ya existe "ruta"
-  if (localStorage.getItem.length > 0) {
-    localStorage.removeItem("ruta");
+  localStorage.setItem("ruta", miRuta); // Actualiza siempre
 
-    // Setear la ruta por defecto
-    localStorage.setItem("ruta", miRuta);
-  } else {
-    // Setear la ruta por defecto
-    localStorage.setItem("ruta", miRuta);
+  const cityId = localStorage.getItem("selectedCityId");
+
+  if (cityId) {
+    try {
+      const response = await axios.get(`http://localhost:3000/api/ubicacion/barrios/${cityId}`);
+      barrios.value = response.data; // suponiendo que viene [{ id, nombre }]
+    } catch (err) {
+      console.error("Error al cargar los barrios:", err);
+      error.value = "Error al cargar los barrios.";
+    }
   }
 });
+
 </script>
 
 <template>
@@ -111,20 +121,14 @@ onMounted(() => {
                 </label>
 
                 <label for="barrio" class="input-label mt-4">
-                  <input
-                    v-model="barrio"
-                    class="form-control"
-                    aria-required="true"
-                    name="barrio"
-                    type="text"
-                    placeholder=" "
-                    data-gtm="home-hero-email-field"
-                    autocomplete="off"
-                    id="barrio"
-                    aria-describedby="error-barrio"
-                  />
-                  <span class="floating-label">Barrio</span>
-                </label>
+                <select v-model="selectedBarrio" class="form-control" id="barrio">
+                  <option disabled value="">Selecciona un barrio</option>
+                  <option v-for="b in barrios" :key="b.id" :value="b.nombre">
+                    {{ b.nombre }}
+                  </option>
+                </select>
+                <span class="floating-label">Barrio</span>
+              </label>
               </div>
               <Button @click="handleSubmit"></Button>
               <p v-if="error" class="text-danger mt-1 flex justify-center">

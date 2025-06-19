@@ -61,7 +61,6 @@ const validateCheckboxes = () => {
 };
 
 onMounted(() => {
-  datosFinales.value = formStore.getFinalData()
 
   const checkboxes = document.querySelectorAll(".single-checkbox");
   checkboxes.forEach((checkbox) => {
@@ -117,18 +116,19 @@ const handleSubmit = async (event) => {
   error.value = "";
   event.preventDefault(); // Evita el envío del formulario por defecto
   store.completarFormulario();  // Marca el formulario como completado   
-  formStore.updateField('Persona_Expuesta_Politicamente', document.querySelector(".single-checkbox:checked")?.value);
-  formStore.updateField('Familiar_PEP', document.querySelector(".single-checkbox-1:checked")?.value);
-  formStore.updateField('Moneda_Extranjera', document.querySelector(".single-checkbox-2:checked")?.value);
+  formStore.updateField('Persona_expuesta_politicamente_PEP',document.querySelector(".single-checkbox:checked")?.value === "si" ? 1 : 0);
+  formStore.updateField('Familiar_expuesto_politicamente_PEP',document.querySelector(".single-checkbox-1:checked")?.value === "si" ? 1 : 0);
+  formStore.updateField('Operaciones_moneda_extranjera',document.querySelector(".single-checkbox-2:checked")?.value === "si" ? 1 : 0);
+  
+    datosFinales.value = formStore.getFinalData()
 
-     try {
-     const response = await axios.post('http://localhost:8080/api/flujoRegistroEnlace', datosFinales.value)
+    //   try {
+    //    const response = await axios.post('http://localhost:3000/api/flujoRegistroEnlace', datosFinales.value)
 
-     console.log('Respuesta del backend:', response.data)
-     alert(' Datos enviados correctamente')
-   } catch (error) {
-     console.error(' Error al enviar los datos:', error)
-   }
+    //   console.log('Respuesta del backend:', response.data)
+    //  } catch (error) {
+    //    console.error(' Error al enviar los datos:', error)
+    //  }
   console.log('Datos listos para enviar:', datosFinales.value)
   router.push("/Terminado"); // Redirige a la siguiente pantalla
 };
