@@ -356,10 +356,10 @@ p {
 }
 
 /* Estilo para la marca de verificación cuando está seleccionada */
-.check-item input[type="checkbox"]:checked + .checkmark {
+/* .check-item input[type="checkbox"]:checked + .checkmark {
   background-color: #dd3590;
   border: 2px solid #dd3590;
-}
+} */
 
 /* Estilo para el símbolo de verificación dentro del círculo */
 /* .checkmark::after {

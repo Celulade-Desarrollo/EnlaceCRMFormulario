@@ -10,6 +10,7 @@
 
 <style scoped>
 .submit-btn {
+  outline: none;
   padding: 0 1.25rem;
   border-radius: 6.25rem;
   background: #dd3590;

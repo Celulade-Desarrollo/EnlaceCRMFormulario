@@ -16,16 +16,15 @@ const formStore = useFormStore()
 const store = useFormularioStore(); // Inicializa Vuex
 const router = useRouter(); // Inicializa Vue Router
 const direccion = ref(""); // Crea una propiedad reactiva para la dirección
-const barrio = ref(""); // Crea una propiedad reactiva para el barrio
 const error = ref(""); // Crea una propiedad reactiva para el mensaje de error
 const detalles = ref("");
 
 const barrios = ref([]);
 const selectedBarrio = ref(null);
-
+console.log("barrrrio",selectedBarrio.value);
 const handleSubmit = (event) => {
   // Validación
-  if (!direccion.value || !barrio.value) {
+  if (!direccion.value || !selectedBarrio.value) {
     error.value = "Por favor, ingresa tu dirección y tu barrio.";
     event.preventDefault(); // Evita el envío del formulario por defecto
     setTimeout(() => {
@@ -123,8 +122,8 @@ onMounted(async () => {
                 <label for="barrio" class="input-label mt-4">
                 <select v-model="selectedBarrio" class="form-control" id="barrio">
                   <option disabled value="">Selecciona un barrio</option>
-                  <option v-for="b in barrios" :key="b.id" :value="b.nombre">
-                    {{ b.nombre }}
+                  <option v-for="barrio in barrios" :key="barrio.id" :value="barrio.nombre">
+                    {{ barrio.nombre }}
                   </option>
                 </select>
                 <span class="floating-label">Barrio</span>
