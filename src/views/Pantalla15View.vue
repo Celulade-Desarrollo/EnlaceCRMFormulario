@@ -1,6 +1,7 @@
 <script setup>
 import Heading from "../components/UI/Heading.vue";
 import { motion } from "motion-v";
+import { fadeInUp } from "../motion/PagesAnimation";
 import { ref } from "vue";
 import Button from "../components/UI/Button.vue";
 import Footer from "../components/UI/Footer.vue";
@@ -17,30 +18,56 @@ const error = ref("");
 const router = useRouter();
 const formStore = useFormStore()
 
-const handleSubmit = (event) => {
-  event.preventDefault(); // Evita el envío del formulario por defecto
-  const deudaMensual = document.querySelector('input[name="deudas"]:checked');
-  const ingresosDiferentes = document.querySelector('input[name="ingresosE"]:checked');
+function formatCurrency(event) {
+  let input = event.target;
+  let digits = input.value.replace(/\D/g, '');
+  let formatted = digits.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 
-  const deudaMensualSeleccionada = document.querySelector(
-    'input[name="deudas"]:checked'
-  );
-  const ingresosSeleccionado = document.querySelector(
-    'input[name="ingresosE"]:checked'
-  );
+  input.value = formatted;
 
-  if (!gastos || !deudas || !bienes || !deudaMensualSeleccionada || !ingresosSeleccionado) {
-    error.value = "Por favor responde todas las preguntas antes de continuar.";
-    return; // Detener si falta una respuesta
+  // Actualiza solo el campo correspondiente
+  switch (input.id) {
+    case 'bienes':
+      bienes.value = formatted;
+      break;
+    case 'deudas':
+      deudas.value = formatted;
+      break;
+    case 'gastos':
+      gastos.value = formatted;
+      break;
   }
-  // Limpiar error si no lo hay
+}
+
+const handleSubmit = (event) => {
+  event.preventDefault();
+
+  const deudaMensualSeleccionada = document.querySelector('input[name="deuda"]:checked');
+  const ingresosSeleccionado = document.querySelector('input[name="ingresosE"]:checked');
+
+  if (
+    !gastos.value ||
+    !deudas.value ||
+    !bienes.value ||
+    !deudaMensualSeleccionada ||
+    !ingresosSeleccionado
+  ) {
+    error.value = "Por favor responde todas las preguntas antes de continuar.";
+    return;
+  }
+
   error.value = "";
-  event.preventDefault(); // Evita el envío del formulario por defecto
-  store.completarFormulario(); // Marca el formulario como completado
-  router.push("/antesDeTerminar"); // Redirige a la siguiente pantalla
-  formStore.updateField('Deuda_Mensual', deudaMensual.value)
-  formStore.updateField('Ingresos_Diferentes_Negocio', ingresosDiferentes.value)
+
+  store.completarFormulario();
+  router.push("/antesDeTerminar");
+
+  formStore.updateField('Valor_Bienes', bienes.value);
+  formStore.updateField('Valor_Deudas', deudas.value);
+  formStore.updateField('Gastos_Mensuales', gastos.value);
+  formStore.updateField('Deuda_Mensual', deudaMensualSeleccionada.value);
+  formStore.updateField('Ingresos_Diferentes_Negocio', ingresosSeleccionado.value);
 };
+
 </script>
 
 <template>
@@ -59,9 +86,10 @@ const handleSubmit = (event) => {
                     class="form-control"
                     aria-required="true"
                     name="bienes"
-                    type="number"
+                    type="text"
                     placeholder=" "
                     autocomplete="off"
+                    @input="formatCurrency"
                 />
                 <span class="floating-label"
                     >Ingresa el monto</span
@@ -80,9 +108,10 @@ const handleSubmit = (event) => {
                     class="form-control"
                     aria-required="true"
                     name="deudas"
-                    type="number"
+                    type="text"
                     placeholder=" "
                     autocomplete="off"
+                    @input="formatCurrency"
                 />
                 <span class="floating-label"
                     >Ingresa el monto</span
@@ -133,14 +162,15 @@ const handleSubmit = (event) => {
         <div>
             <label for="gastos" class="input-label">
                 <input
-                    id="gastps"
+                    id="gastos"
                     v-model="gastos"
                     class="form-control"
                     aria-required="true"
                     name="gastos"
-                    type="number"
+                    type="text"
                     placeholder=" "
                     autocomplete="off"
+                    @input="formatCurrency"
                 />
                 <span class="floating-label"
                     >Ingresa el monto</span
