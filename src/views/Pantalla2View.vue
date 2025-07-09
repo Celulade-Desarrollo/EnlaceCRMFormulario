@@ -16,6 +16,7 @@ const emailErrorMessage = ref("");
 const confirmEmailErrorMessage = ref("");
 const router = useRouter();
 const store = useFormularioStore();
+
 //formulario global
 const formStore = useFormStore()
 // Función para limpiar valores undefined o null

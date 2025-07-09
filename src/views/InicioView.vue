@@ -74,6 +74,16 @@ const focusInput = () => {
 
 // Montar el event listener para el envío del formulario
 onMounted(() => {
+
+  const queryParams = new URLSearchParams(window.location.search);
+  const nbCliente = queryParams.get('nbCliente');
+  const nbAgenteComercial = queryParams.get('nbAgenteComercial');
+
+  if (nbCliente && nbAgenteComercial) {
+    localStorage.setItem('nbCliente', nbCliente);
+    localStorage.setItem('nbAgenteComercial', nbAgenteComercial);
+  }
+  
   let miRuta = window.location.pathname;
 
   // Validar si ya existe "ruta"

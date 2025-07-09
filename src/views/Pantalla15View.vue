@@ -55,17 +55,16 @@ const handleSubmit = (event) => {
     error.value = "Por favor responde todas las preguntas antes de continuar.";
     return;
   }
-
+ 
   error.value = "";
-
-  store.completarFormulario();
-  router.push("/antesDeTerminar");
-
+  event.preventDefault();
   formStore.updateField('Valor_Bienes', bienes.value);
   formStore.updateField('Valor_Deudas', deudas.value);
   formStore.updateField('Gastos_Mensuales', gastos.value);
   formStore.updateField('Deuda_Mensual', deudaMensualSeleccionada.value);
   formStore.updateField('Ingresos_Diferentes_Negocio', ingresosSeleccionado.value);
+  store.completarFormulario();
+  router.push("/antesDeTerminar");
 };
 
 </script>

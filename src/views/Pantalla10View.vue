@@ -10,6 +10,7 @@ import { motion } from "motion-v";
 import { useFormStore } from '../stores/formStore.js'
 import axios from 'axios';
 
+
 const formStore = useFormStore()
 const datosFinales = ref({})
 
@@ -17,6 +18,8 @@ const error = ref("");
 const store = useFormularioStore();
 const router = useRouter();
 
+const nbCliente = localStorage.getItem('nbCliente');
+const nbAgenteComercial = localStorage.getItem('nbAgenteComercial');
 // Resultado:
 console.log(datosFinales.value)
 
@@ -115,21 +118,22 @@ const handleSubmit = async (event) => {
   // Limpiar error si no lo hay
   error.value = "";
   event.preventDefault(); // Evita el envío del formulario por defecto
-  store.completarFormulario();  // Marca el formulario como completado   
+  store.completarFormulario();  // Marca el formulario como completado
   formStore.updateField('Persona_expuesta_politicamente_PEP',document.querySelector(".single-checkbox:checked")?.value === "si" ? 1 : 0);
   formStore.updateField('Familiar_expuesto_politicamente_PEP',document.querySelector(".single-checkbox-1:checked")?.value === "si" ? 1 : 0);
   formStore.updateField('Operaciones_moneda_extranjera',document.querySelector(".single-checkbox-2:checked")?.value === "si" ? 1 : 0);
-  
-    datosFinales.value = formStore.getFinalData()
+  formStore.updateField('nbCliente', nbCliente);
+  formStore.updateField('nbAgenteComercial', nbAgenteComercial);
+  datosFinales.value = formStore.getFinalData()
 
-    //   try {
-    //    const response = await axios.post('http://localhost:3000/api/flujoRegistroEnlace', datosFinales.value)
+     try {
+     const response = await axios.post('http://localhost:3000/api/flujoRegistroEnlace', datosFinales.value)
 
-    //   console.log('Respuesta del backend:', response.data)
-    //  } catch (error) {
-    //    console.error(' Error al enviar los datos:', error)
-    //  }
-  console.log('Datos listos para enviar:', datosFinales.value)
+       console.log('Respuesta del backend:', response.data)
+     } catch (error) {
+       console.error(' Error al enviar los datos:', error)
+     }
+ // console.log('Datos listos para enviar:', datosFinales.value)
   router.push("/Terminado"); // Redirige a la siguiente pantalla
 };
 </script>
