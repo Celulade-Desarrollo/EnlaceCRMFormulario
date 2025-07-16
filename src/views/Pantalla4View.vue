@@ -7,6 +7,10 @@ import { useRouter } from "vue-router";
 import { useFormularioStore } from "../router/store";
 import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
+import { useFormStore } from '../stores/formStore.js'
+
+//formulario global
+const formStore = useFormStore()
 
 const store = useFormularioStore();
 const router = useRouter();
@@ -76,6 +80,7 @@ const handleSubmit = (event) => {
     return; // Evitar el envío del formulario si no es válido
   }
   store.completarFormulario(); // Marca el formulario como completado
+  formStore.updateField('Cedula_Cliente', cedula.value.toString())
   router.push("/datosPersonales"); // Redirige a la siguiente pantalla
 };
 

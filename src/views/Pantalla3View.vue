@@ -7,6 +7,10 @@ import { useRouter } from "vue-router";
 import { useFormularioStore } from "../router/store";
 import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
+import { useFormStore } from '../stores/formStore.js'
+
+//formulario global
+const formStore = useFormStore()
 
 const nameRegex = /^[a-zA-ZÀ-ÿ\s'-]{2,50}$/;
 
@@ -120,6 +124,9 @@ const handleSubmit = (event) => {
   }
   event.preventDefault();
   store.completarFormulario(); // Marca el formulario como completado
+  formStore.updateField('Nombres', nombre.value)
+  formStore.updateField('Primer_Apellido',apellido.value)
+  formStore.updateField('2do_Apellido_opcional', SegundoApellido.value)
   router.push("/cedula"); // Redirige a la siguiente pantalla
 };
 

@@ -7,13 +7,17 @@ import { ref, onMounted } from "vue";
 import Footer from "../components/UI/Footer.vue";
 import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
+import { useFormStore } from '../stores/formStore.js'
 
 const store = useFormularioStore();
 const router = useRouter();
 const error = ref("");
+const formStore = useFormStore()
 
 const handleSubmit = (event) => {
   event.preventDefault(); // Evita el envío del formulario por defecto
+  const numeroneveras = document.querySelector('input[name="nevera"]:checked');
+  const registro = document.querySelector('input[name="registro"]:checked');
 
   const neveraSeleccionada = document.querySelector(
     'input[name="nevera"]:checked'
@@ -31,6 +35,8 @@ const handleSubmit = (event) => {
   event.preventDefault(); // Evita el envío del formulario por defecto
   store.completarFormulario(); // Marca el formulario como completado
   router.push("/ventas"); // Redirige a la siguiente pantalla
+  formStore.updateField('Numero_de_neveras', numeroneveras.value)
+  formStore.updateField('Registrado_Camara_Comercio', registro.value)
 };
 onMounted(() => {
   let miRuta = window.location.pathname;
@@ -350,10 +356,10 @@ p {
 }
 
 /* Estilo para la marca de verificación cuando está seleccionada */
-.check-item input[type="checkbox"]:checked + .checkmark {
+/* .check-item input[type="checkbox"]:checked + .checkmark {
   background-color: #dd3590;
   border: 2px solid #dd3590;
-}
+} */
 
 /* Estilo para el símbolo de verificación dentro del círculo */
 /* .checkmark::after {

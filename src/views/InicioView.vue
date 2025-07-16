@@ -7,6 +7,8 @@ import Footer from "../components/UI/Footer.vue";
 import { useFormularioStore } from "../router/store";
 import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
+import { useFormStore } from '../stores/formStore.js'
+
 
 // Variables reactivas
 const celular = ref("");
@@ -15,6 +17,9 @@ const error = ref("");
 const celularInput = ref(null); // Ref para el input
 const router = useRouter(); // Instancia del router
 const store = useFormularioStore();
+
+//formulario global
+const formStore = useFormStore()
 
 // Función para obtener datos
 const fetchData = async () => {
@@ -47,12 +52,12 @@ const handleSubmit = async (event) => {
     setTimeout(() => {
       error.value = "";
     }, 3000);
-
     return; // Detiene la ejecución si el número no es válido
   } else {
     try {
       event.preventDefault(); // Evita el envío del formulario por defecto
       store.completarFormulario(); // Marca el formulario como completado
+      formStore.updateField('Numero_Celular', celular.value.toString())
       router.push("/correoElectronico"); // Redirige a la siguiente pantalla
       error.value = ""; // Limpia el mensaje de error si el número es válido
     } catch (error) {}
@@ -69,6 +74,16 @@ const focusInput = () => {
 
 // Montar el event listener para el envío del formulario
 onMounted(() => {
+
+  const queryParams = new URLSearchParams(window.location.search);
+  const nbCliente = queryParams.get('nbCliente');
+  const nbAgenteComercial = queryParams.get('nbAgenteComercial');
+
+  if (nbCliente && nbAgenteComercial) {
+    localStorage.setItem('nbCliente', nbCliente);
+    localStorage.setItem('nbAgenteComercial', nbAgenteComercial);
+  }
+  
   let miRuta = window.location.pathname;
 
   // Validar si ya existe "ruta"

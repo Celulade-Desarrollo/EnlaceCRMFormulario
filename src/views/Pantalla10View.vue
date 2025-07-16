@@ -7,10 +7,21 @@ import { useFormularioStore } from "../router/store";
 import { useRouter } from "vue-router";
 import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
+import { useFormStore } from '../stores/formStore.js'
+import axios from 'axios';
+
+
+const formStore = useFormStore()
+const datosFinales = ref({})
 
 const error = ref("");
 const store = useFormularioStore();
 const router = useRouter();
+
+const nbCliente = localStorage.getItem('nbCliente');
+const nbAgenteComercial = localStorage.getItem('nbAgenteComercial');
+// Resultado:
+console.log(datosFinales.value)
 
 const handleCheckboxChange = (event) => {
   const checkboxes = document.querySelectorAll(".single-checkbox");
@@ -53,6 +64,7 @@ const validateCheckboxes = () => {
 };
 
 onMounted(() => {
+
   const checkboxes = document.querySelectorAll(".single-checkbox");
   checkboxes.forEach((checkbox) => {
     checkbox.addEventListener("change", handleCheckboxChange);
@@ -82,11 +94,20 @@ onMounted(() => {
   }
 });
 
-const handleSubmit = (event) => {
+const handleSubmit = async (event) => {
   if (!validateCheckboxes()) {
     event.preventDefault(); // Prevent form submissio
+  const persona = document.querySelector(".single-checkbox:checked")?.value;
+  const familiar = document.querySelector(".single-checkbox-1:checked")?.value;
+  const moneda = document.querySelector(".single-checkbox-2:checked")?.value;
+
+  const personaValue = clearUndefined(persona);
+  const familiarValue = clearUndefined(familiar);
+  const monedaValue = clearUndefined(moneda);
+
     error.value =
       "Por favor, selecciona al menos una opción de los tres grupos.";
+
 
     setTimeout(() => {
       error.value = "";
@@ -97,7 +118,22 @@ const handleSubmit = (event) => {
   // Limpiar error si no lo hay
   error.value = "";
   event.preventDefault(); // Evita el envío del formulario por defecto
-  store.completarFormulario(); // Marca el formulario como completado
+  store.completarFormulario();  // Marca el formulario como completado
+  formStore.updateField('Persona_expuesta_politicamente_PEP',document.querySelector(".single-checkbox:checked")?.value === "si" ? 1 : 0);
+  formStore.updateField('Familiar_expuesto_politicamente_PEP',document.querySelector(".single-checkbox-1:checked")?.value === "si" ? 1 : 0);
+  formStore.updateField('Operaciones_moneda_extranjera',document.querySelector(".single-checkbox-2:checked")?.value === "si" ? 1 : 0);
+  formStore.updateField('nbCliente', nbCliente);
+  formStore.updateField('nbAgenteComercial', nbAgenteComercial);
+  datosFinales.value = formStore.getFinalData()
+
+     try {
+     const response = await axios.post('http://localhost:3000/api/flujoRegistroEnlace', datosFinales.value)
+
+       console.log('Respuesta del backend:', response.data)
+     } catch (error) {
+       console.error(' Error al enviar los datos:', error)
+     }
+ // console.log('Datos listos para enviar:', datosFinales.value)
   router.push("/Terminado"); // Redirige a la siguiente pantalla
 };
 </script>
@@ -148,6 +184,7 @@ const handleSubmit = (event) => {
                       name="pep"
                       value="no"
                       class="single-checkbox"
+                      checked
                     />
                     <span class="checkmark"></span>
                     No
@@ -178,6 +215,7 @@ const handleSubmit = (event) => {
                       name="familiar_pep"
                       value="no"
                       class="single-checkbox-1"
+                      checked
                     />
                     <span class="checkmark"></span>
                     No
@@ -203,6 +241,7 @@ const handleSubmit = (event) => {
                       name="MonedaExtranjeraNo"
                       value="no"
                       class="single-checkbox-2"
+                      checked
                     />
                     <span class="checkmark"></span>
                     No

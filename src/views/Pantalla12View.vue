@@ -7,12 +7,15 @@ import { useFormularioStore } from "../router/store";
 import { useRouter } from "vue-router";
 import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
+import { useFormStore } from '../stores/formStore.js';
 
 const store = useFormularioStore();
 const router = useRouter();
+const formStore = useFormStore();
 
 const mostrarAlerta = ref(false);
 const mensajeAlerta = ref("");
+const ingresos = ref(""); // valor seleccionado del checkbox
 
 const handleCheckboxChange = (event) => {
   const checkboxes = document.querySelectorAll(".single-checkbox");
@@ -21,6 +24,8 @@ const handleCheckboxChange = (event) => {
       checkbox.checked = false;
     }
   });
+
+  ingresos.value = event.target.value; // Guarda el valor seleccionado
 };
 
 const handleSubmit = (event) => {
@@ -29,7 +34,7 @@ const handleSubmit = (event) => {
   const checkboxes = document.querySelectorAll(".single-checkbox");
   const algunoSeleccionado = Array.from(checkboxes).some((cb) => cb.checked);
 
-  if (!algunoSeleccionado) {
+  if (!algunoSeleccionado || !ingresos.value) {
     mostrarAlerta.value = true;
     mensajeAlerta.value = "Por favor selecciona una opción.";
     setTimeout(() => {
@@ -38,34 +43,31 @@ const handleSubmit = (event) => {
     return;
   }
 
-  // Marcar el formulario como completado
-  store.completarFormulario(); // Marca el formulario como completado
-  router.push("/truora"); // Redirige a la siguiente pantalla
+  formStore.updateField('Rango_de_Ingresos', ingresos.value);
+
+  store.completarFormulario();
+  router.push("/informacionFinanciera");
+  //router.push("/antesDeTerminar");
 };
+
 onMounted(() => {
   const checkboxes = document.querySelectorAll(".single-checkbox");
   checkboxes.forEach((checkbox) => {
     checkbox.addEventListener("change", handleCheckboxChange);
   });
 
-  let miRuta = window.location.pathname;
-
-  // Validar si ya existe "ruta"
-  if (localStorage.getItem.length > 0) {
+  const miRuta = window.location.pathname;
+  if (localStorage.getItem("ruta")) {
     localStorage.removeItem("ruta");
-
-    // Setear la ruta por defecto
-    localStorage.setItem("ruta", miRuta);
-  } else {
-    // Setear la ruta por defecto
-    localStorage.setItem("ruta", miRuta);
   }
+  localStorage.setItem("ruta", miRuta);
 });
 </script>
 
+
 <template>
   <Heading></Heading>
-  <motion.div v-bind="fadeInUp">
+    <motion.div v-bind="fadeInUp">
     <section
       class="container registro h-[100vh] flex flex-col justify-between overflow-hidden p-0"
     >
@@ -90,64 +92,68 @@ onMounted(() => {
             </p>
           </div>
 
-          <div class="mt-4 tarjeta">
-            <p class="mb-4 font-bold">¿Cuanto vendes al día (opcional)?</p>
-            <div class="checklist">
+            <div class="mt-4 tarjeta">
+              <p class="mb-4 font-bold">¿Cuanto vendes al día (opcional)?</p>
+              <div class="checklist">
               <label class="check-item mb-4">
                 <input
                   type="checkbox"
-                  name="100"
-                  value="100"
-                  id="100P"
+                  name="ingresos"
+                  value="Menos de $100.000"
                   class="single-checkbox"
+                  :checked="ingresos === 'Menos de $100.000'"
                 />
                 <span class="checkmark"></span>
                 Menos de $100.000
               </label>
-              <label class="check-item mb-4">
-                <input
-                  type="checkbox"
-                  name="cedula"
-                  value="extranjeria"
-                  id="otros"
-                  class="single-checkbox"
-                />
-                <span class="checkmark"></span>
-                Entre $100.000 y $200.000
-              </label>
-              <label class="check-item mb-4">
-                <input
-                  type="checkbox"
-                  name="cedula"
-                  value="extranjeria"
-                  id="otros"
-                  class="single-checkbox"
-                />
-                <span class="checkmark"></span>
-                Entre $200.000 y $300.000
-              </label>
-              <label class="check-item mb-4">
-                <input
-                  type="checkbox"
-                  name="cedula"
-                  value="extranjeria"
-                  id="otros"
-                  class="single-checkbox"
-                />
-                <span class="checkmark"></span>
-                Entre $300.000 y $400.000
-              </label>
-              <label class="check-item mb-4">
-                <input
-                  type="checkbox"
-                  name="cedula"
-                  value="extranjeria"
-                  id="otros"
-                  class="single-checkbox"
-                />
-                <span class="checkmark"></span>
-                Más de $400.000
-              </label>
+
+                <label class="check-item mb-4">
+                  <input
+                    type="checkbox"
+                    name="ingresos"
+                    value="Entre $100.000 y $200.000"
+                    class="single-checkbox"
+                    :checked="ingresos === 'Entre $100.000 y $200.000'"
+                  />
+                  <span class="checkmark"></span>
+                  Entre $100.000 y $200.000
+                </label>
+
+                <label class="check-item mb-4">
+                  <input
+                    type="checkbox"
+                    name="ingresos"
+                    value="Entre $200.000 y $300.000"
+                    class="single-checkbox"
+                    :checked="ingresos === 'Entre $200.000 y $300.000'"
+                  />
+                  <span class="checkmark"></span>
+                  Entre $200.000 y $300.000
+                </label>
+
+                <label class="check-item mb-4">
+                  <input
+                    type="checkbox"
+                    name="ingresos"
+                    value="Entre $300.000 y $400.000"
+                    class="single-checkbox"
+                    :checked="ingresos === 'Entre $300.000 y $400.000'"
+                  />
+                  <span class="checkmark"></span>
+                  Entre $300.000 y $400.000
+                </label>
+
+                <label class="check-item mb-4">
+                  <input
+                    type="checkbox"
+                    name="ingresos"
+                    value="Más de $400.000"
+                    class="single-checkbox"
+                    :checked="ingresos === 'Más de $400.000'"
+                  />
+                  <span class="checkmark"></span>
+                  Más de $400.000
+                </label>
 
               <Button @click="handleSubmit" class="mt-5"></Button>
               <p v-if="mostrarAlerta" class="text-danger mt-1">
@@ -157,9 +163,9 @@ onMounted(() => {
           </div>
         </div>
       </div>
-      <Footer></Footer>
     </section>
   </motion.div>
+  <Footer class="bottom-0 left-0 right-0"></Footer>
 </template>
 
 <style scoped>

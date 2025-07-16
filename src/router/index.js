@@ -86,10 +86,11 @@ const router = createRouter({
       component: () => import("../views/Pantalla14View.vue"),
       meta: { requiereFormulario: true },
     },
-    {
-      path: "/truora",
-      name: "truora",
+      {
+      path: "/informacionFinanciera",
+      name: "informacionFinanciera",
       component: () => import("../views/Pantalla15View.vue"),
+      meta: { requiereFormulario: true },
     },
   ],
 });

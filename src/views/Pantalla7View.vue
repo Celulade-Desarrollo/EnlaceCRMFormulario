@@ -8,6 +8,7 @@ import { useFormularioStore } from "../router/store";
 import { useRouter } from "vue-router";
 import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
+import { useFormStore } from '../stores/formStore.js';
 
 const store = useFormularioStore();
 const router = useRouter();
@@ -18,29 +19,56 @@ const selectedDepartment = ref(""); // Será el ID del departamento
 const selectedCity = ref("");
 const selectedDepartmentName = ref(""); // Nombre del departamento
 const error = ref("");
+const formStore = useFormStore();
+const departmentsRaw = ref([]);
+const selectedDepartmentId = ref(null);// solo los nombres
+const citiesRaw = ref([]); 
+const selectedCityId = ref(null);
 
 // Cargar departamentos desde API Colombia
 const loadDepartments = async () => {
   try {
-    const response = await axios.get("https://api-colombia.com/api/v1/Department");
-    departments.value = response.data; // Arreglo completo de objetos
+    const response = await axios.get(
+      "http://localhost:3000/api/ubicacion/departamentos"
+    );
+        departmentsRaw.value = response.data;
+    departments.value = response.data.map((item) => item.nombre);
   } catch (err) {
     error.value = "Error al cargar los departamentos.";
-    console.error("Error loading departments:", err);
+    console.error("Error al cargar los departamentos:", err);
   }
 };
 
-// Cargar ciudades al seleccionar un departamento
+const handleDepartmentChange = () => {
+  const dept = departmentsRaw.value.find(
+    (d) => d.nombre === selectedDepartment.value
+  );
+  selectedDepartmentId.value = dept?.id || null;
+
+  loadCities();
+};
+
+const handleCityChange = () => {
+  const city = citiesRaw.value.find(
+    (c) => c.nombre.trim().toLowerCase() === selectedCity.value.trim().toLowerCase()
+  );
+  selectedCityId.value = city?.id || null;
+
+  console.log("Ciudad seleccionada:", selectedCity.value);
+  console.log("ID de ciudad:", selectedCityId.value);
+};
+
 const loadCities = async () => {
-  if (!selectedDepartment.value) return;
+  if (!selectedDepartmentId.value) return;
   try {
     const response = await axios.get(
-      `https://api-colombia.com/api/v1/Department/${selectedDepartment.value}/cities`
+      `http://localhost:3000/api/ubicacion/ciudades/${selectedDepartmentId.value}`
     );
-    cities.value = response.data.map((city) => city.name);
+    citiesRaw.value = response.data;
+    cities.value = response.data.map((item) => item.nombre);
   } catch (err) {
     error.value = "Error al cargar las ciudades.";
-    console.error("Error loading cities:", err);
+    console.error("Error al cargar las ciudades:", err);
   }
 };
 
@@ -55,21 +83,31 @@ watch(selectedDepartment, (newVal) => {
 const handleSubmit = (event) => {
   if (!selectedDepartment.value || !selectedCity.value) {
     error.value = "Por favor, selecciona tu departamento y ciudad.";
-    event.preventDefault();
+    event.preventDefault(); // Evita el envío del formulario por defecto
+    const selectedDepartment = document.querySelector('input[name="nevera"]:checked');
+    const selectedCity = document.querySelector('input[name="nevera"]:checked');
+
     setTimeout(() => {
       error.value = "";
     }, 3000);
     return false;
   }
 
-  // Guardar ciudad en localStorage
+  // Guardar ciudad seleccionada en localStorage
+  localStorage.setItem("selectedDepartment", selectedDepartment.value);
   localStorage.setItem("selectedCity", selectedCity.value);
-  localStorage.setItem("selectedDepartment", selectedDepartmentName.value);
+  localStorage.setItem("selectedCityId", selectedCityId.value);
+
 
   error.value = "";
-  event.preventDefault();
-  store.completarFormulario();
-  router.push("/ubicacion");
+
+  // Redirigir a la nueva página
+  event.preventDefault(); // Evitar el envío del formulario si no es válido
+  store.completarFormulario(); // Marca el formulario como completado
+  router.push("/ubicacion"); // Redirige a la siguiente pantalla
+  formStore.updateField('Ubicacion_del_Negocio_Departamento', selectedDepartment.value);
+  formStore.updateField('Ubicacion_del_Negocio_Ciudad', selectedCity.value);
+  
 };
 
 // Inicialización
@@ -111,23 +149,24 @@ onMounted(() => {
         <div class="custom-select-wrapper">
           <select
             v-model="selectedDepartment"
+            @change="handleDepartmentChange"
             class="custom-select"
           >
             <option disabled value="">Elige un departamento</option>
             <option
-              v-for="department in departments"
-              :key="department.id"
-              :value="department.id"
+              v-for="nombre in departments"
+              :key="nombre"
+              :value="nombre"
             >
-              {{ department.name }}
+              {{ nombre }}
             </option>
           </select>
         </div>
 
         <p class="font-bold">Elige una ciudad</p>
         <div class="custom-select-wrapper">
-          <select v-model="selectedCity" class="custom-select">
-            <option disabled value="">Elige una ciudad</option>
+          <select v-model="selectedCity"  @change="handleCityChange" class="custom-select">
+            <option disabled selected>Elige una ciudad</option>
             <option v-for="city in cities" :key="city" :value="city">
               {{ city }}
             </option>

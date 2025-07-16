@@ -7,17 +7,24 @@ import { useFormularioStore } from "../router/store";
 import { useRouter } from "vue-router";
 import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
+import { useFormStore } from '../stores/formStore.js'
+import axios from "axios";
 
-const ciudad = localStorage.getItem("selectedCity");
+//formulario global
+const formStore = useFormStore()
+
 const store = useFormularioStore(); // Inicializa Vuex
 const router = useRouter(); // Inicializa Vue Router
 const direccion = ref(""); // Crea una propiedad reactiva para la dirección
-const barrio = ref(""); // Crea una propiedad reactiva para el barrio
 const error = ref(""); // Crea una propiedad reactiva para el mensaje de error
+const detalles = ref("");
 
+const barrios = ref([]);
+const selectedBarrio = ref(null);
+console.log("barrrrio",selectedBarrio.value);
 const handleSubmit = (event) => {
   // Validación
-  if (!direccion.value || !barrio.value) {
+  if (!direccion.value || !selectedBarrio.value) {
     error.value = "Por favor, ingresa tu dirección y tu barrio.";
     event.preventDefault(); // Evita el envío del formulario por defecto
     setTimeout(() => {
@@ -30,23 +37,31 @@ const handleSubmit = (event) => {
   error.value = "";
   event.preventDefault(); // Evita el envío del formulario por defecto
   store.completarFormulario(); // Marca el formulario como completado
-  router.push("/informacionNegocio"); // Redirige a la siguiente pantalla
-};
+  formStore.updateField('Direccion', direccion.value)
+  formStore.updateField('Detalles', detalles.value)
+  formStore.updateField('Barrio', selectedBarrio.value)
 
-onMounted(() => {
+  router.push("/informacionNegocio"); // Redirige a la siguiente pantalla
+};// Crea una propiedad reactiva para el barrio
+
+onMounted(async () => {
   let miRuta = window.location.pathname;
 
-  // Validar si ya existe "ruta"
-  if (localStorage.getItem.length > 0) {
-    localStorage.removeItem("ruta");
+  localStorage.setItem("ruta", miRuta); // Actualiza siempre
 
-    // Setear la ruta por defecto
-    localStorage.setItem("ruta", miRuta);
-  } else {
-    // Setear la ruta por defecto
-    localStorage.setItem("ruta", miRuta);
+  const cityId = localStorage.getItem("selectedCityId");
+
+  if (cityId) {
+    try {
+      const response = await axios.get(`http://localhost:3000/api/ubicacion/barrios/${cityId}`);
+      barrios.value = response.data; // suponiendo que viene [{ id, nombre }]
+    } catch (err) {
+      console.error("Error al cargar los barrios:", err);
+      error.value = "Error al cargar los barrios.";
+    }
   }
 });
+
 </script>
 
 <template>
@@ -105,20 +120,14 @@ onMounted(() => {
                 </label>
 
                 <label for="barrio" class="input-label mt-4">
-                  <input
-                    v-model="barrio"
-                    class="form-control"
-                    aria-required="true"
-                    name="barrio"
-                    type="text"
-                    placeholder=" "
-                    data-gtm="home-hero-email-field"
-                    autocomplete="off"
-                    id="barrio"
-                    aria-describedby="error-barrio"
-                  />
-                  <span class="floating-label">Barrio</span>
-                </label>
+                <select v-model="selectedBarrio" class="form-control" id="barrio">
+                  <option disabled value="">Selecciona un barrio</option>
+                  <option v-for="barrio in barrios" :key="barrio.id" :value="barrio.nombre">
+                    {{ barrio.nombre }}
+                  </option>
+                </select>
+                <span class="floating-label">Barrio</span>
+              </label>
               </div>
               <Button @click="handleSubmit"></Button>
               <p v-if="error" class="text-danger mt-1 flex justify-center">
