@@ -190,7 +190,7 @@ onMounted(async () => {
 
   try {
     const response = await axios.get(
-      "http://localhost:3000/api/ubicacion/departamentos"
+      "api/ubicacion/departamentos"
     );
     departments.value = response.data.map((item) => ({
       value: item.nombre,

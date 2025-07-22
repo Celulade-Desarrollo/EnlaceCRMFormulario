@@ -53,7 +53,7 @@ onMounted(async () => {
 
   if (cityId) {
     try {
-      const response = await axios.get(`http://localhost:3000/api/ubicacion/barrios/${cityId}`);
+      const response = await axios.get(`api/ubicacion/barrios/${cityId}`);
       barrios.value = response.data; // suponiendo que viene [{ id, nombre }]
     } catch (err) {
       console.error("Error al cargar los barrios:", err);

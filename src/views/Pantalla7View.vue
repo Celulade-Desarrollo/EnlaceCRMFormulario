@@ -29,7 +29,7 @@ const selectedCityId = ref(null);
 const loadDepartments = async () => {
   try {
     const response = await axios.get(
-      "http://localhost:3000/api/ubicacion/departamentos"
+      "api/ubicacion/departamentos"
     );
         departmentsRaw.value = response.data;
     departments.value = response.data.map((item) => item.nombre);
@@ -62,7 +62,7 @@ const loadCities = async () => {
   if (!selectedDepartmentId.value) return;
   try {
     const response = await axios.get(
-      `http://localhost:3000/api/ubicacion/ciudades/${selectedDepartmentId.value}`
+      `api/ubicacion/ciudades/${selectedDepartmentId.value}`
     );
     citiesRaw.value = response.data;
     cities.value = response.data.map((item) => item.nombre);

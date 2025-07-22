@@ -6,6 +6,9 @@ import config from "../formkit.config";
 import App from "./App.vue";
 import router from "./router";
 import { createPinia } from "pinia";
+import axios from "axios";
+
+axios.defaults.baseURL = import.meta.env.VITE_API_URL;
 
 const app = createApp(App);
 const pinia = createPinia();

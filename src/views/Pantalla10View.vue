@@ -127,7 +127,7 @@ const handleSubmit = async (event) => {
   datosFinales.value = formStore.getFinalData()
 
      try {
-     const response = await axios.post('http://localhost:3000/api/flujoRegistroEnlace', datosFinales.value)
+     const response = await axios.post('api/flujoRegistroEnlace', datosFinales.value)
 
        console.log('Respuesta del backend:', response.data)
      } catch (error) {
