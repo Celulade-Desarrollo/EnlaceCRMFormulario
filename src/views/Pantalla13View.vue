@@ -279,7 +279,7 @@ onMounted(async () => {
                   class="form-control" 
                   placeholder=" "
                 />
-                <span class="floating-label">Cedula de la pareja:</span>
+                <span class="floating-label">Cédula de la pareja:</span>
                 </label>
               </div>
         </div>

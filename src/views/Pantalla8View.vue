@@ -51,6 +51,7 @@ onMounted(async () => {
 
   const cityId = localStorage.getItem("selectedCityId");
 
+
   if (cityId) {
     try {
       const response = await axios.get(`api/ubicacion/barrios/${cityId}`);
@@ -61,6 +62,7 @@ onMounted(async () => {
     }
   }
 });
+  const ciudad = localStorage.getItem("selectedCity");
 
 </script>
 
