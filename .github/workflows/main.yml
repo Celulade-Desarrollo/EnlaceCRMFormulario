@@ -21,7 +21,7 @@ jobs:
       - name: Copiar archivos compilados a ruta de IIS
         shell: powershell
         run: |
-          $destino = "C:\Users\sap-basis\Desktop\RegistroEnlaceCRM\dist"
+          $destino = "C:\EnlaceCRM\EnlaceCRMFormulario\dist"
           if (Test-Path $destino) {
             Remove-Item -Recurse -Force "$destino\*"
           } else {
@@ -29,7 +29,8 @@ jobs:
           }
           Copy-Item -Path "dist\*" -Destination $destino -Recurse
 
-      - name: Reiniciar IIS
+      - name: Reiniciar Nginx
         shell: powershell
         run: |
-          iisreset /restart
+          Set-Location "C:\Nginx\nginx-1.28.0"
+          .\nginx.exe -s reload
