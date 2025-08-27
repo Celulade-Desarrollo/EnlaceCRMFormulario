@@ -11,6 +11,11 @@ const router = createRouter({
       component: InicioView,
     },
     {
+      path: "/truora",
+      name: "truora",
+      component: ()=>import("../views/Truora.vue"),
+    },
+    {
       path: "/correoElectronico",
       name: "correoElectronico",
       component: () => import("../views/Pantalla2View.vue"),

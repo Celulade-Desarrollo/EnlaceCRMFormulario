@@ -134,7 +134,7 @@ const handleSubmit = async (event) => {
        console.error(' Error al enviar los datos:', error)
      }
  // console.log('Datos listos para enviar:', datosFinales.value)
-  router.push("/Terminado"); // Redirige a la siguiente pantalla
+  router.push("/truora"); // Redirige a la siguiente pantalla
 };
 </script>
 
