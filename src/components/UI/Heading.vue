@@ -19,9 +19,34 @@
       </ul>
     </nav>
   </header>
+
+  <header class="app-header">
+    <!-- Botón Atrás -->
+    <button @click="goBack" class="back-button">
+      <span aria-hidden="true">🡰</span>
+      <span>Atrás</span>
+    </button>
+
+    <!-- Título centrado -->
+    <h1 class="title">
+      {{ title }}
+    </h1>
+  </header>
 </template>
 
-<script></script>
+<script setup>
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+function goBack() {
+  if (history.length > 1) {
+    router.back()
+  } else {
+    router.push(props.fallback)
+  }
+}
+</script>
 
 <style scoped>
 body {
@@ -41,6 +66,35 @@ header {
 
 .logo img {
   max-height: 50px;
+}
+
+
+.back-button {
+  display: flex;
+  position: relative;
+  top: -9px;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 10px;
+  background: #251786;
+  border: 10px;
+  color: #ffffff;
+}
+
+.back-button:hover {
+  background: #251786;
+}
+
+.back-button:active {
+  transform: scale(0.97);
+}
+
+.title {
+  flex: 1;
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #222;
 }
 
 .menu {
@@ -75,6 +129,7 @@ header {
 .menu-list li {
   margin: 0 10px;
 }
+
 
 .menu-list a {
   color: black;
