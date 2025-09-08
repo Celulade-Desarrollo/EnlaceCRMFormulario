@@ -62,7 +62,7 @@ const loadCities = async () => {
   if (!selectedDepartmentId.value) return;
   try {
     const response = await axios.get(
-      `api/ubicacion/ciudades/${selectedDepartmentId.value}`
+      `/api/ubicacion/ciudades/${selectedDepartmentId.value}`
     );
     citiesRaw.value = response.data;
     cities.value = response.data.map((item) => item.nombre);
