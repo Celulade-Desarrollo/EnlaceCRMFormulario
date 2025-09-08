@@ -29,7 +29,7 @@ const selectedCityId = ref(null);
 const loadDepartments = async () => {
   try {
     const response = await axios.get(
-      "api/ubicacion/departamentos"
+      "/api/ubicacion/departamentos"
     );
         departmentsRaw.value = response.data;
     departments.value = response.data.map((item) => item.nombre);
