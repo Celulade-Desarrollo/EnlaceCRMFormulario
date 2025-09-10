@@ -7,77 +7,83 @@ import { useRouter } from "vue-router";
 import { useFormularioStore } from "../router/store";
 import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
-import { useFormStore } from "../stores/formStore.js";
-import axios from "axios"; // 👈 para llamadas a la API
+import { useFormStore } from '../stores/formStore.js'
+import axios from "axios";
+//formulario global
+const formStore = useFormStore()
 
-// formulario global
-const formStore = useFormStore();
 const store = useFormularioStore();
 const router = useRouter();
-
 const cedula = ref(localStorage.getItem("cedula") || "");
-const nbCliente = localStorage.getItem("nbCliente");
-const nbAgenteComercial = localStorage.getItem("nbAgenteComercial");
 
-// referencias
+const nbCliente = localStorage.getItem('nbCliente');
+const nbAgenteComercial = localStorage.getItem('nbAgenteComercial');
+
+// Referencias para los checkboxes
 const checkboxes = ref([]);
 const error = ref("");
 
-// checkboxes únicos
+// Función para manejar el cambio de checkboxes
 const handleCheckboxChange = (event) => {
   checkboxes.value.forEach((checkbox) => {
-    if (checkbox !== event.target) checkbox.checked = false;
+    if (checkbox !== event.target) {
+      checkbox.checked = false;
+    }
   });
 };
 
-// validar que haya uno marcado
+// Validar que al menos una opción de cada grupo esté seleccionada
 const validateCheckboxes = () => {
-  return Array.from(document.querySelectorAll(".single-checkbox")).some(
-    (checkbox) => checkbox.checked
-  );
+  const group1Checked = Array.from(
+    document.querySelectorAll(".single-checkbox")
+  ).some((checkbox) => checkbox.checked);
+  return group1Checked;
 };
 
-// validación local
+// Validar los campos del formulario
 const validateForm = () => {
   let valid = true;
 
+  // Validar campo de cédula
   const cedulaField = document.getElementById("numeroCedula");
   const cedulaError = document.getElementById("cedula-error");
-
   if (!cedulaField.value) {
-    cedulaField.classList.add("error");
+    cedulaField.classList.add("error"); // Añadir clase de error
     cedulaError.textContent = "La cédula es un campo obligatorio.";
     cedulaError.style.display = "block";
     valid = false;
   } else if (cedulaField.value.length < 6 || cedulaField.value.length > 10) {
-    cedulaField.classList.add("error");
+    cedulaField.classList.add("error"); // Añadir clase de error
     cedulaError.textContent = "La cédula debe tener entre 6 y 10 números.";
     cedulaError.style.display = "block";
     valid = false;
     cedulaField.value = "";
   } else {
-    cedulaField.classList.remove("error");
+    cedulaField.classList.remove("error"); // Quitar clase de error
     cedulaError.style.display = "none";
   }
 
-  if (!validateCheckboxes()) {
+  // Validar checkboxes
+  if (!validateCheckboxes(error)) {
     error.value =
       "Debes autorizar el tratamiento de tus datos personales para continuar.";
     valid = false;
-    setTimeout(() => (error.value = ""), 3000);
+    setTimeout(() => {
+      error.value = "";
+    }, 3000);
   }
 
   return valid;
 };
 
-// 🚀 submit con validación API
+
 const handleSubmit = async (event) => {
   event.preventDefault();
 
   if (!validateForm()) return;
 
   try {
-    // petición al backend
+
     const response = await axios.post(
       "/api/flujoRegistroEnlace/cedula",
       {
@@ -88,36 +94,52 @@ const handleSubmit = async (event) => {
 
     console.log("Respuesta de la API:", response.data);
 
-    // el backend devuelve directamente la cédula (ej: "123456789")
     const cedulaApi = String(response.data);
 
-    // validar coincidencia
-    if (cedula.value !== cedulaApi) {
-      error.value = "❌ La cédula ingresada no coincide con la registrada.";
-      return;
-    }
 
-    // ✅ Si coincide, continuar flujo
+const cedulaInput = String(cedula.value).trim();
+const cedulaApiValue = String(cedulaApi).trim();
+
+console.log("Cedula input:", cedulaInput);
+console.log("Cedula API:", cedulaApiValue);
+
+if (cedulaInput !== cedulaApiValue) {
+  error.value = "La cédula ingresada no coincide con la cédula de Alpina";
+  return;
+}
+
     store.completarFormulario();
     formStore.updateField("Cedula_Cliente", cedula.value.toString());
     router.push("/datosPersonales");
 
   } catch (err) {
     console.error("Error en validación de cédula:", err);
-    error.value = "⚠️ Error al validar la cédula, inténtalo de nuevo.";
+    error.value = "Error al validar la cédula, inténtalo de nuevo.";
   }
 };
 
 
 onMounted(() => {
+  // Asignar las referencias a los checkboxes
   checkboxes.value = Array.from(document.querySelectorAll(".single-checkbox"));
+
+  // Agregar el event listener a los checkboxes
   checkboxes.value.forEach((checkbox) => {
     checkbox.addEventListener("change", handleCheckboxChange);
   });
 
   let miRuta = window.location.pathname;
-  localStorage.removeItem("ruta");
-  localStorage.setItem("ruta", miRuta);
+
+  // Validar si ya existe "ruta"
+  if (localStorage.getItem.length > 0) {
+    localStorage.removeItem("ruta");
+
+    // Setear la ruta por defecto
+    localStorage.setItem("ruta", miRuta);
+  } else {
+    // Setear la ruta por defecto
+    localStorage.setItem("ruta", miRuta);
+  }
 });
 </script>
 
