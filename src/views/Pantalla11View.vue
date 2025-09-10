@@ -4,10 +4,31 @@ import Heading from "../components/UI/Heading.vue";
 import { FormKit } from "@formkit/vue";
 import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
+import { onMounted } from 'vue';
+import axios from 'axios';
 
 const handleInicio = () => {
   window.open("/", "_self");
 };
+
+onMounted(async () => {
+  try {
+    // Obtener los parámetros de la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const processId = urlParams.get('process_id');
+    
+    if (processId) {
+      // Realizar la petición a la API de Truora
+      const response = await axios.get(`/api/truora/${processId}`);
+      console.log('Respuesta de Truora:', response.data);
+    }
+  } catch (error) {
+    console.error('Error al obtener datos de Truora:', error);
+  }
+});
+
+
+
 </script>
 
 <template>
