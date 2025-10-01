@@ -7,39 +7,43 @@ import { useRouter } from "vue-router";
 import { useFormularioStore } from "../router/store";
 import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
-import { useFormStore } from '../stores/formStore.js'
+import { useFormStore } from "../stores/formStore.js";
+import axios from "axios";
 
-//formulario global
-const formStore = useFormStore()
+// 🟢 Store global
+const formStore = useFormStore();
+const store = useFormularioStore();
+const router = useRouter();
 
+// Regex para nombres/apellidos
 const nameRegex = /^[a-zA-ZÀ-ÿ\s'-]{2,50}$/;
 
-const clearUndefined = (value) => {
-  return value === undefined || value === null ? "" : value;
-};
-
-// Inicializar los valores de los campos
+// 🟢 Campos
 const nombre = ref("");
 const apellido = ref("");
 const SegundoApellido = ref("");
-const router = useRouter();
-const store = useFormularioStore();
+const cedula = ref("");
 
-// Variables para mostrar errores
+// 🟢 Datos almacenados en localStorage
+const nbCliente = localStorage.getItem("nbCliente");
+const nbAgenteComercial = localStorage.getItem("nbAgenteComercial");
+
+// 🟢 Errores
 const errorMessage = ref("");
 const nombreError = ref("");
 const apellidoError = ref("");
 const SegundoApellidoError = ref("");
+const cedulaErrorMessage = ref("");
 
+// ---------------- VALIDACIONES ----------------
 const validateNombre = () => {
   if (/[^a-zA-ZÀ-ÿ\s'-]/.test(nombre.value)) {
     nombre.value = nombre.value.replace(/[^a-zA-ZÀ-ÿ\s'-]/g, "");
   }
   if (!nombre.value || !nameRegex.test(nombre.value)) {
-    nombreError.value =
-      "Por favor, ingresa un nombre válido, sin tildes y solo letras.";
+    nombreError.value = "Por favor, ingresa un nombre válido, sin tildes y solo letras.";
   } else {
-    nombreError.value = ""; // Limpiar el mensaje de error si es válido
+    nombreError.value = "";
   }
 };
 
@@ -48,99 +52,117 @@ const validateApellido = () => {
     apellido.value = apellido.value.replace(/[^a-zA-ZÀ-ÿ\s'-]/g, "");
   }
   if (!apellido.value || !nameRegex.test(apellido.value)) {
-    apellidoError.value =
-      "Por favor, ingresa un apellido válido, sin tildes y solo letras.";
+    apellidoError.value = "Por favor, ingresa un apellido válido, sin tildes y solo letras.";
   } else {
-    apellidoError.value = ""; // Limpiar el mensaje de error si es válido
+    apellidoError.value = "";
   }
 };
 
 const validateSegundoApellido = () => {
   if (/[^a-zA-ZÀ-ÿ\s'-]/.test(SegundoApellido.value)) {
-    SegundoApellido.value = SegundoApellido.value.replace(
-      /[^a-zA-ZÀ-ÿ\s'-]/g,
-      ""
-    );
+    SegundoApellido.value = SegundoApellido.value.replace(/[^a-zA-ZÀ-ÿ\s'-]/g, "");
   }
   if (SegundoApellido.value && !nameRegex.test(SegundoApellido.value)) {
-    SegundoApellidoError.value =
-      "Por favor, ingresa un apellido válido, sin tildes y solo letras.";
+    SegundoApellidoError.value = "Por favor, ingresa un apellido válido, sin tildes y solo letras.";
   } else {
-    SegundoApellidoError.value = ""; // Limpiar el mensaje de error si es válido
+    SegundoApellidoError.value = "";
   }
 };
 
+const validateCedula = () => {
+  if (!/^\d{6,10}$/.test(cedula.value)) {
+    cedulaErrorMessage.value = "La cédula debe tener entre 6 y 10 dígitos.";
+    return false;
+  }
+  cedulaErrorMessage.value = "";
+  return true;
+};
+
+// Auto-validación al escribir
 watch([nombre, apellido, SegundoApellido], () => {
   validateNombre();
   validateApellido();
   validateSegundoApellido();
 });
 
-// Función para manejar el envío del formulario
-const handleSubmit = (event) => {
-  // Resetear el mensaje de error
+// ---------------- SUBMIT ----------------
+const handleSubmit = async (event) => {
+  event.preventDefault();
+
   errorMessage.value = "";
-  nombreError.value = "";
-  apellidoError.value = "";
-  SegundoApellidoError.value = "";
+  cedulaErrorMessage.value = "";
 
   let isValid = true;
 
   if (!nombre.value || !nameRegex.test(nombre.value)) {
-    nombreError.value =
-      "Por favor, ingresa un nombre válido, sin tildes y solo letras.";
+    nombreError.value = "Por favor, ingresa un nombre válido, sin tildes y solo letras.";
     isValid = false;
-    setTimeout(() => {
-      nombreError.value = "";
-    }, 3000);
   }
 
   if (!apellido.value || !nameRegex.test(apellido.value)) {
-    apellidoError.value =
-      "Por favor, ingresa un apellido válido, sin tildes y solo letras.";
+    apellidoError.value = "Por favor, ingresa un apellido válido, sin tildes y solo letras.";
     isValid = false;
-    setTimeout(() => {
-      apellidoError.value = "";
-    }, 3000);
   }
 
   if (SegundoApellido.value && !nameRegex.test(SegundoApellido.value)) {
-    SegundoApellidoError.value =
-      "Por favor, ingresa un apellido válido, sin tildes y solo letras.";
+    SegundoApellidoError.value = "Por favor, ingresa un apellido válido, sin tildes y solo letras.";
     isValid = false;
-    setTimeout(() => {
-      SegundoApellidoError.value = "";
-    }, 3000);
   }
 
-  // Validar si los campos están vacíos
+  if (!validateCedula()) {
+    isValid = false;
+  }
+
   if (!isValid) {
-    event.preventDefault(); // Evitar el envío del formulario
     errorMessage.value = "Por favor, completa todos los campos correctamente.";
-    setTimeout(() => {
-      errorMessage.value = "";
-    }, 3000);
     return;
   }
-  event.preventDefault();
-  store.completarFormulario(); // Marca el formulario como completado
-  formStore.updateField('Nombres', nombre.value)
-  formStore.updateField('Primer_Apellido',apellido.value)
-  formStore.updateField('2do_Apellido_opcional', SegundoApellido.value)
-  router.push("/cedula"); // Redirige a la siguiente pantalla
+
+  try {
+    // 🔹 Llamada API Alpina
+    const response = await axios.post("/api/flujoRegistroEnlace/cedula", {
+      nbAgenteComercial: nbAgenteComercial,
+      nbCliente: nbCliente,
+    });
+
+    console.log("Respuesta de la API:", response.data);
+
+    // 🔹 Validación de cédula (exacto al script que funcionaba)
+    const cedulaApi = String(response.data);
+    const cedulaInput = String(cedula.value).trim();
+    const cedulaApiValue = String(cedulaApi).trim();
+
+    console.log("➡️ Cédula input:", cedulaInput);
+    console.log("➡️ Cédula API:", cedulaApiValue);
+
+    if (cedulaInput !== cedulaApiValue) {
+      cedulaErrorMessage.value = "La cédula ingresada no coincide con la cédula de Alpina.";
+      return;
+    }
+
+    // 🔹 Guardar en el store
+    store.completarFormulario();
+    formStore.updateField("Nombres", nombre.value);
+    formStore.updateField("Primer_Apellido", apellido.value);
+    formStore.updateField("2do_Apellido_opcional", SegundoApellido.value);
+    formStore.updateField("Cedula_Cliente", cedula.value.toString());
+
+    // 🔹 Redirigir
+    router.push("/datosPersonales");
+  } catch (err) {
+    console.error("❌ Error validando cédula:", err);
+    cedulaErrorMessage.value = "Error al validar la cédula, inténtalo de nuevo.";
+  }
 };
 
+// ---------------- MOUNT ----------------
 onMounted(() => {
   let miRuta = window.location.pathname;
 
-  // Validar si ya existe "ruta"
   if (localStorage.getItem.length > 0) {
     localStorage.removeItem("ruta");
-
-    // Setear la ruta por defecto
     localStorage.setItem("ruta", miRuta);
   } else {
-    // Setear la ruta por defecto
     localStorage.setItem("ruta", miRuta);
   }
 });
@@ -168,7 +190,7 @@ onMounted(() => {
             <form>
               <div class="form-group mt-[40px]">
                 <p class="titulo-3 mb-4">
-                  Ingresa tu nombre completo tal como aparece en la cédula
+                  Ingresa tu nombre completo tal como aparece en tu cédula
                 </p>
                 <p v-if="errorMessage" class="text-danger mt-1">
                   {{ errorMessage }}
@@ -179,50 +201,56 @@ onMounted(() => {
                     id="nombres"
                     class="form-control"
                     v-model="nombre"
-                    name="nombres"
                     type="text"
-                    autocomplete="off"
                     placeholder=" "
                     @input="validateNombre"
                   />
                   <span class="floating-label">Ingresa tus nombres</span>
                 </label>
-                <p v-if="nombreError" class="text-danger mt-1">
-                  {{ nombreError }}
-                </p>
+                <p v-if="nombreError" class="text-danger mt-1">{{ nombreError }}</p>
+
                 <label for="primerApellido" class="input-label mt-4">
                   <input
                     id="primerApellido"
                     class="form-control"
                     v-model="apellido"
-                    name="primerApellido"
                     type="text"
-                    autocomplete="off"
                     placeholder=" "
                     @input="validateApellido"
                   />
                   <span class="floating-label">Ingresa tu primer apellido</span>
                 </label>
-                <p v-if="apellidoError" class="text-danger mt-1">
-                  {{ apellidoError }}
-                </p>
+                <p v-if="apellidoError" class="text-danger mt-1">{{ apellidoError }}</p>
+
                 <label for="segundoApellido" class="input-label mt-4">
                   <input
                     id="segundoApellido"
                     class="form-control"
-                    name="segundoApellido"
-                    type="text"
-                    autocomplete="off"
-                    placeholder=" "
                     v-model="SegundoApellido"
+                    type="text"
+                    placeholder=" "
                     @input="validateSegundoApellido"
                   />
-                  <span class="floating-label"
-                    >Ingresa tu segundo apellido (Opcional)</span
-                  >
+                  <span class="floating-label">Ingresa tu segundo apellido (opcional)</span>
                 </label>
                 <p v-if="SegundoApellidoError" class="text-danger mt-1">
                   {{ SegundoApellidoError }}
+                </p>
+
+                <!-- 🔹 Campo de cédula -->
+                <label for="cedula" class="input-label mt-4">
+                  <input
+                    id="cedula"
+                    class="form-control"
+                    v-model="cedula"
+                    type="text"
+                    placeholder=" "
+                    @input="validateCedula"
+                  />
+                  <span class="floating-label">Ingresa tu cédula</span>
+                </label>
+                <p v-if="cedulaErrorMessage" class="text-danger mt-1">
+                  {{ cedulaErrorMessage }}
                 </p>
               </div>
               <Button @click="handleSubmit"></Button>

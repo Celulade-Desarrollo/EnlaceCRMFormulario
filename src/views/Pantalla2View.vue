@@ -128,7 +128,7 @@ onMounted(() => {
           <div class="col-lg-6">
             <div className="flex justify-center">
               <h2 class="display-4 titulo-2 w-[350px] text-center">
-                Contar con tu fiado enlace es muy fácil !
+                ¡Contar con tu fiado Enlace es muy fácil!
               </h2>
             </div>
             <div class="mt-4 tarjeta">
@@ -198,6 +198,9 @@ onMounted(() => {
   </motion.div>
 </template>
 
+
+
+
 <style scoped>
 body {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
@@ -224,7 +227,7 @@ body {
   letter-spacing: -0.03em;
   font-size: 1.875rem;
   line-height: 1.2;
-  margin-top: -40px;
+  margin-top: -30px;
 }
 .container {
   background-color: white;
@@ -242,20 +245,22 @@ body {
   border-radius: 16px;
 }
 
-.container button {
-  padding: 0 1.25rem;
+.centrar .container button {
+  padding: 0 2rem;
   border-radius: 6.25rem;
   background: #dd3590;
-  color: rgb(255, 255, 255);
+  color: #fff;
   height: 3rem;
   display: flex;
   width: 100%;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   cursor: pointer;
   border: none;
   transform: translate3d(0, 0, 0);
+  gap: 0.5rem;
 }
+
 #confirmaremail {
   margin-bottom: 50px;
 }

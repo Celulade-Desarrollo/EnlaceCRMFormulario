@@ -135,7 +135,7 @@ onMounted(() => {
             </select>
           </div>
           <label for="rut"
-            >¿Esta obligado a tener RUT por tu actividad económica?</label
+            >¿Está obligado a tener RUT por tu actividad económica?</label
           >
           <div class="custom-select-wrapper">
             <select v-model="rut" name="Rut" class="custom-select">

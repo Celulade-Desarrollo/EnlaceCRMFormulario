@@ -72,7 +72,7 @@ onMounted(() => {
         </div>
         <div class="col-lg-6 botones">
           <div>
-            <h2 class="mb-2 titulo">Cuentanos un poco acerca de tu negocio</h2>
+            <h2 class="mb-2 titulo">Queremos saber más sobre tu negocio</h2>
             <p class="mb-4 font-bold">
               Esta información es totalmente confidencial y esta nos permitirá
               conocerte mejor
@@ -171,7 +171,7 @@ onMounted(() => {
 }
 
 .button {
-  padding: 10px 20px;
+  padding: 10px 10px;
   margin-right: 0.5rem;
   border-radius: 8px;
   border: 0px solid #ccc;
@@ -181,6 +181,7 @@ onMounted(() => {
   transition: 0.3s;
   width: 80%;
   border-radius: 50px;
+  margin-bottom: 0mm;
 }
 
 .checkbox-hidden:checked + label.button {
@@ -291,7 +292,7 @@ body {
   display: flex;
   width: 100%;
   -webkit-box-pack: justify;
-  justify-content: space-between;
+  justify-content: center;
   cursor: pointer;
   outline: 0px;
   -webkit-box-align: center;

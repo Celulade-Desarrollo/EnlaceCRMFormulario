@@ -5,7 +5,7 @@ import { useFormularioStore } from "../router/store";
 import axios from "axios";
 import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
-import Heading from "../components/UI/Heading.vue";
+import Heading from "../components/UI/Heading.vue";  
 import Button from "../components/UI/Button.vue";
 import Footer from "../components/UI/Footer.vue";
 import { useFormStore } from '../stores/formStore.js'
@@ -15,17 +15,12 @@ const formStore = useFormStore()
 
 const store = useFormularioStore();
 const router = useRouter();
-const departments = ref([]);
-const departamentoSeleccionado = ref("");
-const paisSeleccionado = ref("");
 const errorMessage = ref("");
 const mostrarAlerta = ref(false);
 const mensajeAlerta = ref("");
 
 const genero = ref(""); 
 const estadoCivil = ref("");
-const fechaNacimiento = ref("");
-const maxFechaNacimiento = ref("");
 const nombrePareja = ref("");
 const apellidoPareja = ref("");
 const cedulaPareja = ref("");
@@ -36,18 +31,12 @@ const handleSubmit = (event) => {
   if (
     !genero.value ||
     !estadoCivil.value ||
-    !fechaNacimiento.value ||
-    !paisSeleccionado.value ||
-    !departamentoSeleccionado.value ||
     ((estadoCivil.value === "casado" || estadoCivil.value === "unionLibre") &&
       (!nombrePareja.value || !apellidoPareja.value || !cedulaPareja.value))
   ) {
     // Guardar los datos hasta donde existan
     formStore.updateField('Genero', genero.value);
     formStore.updateField('Estado_Civil', estadoCivil.value);
-    formStore.updateField('Fecha_de_Nacimiento', fechaNacimiento.value);
-    formStore.updateField('Pais_de_Nacimiento', paisSeleccionado.value);
-    formStore.updateField('Departamento_de_Nacimiento', departamentoSeleccionado.value);
 
     mostrarAlerta.value = true;
     mensajeAlerta.value = "Por favor completa todos los campos.";
@@ -57,27 +46,10 @@ const handleSubmit = (event) => {
     }, 3000);
     return;
   }
-   if (
+
+  if (
     (estadoCivil.value === "casado" || estadoCivil.value === "unionLibre") &&
-    (
-      !nombrePareja.value ||
-      !apellidoPareja.value ||
-      !cedulaPareja.value
-    )
-  ) {
-    event.preventDefault();
-    mostrarAlerta.value = true;
-    mensajeAlerta.value = "Por favor completa los datos de tu pareja.";
-    setTimeout(() => {
-      mensajeAlerta.value = "";
-    }, 3000);
-    return;
-  }
-   if (
-    (estadoCivil.value === "casado" || estadoCivil.value === "unionLibre") &&
-    (
-      String(cedulaPareja.value).length < 6 || String(cedulaPareja.value).length > 10
-    )
+    (String(cedulaPareja.value).length < 6 || String(cedulaPareja.value).length > 10)
   ) {
     event.preventDefault();
     mostrarAlerta.value = true;
@@ -85,122 +57,30 @@ const handleSubmit = (event) => {
     setTimeout(() => {
       mensajeAlerta.value = "";
     }, 3000);
-    return;
-  }
-   if (
-    (estadoCivil.value === "casado" || estadoCivil.value === "unionLibre") &&
-    (
-      !nombrePareja.value ||
-      !apellidoPareja.value ||
-      !cedulaPareja.value
-    )
-  ) {
-    event.preventDefault();
-    mostrarAlerta.value = true;
-    mensajeAlerta.value = "Por favor completa los datos de tu pareja.";
-    setTimeout(() => {
-      mensajeAlerta.value = "";
-    }, 3000);
-    return;
-  }
-   if (
-    (estadoCivil.value === "casado" || estadoCivil.value === "unionLibre") &&
-    (
-      String(cedulaPareja.value).length < 6 || String(cedulaPareja.value).length > 10
-    )
-  ) {
-    event.preventDefault();
-    mostrarAlerta.value = true;
-    mensajeAlerta.value = "La cédula de tu pareja debe tener entre 6 y 10 números.";
-    setTimeout(() => {
-      mensajeAlerta.value = "";
-    }, 3000);
-    return;
-  }
-  const fechaNacimientoDate = new Date(fechaNacimiento.value);
-  const fechaActual = new Date();
-
-  let edad = fechaActual.getFullYear() - fechaNacimientoDate.getFullYear();
-  const mesDiferencia = fechaActual.getMonth() - fechaNacimientoDate.getMonth();
-  const diaDiferencia = fechaActual.getDate() - fechaNacimientoDate.getDate();
-
-  if (mesDiferencia < 0 || (mesDiferencia === 0 && diaDiferencia < 0)) {
-    edad--;
-  }
-
-  if (edad < 18) {
-    mostrarAlerta.value = true;
-    mensajeAlerta.value = "Debes ser mayor de edad para continuar";
     return;
   }
 
   mensajeAlerta.value = "";
   mostrarAlerta.value = false;
 
-  // Guardar todos los datos
+  // Guardar datos
   formStore.updateField('Genero', genero.value);
   formStore.updateField('Estado_Civil', estadoCivil.value);
-  formStore.updateField('Fecha_de_Nacimiento', fechaNacimiento.value);
-  formStore.updateField('Pais_de_Nacimiento', paisSeleccionado.value);
-  formStore.updateField('Departamento_de_Nacimiento', departamentoSeleccionado.value);
 
   if (estadoCivil.value === "casado" || estadoCivil.value === "unionLibre") {
-   formStore.updateField('Nombre_Conyuge', nombrePareja.value);
+    formStore.updateField('Nombre_Conyuge', nombrePareja.value);
     formStore.updateField('Apellido_Conyuge', apellidoPareja.value);
     formStore.updateField('Cedula_Conyuge', cedulaPareja.value.toString());
   } 
 
   store.completarFormulario(); // Marca el formulario como completado
-  formStore.updateField('Genero', genero.value)
-  formStore.updateField('Estado_Civil', estadoCivil.value)
-  formStore.updateField('Fecha_de_Nacimiento', fechaNacimiento.value)
-  formStore.updateField('Pais_de_Nacimiento', paisSeleccionado.value)
-  formStore.updateField('Departamento_de_Nacimiento', departamentoSeleccionado.value)
 
   router.push("/datosPersonales2"); // Redirige a la siguiente pantalla
 };
 
-onMounted(async () => {
-  const hoy = new Date();
-  hoy.setFullYear(hoy.getFullYear() - 18);
-  const yyyy = hoy.getFullYear();
-  const mm = String(hoy.getMonth() + 1).padStart(2, "0");
-  const dd = String(hoy.getDate()).padStart(2, "0");
-  maxFechaNacimiento.value = `${yyyy}-${mm}-${dd}`;
-
-  /*
-  try {
-    const response = await axios.get("https://restcountries.com/v3.1/all");
-    const listaPaises = response.data.map((pais) => ({
-      value: pais.cca2,
-      label: pais.name.common,
-    }));
-
-    const indiceColombia = listaPaises.findIndex((pais) => pais.value === "CO");
-    if (indiceColombia !== -1) {
-      const colombia = listaPaises.splice(indiceColombia, 1)[0];
-      listaPaises.unshift(colombia);
-    }
-
-    paises.value = listaPaises;
-  } catch (error) {
-    console.error("Error al cargar países:", error);
-  }
-  */
-
-  try {
-    const response = await axios.get( "/api/ubicacion/departamentos");
-    departments.value = response.data.map((item) => ({
-      value: item.nombre,
-      label: item.nombre,
-    }));
-  } catch (err) {
-    console.error("Error al cargar los departamentos:", err);
-  }
-
+onMounted(() => {
   let miRuta = window.location.pathname;
 
-  // Corregir validación de existencia de "ruta"
   if (localStorage.getItem("ruta")) {
     localStorage.removeItem("ruta");
   }
@@ -210,13 +90,11 @@ onMounted(async () => {
 </script>
 
 
-
 <template>
   <Heading />
   <motion.div v-bind="fadeInUp">
     <h2 class="titulo">Datos Personales</h2>
 
-    <!-- Select de generos -->
     <section class="min-h-screen flex flex-col justify-between">
       <form>
         <div class="form-group">
@@ -242,34 +120,36 @@ onMounted(async () => {
               <option value="separado">Separado</option>
             </select>
           </div>
-          <div v-if="estadoCivil === 'casado' || estadoCivil === 'unionLibre'">
-              <div>
-                <label for="nombrePareja" class="input-label" >
-                  <input 
-                    type="text" 
-                    id="nombrePareja" 
-                    v-model="nombrePareja" 
-                    class="form-control" 
-                    placeholder=" "
-                  />
-                  <span class="floating-label">Nombre de la pareja:</span>
-                </label>
-              </div>
 
-              <div>
-                <label for="apellidoPareja" class="input-label">
-                  <input 
-                    type="text" 
-                    id="apellidoPareja" 
-                    v-model="apellidoPareja"
-                    class="form-control" 
-                    placeholder=" "
-                  />
-                   <span class="floating-label">Apellido de la pareja:</span>
-                </label>
-              </div>
-              <div>
-                <label for="cedulaPareja" class="input-label">
+          <div v-if="estadoCivil === 'casado' || estadoCivil === 'unionLibre'">
+            <div>
+              <label for="nombrePareja" class="input-label" >
+                <input 
+                  type="text" 
+                  id="nombrePareja" 
+                  v-model="nombrePareja" 
+                  class="form-control" 
+                  placeholder=" "
+                />
+                <span class="floating-label">Nombre de la pareja:</span>
+              </label>
+            </div>
+
+            <div>
+              <label for="apellidoPareja" class="input-label">
+                <input 
+                  type="text" 
+                  id="apellidoPareja" 
+                  v-model="apellidoPareja"
+                  class="form-control" 
+                  placeholder=" "
+                />
+                <span class="floating-label">Apellido de la pareja:</span>
+              </label>
+            </div>
+
+            <div>
+              <label for="cedulaPareja" class="input-label">
                 <input 
                   type="number"
                   id="cedulaPareja"
@@ -278,46 +158,8 @@ onMounted(async () => {
                   placeholder=" "
                 />
                 <span class="floating-label">Cédula de la pareja:</span>
-                </label>
-              </div>
-        </div>
-          <label for="fechaNacimiento">Fecha de Nacimiento</label>
-          <div class="custom-date">
-            <input
-              v-model="fechaNacimiento"
-              type="date"
-              name="fechaNacimiento"
-              class="custom-input-date"
-              :max="maxFechaNacimiento"
-            />
-          </div>
-
-          <label for="paisNacimiento">País de Nacimiento</label>
-          <div class="custom-select-wrapper">
-            <select v-model="paisSeleccionado" class="custom-select" name="pais">
-              <option selected disabled value="">Selecciona tu país</option>
-              <option value="colombia">Colombia</option>
-            </select>
-          </div>
-
-          <label for="departamento">Departamento</label>
-          <div class="custom-select-wrapper">
-            <select
-              v-model="departamentoSeleccionado"
-              class="custom-select"
-              name="departamento"
-            >
-              <option selected disabled value="">
-                Selecciona un departamento
-              </option>
-              <option
-                v-for="dep in departments"
-                :key="dep.value"
-                :value="dep.value"
-              >
-                {{ dep.label }}
-              </option>
-            </select>
+              </label>
+            </div>
           </div>
 
           <Button @click="handleSubmit" class="mt-5" />
@@ -330,6 +172,7 @@ onMounted(async () => {
     </section>
   </motion.div>
 </template>
+
 
 <style scoped>
 .form-control {
@@ -447,23 +290,22 @@ onMounted(async () => {
 }
 
 .form-group button {
-  padding-left: 1.25rem;
-  padding-right: 1.25rem;
+  padding: 0 1.25rem;
   border-radius: 6.25rem;
   background: #dd3590;
   color: #fff;
   height: 3rem;
   display: flex;
   width: 100%;
-  justify-content: space-between;
-  cursor: pointer;
-  outline: none;
+  justify-content: center;
   align-items: center;
+  outline: none;
   text-align: center;
   overflow: hidden;
   border: none;
   transform: translate3d(0, 0, 0);
 }
+
 
 .custom-date {
   position: relative;
