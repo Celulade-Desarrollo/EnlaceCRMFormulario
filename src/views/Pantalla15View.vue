@@ -76,7 +76,7 @@ const handleSubmit = (event) => {
     class="container registro min-h-screen flex flex-col justify-between overflow-y-auto p-4"
 >
     <div class="mt-4 tarjeta">
-        <p class="mb-4 font-bold">¿Cual es el valor total de todos tus bienes?</p>
+        <p class="mb-4 font-bold">¿Cuál es el valor.... Préstamos y tus otros compromisos?</p>
         <div>
             <label for="bienes" class="input-label">
                 <input
@@ -98,7 +98,7 @@ const handleSubmit = (event) => {
             <br>
 
         </div>
-        <p class="mb-4 font-bold">¿Cual es el valor total de tus deudas?</p>
+        <p class="mb-4 font-bold">¿Cuál es el valor total de tus deudas?</p>
         <div>
             <label for="deudas" class="input-label">
                 <input
@@ -264,6 +264,7 @@ const handleSubmit = (event) => {
   transition: 0.3s;
   width: 80%;
   border-radius: 50px;
+  margin-bottom: 0mm;
 }
 .button:hover {
   background-color: #f15bab;

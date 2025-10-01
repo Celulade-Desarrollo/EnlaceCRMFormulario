@@ -1,4 +1,4 @@
-<script setup>
+<<script setup>
 import { ref, onMounted } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
@@ -9,17 +9,20 @@ import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
 import { useFormStore } from '../stores/formStore.js'
 
-
 // Variables reactivas
 const celular = ref("");
 const data = ref(null);
 const error = ref("");
-const celularInput = ref(null); // Ref para el input
-const router = useRouter(); // Instancia del router
+const celularInput = ref(null);
+const router = useRouter();
 const store = useFormularioStore();
 
-//formulario global
-const formStore = useFormStore()
+// formulario global
+const formStore = useFormStore();
+
+// checkboxes de autorización
+const autorizoDatos = ref(false);
+const autorizoContacto = ref(false);
 
 // Función para obtener datos
 const fetchData = async () => {
@@ -43,26 +46,36 @@ const fetchData = async () => {
 
 // Validar al enviar el formulario
 const handleSubmit = async (event) => {
-  const regex = /^[0-9]{10}$/; // Expresión regular para validar el número celular
+  event.preventDefault();
+
+  // validación celular
+  const regex = /^[0-9]{10}$/;
   if (!regex.test(celular.value)) {
     error.value = "Por favor, ingresa un número celular válido.";
-    event.preventDefault(); // Evita el envío del formulario por defecto
-
-    // Limpia el mensaje de error despues de 3 segundos
     setTimeout(() => {
       error.value = "";
     }, 3000);
-    return; // Detiene la ejecución si el número no es válido
-  } else {
-    try {
-      event.preventDefault(); // Evita el envío del formulario por defecto
-      store.completarFormulario(); // Marca el formulario como completado
-      formStore.updateField('Numero_Celular', celular.value.toString())
-      router.push("/correoElectronico"); // Redirige a la siguiente pantalla
-      error.value = ""; // Limpia el mensaje de error si el número es válido
-    } catch (error) {}
+    return;
   }
-  // await fetchData(); // Llama a la función fetchData para obtener datos
+
+  // validación checkbox obligatorio
+  if (!autorizoDatos.value) {
+    error.value = "Debes autorizar el tratamiento de datos personales.";
+    setTimeout(() => {
+      error.value = "";
+    }, 3000);
+    return;
+  }
+
+  try {
+    store.completarFormulario();
+    formStore.updateField('Numero_Celular', celular.value.toString())
+    // si pasa validación, sigue al siguiente paso
+    router.push("/correoElectronico");
+    error.value = "";
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 // Función para enfocar el input
@@ -74,7 +87,6 @@ const focusInput = () => {
 
 // Montar el event listener para el envío del formulario
 onMounted(() => {
-
   const queryParams = new URLSearchParams(window.location.search);
   const nbCliente = queryParams.get('nbCliente');
   const nbAgenteComercial = queryParams.get('nbAgenteComercial');
@@ -85,15 +97,10 @@ onMounted(() => {
   }
   
   let miRuta = window.location.pathname;
-
-  // Validar si ya existe "ruta"
   if (localStorage.getItem.length > 0) {
     localStorage.removeItem("ruta");
-
-    // Setear la ruta por defecto
     localStorage.setItem("ruta", miRuta);
   } else {
-    // Setear la ruta por defecto
     localStorage.setItem("ruta", miRuta);
   }
 });
@@ -118,14 +125,13 @@ onMounted(() => {
         <div class="col-lg-6">
           <div>
             <h2 class="display-4 titulo">
-              <span>Tu enlace</span> para que tus proveedores te
-              <span>fíen</span> y <span>abastezcas tu tienda</span> con tus
-              productos favoritos
+              <span>Tu enlace</span> con el que podrás comprar tus productos 
+              <span>favoritos</span> a cuotas y surtir tu <span>tienda</span>
             </h2>
           </div>
           <div>
             <h3 class="h5">
-              Vive más con $0 en cuota de manejo, sin condiciones
+             Empieza ahora:
             </h3>
           </div>
           <div class="mt-4 tarjeta">
@@ -147,41 +153,79 @@ onMounted(() => {
                     ref="celularInput"
                   />
                   <span class="floating-label">Ingresa tu número celular </span>
-                  <p v-if="error" id="error-celular" class="text-danger mt-1">
-                    {{ error }}
-                  </p>
-                  <button
-                    type="submit"
-                    id="email-on-hero-submit-btn"
-                    data-testid="email-on-hero-submit-btn"
-                    data-gtm="home-hero-email-cta-btn"
-                    class="btn btn-primary mt-2 w-full font-semibold"
-                    @click="handleSubmit"
-                  >
-                    Registrar mi fiado
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      fill="none"
-                      viewBox="0 0 21 20"
-                      class="ml-2"
-                      color="currentColor"
-                      role="img"
-                    >
-                      <title>Arrow Right</title>
-                      <g>
-                        <path
-                          d="M18.5 10H2.5M18.5 10L12 16.5M18.5 10L12 3.5"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="square"
-                          stroke-linejoin="round"
-                        ></path>
-                      </g>
-                    </svg>
-                  </button>
                 </label>
+
+                <!-- 🔹 Checkboxes de autorización -->
+<!-- dentro del <template> -->
+<div class="checklist mt-3 text-black">
+  <!-- Checkbox obligatorio -->
+  <label class="check-item">
+    <input
+      type="checkbox"
+      id="autorizo-datos"
+      v-model="autorizoDatos"
+      class="checkbox-custom rounded-checkbox single-checkbox"
+    />
+    <span class="checkmark"></span>
+    <p>
+      He leído y autorizo el tratamiento de mis datos personales por
+      <a class="link-contacto" href="#">Enlace S.A.S y Banco W</a>
+    </p>
+  </label>
+
+  <!-- Checkbox opcional -->
+  <label class="check-item mb-4">
+    <input
+      type="checkbox"
+      id="autorizo-contacto"
+      v-model="autorizoContacto"
+      class="checkbox-custom rounded-checkbox"
+    />
+    <span class="checkmark"></span>
+    <p class="p-checkmark-2">
+      Autorizo a <span>Enlace S.A.S y Banco W</span> contactarme vía
+      <span>Whatsapp</span> sobre mis productos (opcional)
+    </p>
+  </label>
+</div>
+
+
+                <!-- Mostrar errores -->
+                <p v-if="error" id="error-celular" class="text-danger mt-1">
+                  {{ error }}
+                </p>
+
+                <button
+                  type="submit"
+                  id="email-on-hero-submit-btn"
+                  data-testid="email-on-hero-submit-btn"
+                  data-gtm="home-hero-email-cta-btn"
+                  class="btn btn-primary mt-2 w-full font-semibold"
+                  @click="handleSubmit"
+                >
+                  Solicítalo ya
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="none"
+                    viewBox="0 0 21 20"
+                    class="ml-2"
+                    color="currentColor"
+                    role="img"
+                  >
+                    <title>Arrow Right</title>
+                    <g>
+                      <path
+                        d="M18.5 10H2.5M18.5 10L12 16.5M18.5 10L12 3.5"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="square"
+                        stroke-linejoin="round"
+                      ></path>
+                    </g>
+                  </svg>
+                </button>
               </div>
             </form>
           </div>
@@ -189,6 +233,7 @@ onMounted(() => {
       </div>
     </section>
 
+    <!-- banners y resto igual -->
     <section class="container banners">
       <div class="row">
         <!-- Banner 1 -->
@@ -257,9 +302,8 @@ onMounted(() => {
         <h1>
           <span>Tu fiado</span> es otorgado <span>por Enlace y el Banco W</span>
         </h1>
-
         <h2 class="text-[25px]">
-          y te apoya a tu tienda para incrementar tu ventas y fortalecer tu
+          y apoya a tu tienda para incrementar tus ventas y fortalecer tu
           negocio
         </h2>
       </div>
@@ -268,6 +312,9 @@ onMounted(() => {
 
   <Footer />
 </template>
+
+
+
 
 <style scoped>
 body {
@@ -280,6 +327,50 @@ body {
   justify-content: space-between;
   flex-wrap: wrap;
 }
+
+
+.checklist {
+  max-width: 300px;
+  margin-top: 30px;
+}
+
+.check-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 16px;
+  position: relative;
+  gap: 20px;
+}
+
+.check-item input[type="checkbox"] {
+  opacity: 0;
+  position: absolute;
+}
+
+.checkbox-custom + .checkmark {
+  width: 50px;
+  height: 20px;
+  border-radius: 40px;
+  background-color: #c9c7c7;
+}
+
+.checkbox-custom:checked + .checkmark {
+  background-color: #dd3590;
+}
+
+.link-contacto {
+  color: #dd3590;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+.link-contacto:active {
+  color: #09008be1;
+  text-decoration: none;
+}
+
+
 
 .container.banners {
   display: flex;

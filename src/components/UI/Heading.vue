@@ -15,7 +15,6 @@
         <li><a href="#services">Nosotros</a></li>
         <li><a href="#contact">Mi cuenta</a></li>
         <li><a href="https://enlace-crm.com:3000/LoginView">Administrador</a></li>
-
       </ul>
     </nav>
   </header>
@@ -36,6 +35,13 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
+
+const props = defineProps({
+  fallback: {
+    type: String,
+    default: '/' // 👈 ruta de fallback si no hay historial
+  }
+})
 
 const router = useRouter()
 
@@ -68,27 +74,31 @@ header {
   max-height: 50px;
 }
 
-
 .back-button {
-  display: flex;
-  position: relative;
-  top: -9px;
+  display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  border-radius: 10px;
+  justify-content: center;
+  gap: 0.4rem;              /* menos espacio entre ícono y texto */
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
   background: #251786;
-  border: 10px;
-  color: #ffffff;
+  border: none;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
 .back-button:hover {
-  background: #251786;
+  background: #3223a3;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.25);
 }
 
 .back-button:active {
-  transform: scale(0.97);
+  transform: scale(0.96);
 }
-
 .title {
   flex: 1;
   text-align: center;
@@ -129,7 +139,6 @@ header {
 .menu-list li {
   margin: 0 10px;
 }
-
 
 .menu-list a {
   color: black;

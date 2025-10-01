@@ -118,7 +118,7 @@ onMounted(async () => {
                     id="detalles"
                     aria-describedby="error-detalles"
                   />
-                  <span class="floating-label">Detalles (Opcional) </span>
+                  <span class="floating-label">Ingresa tu dirección completa</span>
                 </label>
 
                 <label for="barrio" class="input-label mt-4">
@@ -217,19 +217,21 @@ body {
 }
 
 .container button {
-  padding-left: 1.25rem;
-  padding-right: 1.25rem;
+  padding: 0 1.25rem;
   border-radius: 6.25rem;
   background: #dd3590;
-  color: rgb(255, 255, 255);
+  color: #fff;
   height: 3rem;
   display: flex;
   width: 100%;
-  justify-content: space-between;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
   border: 0;
+  text-align: center;
   transform: translate3d(0, 0, 0);
 }
+
 .container {
   background-color: white;
   color: #111111;

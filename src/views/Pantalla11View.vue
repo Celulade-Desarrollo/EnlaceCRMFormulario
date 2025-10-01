@@ -52,8 +52,9 @@ onMounted(async () => {
         <div class="col-lg-6">
           <div>
             <h2 class="display-4 titulo text-center">
-              Tu registro ha finalizado <span>exitosamente!</span><br />
-              Gracias por compartirnos tu información
+              ¡Tu solicitud ha finalizado 
+ <span>exitosamente!</span><br />
+              Gracias por compartir tu información con nosotro
             </h2>
           </div>
           <picture>
@@ -67,7 +68,7 @@ onMounted(async () => {
           </picture>
           <div>
             <h2 class="display-4 titulo text-center">
-              <span>Pronto nos comunicaremos contigo</span>
+              <span>Pronto nos comunicaremos contigo para informarte sobre tu solicitud</span>
             </h2>
           </div>
           <div class="mt-4 tarjeta flex justify-center">

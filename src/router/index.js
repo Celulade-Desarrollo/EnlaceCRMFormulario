@@ -27,12 +27,7 @@ const router = createRouter({
       component: () => import("../views/Pantalla3View.vue"),
       meta: { requiereFormulario: true },
     },
-    {
-      path: "/cedula",
-      name: "cedula",
-      component: () => import("../views/Pantalla4View.vue"),
-      meta: { requiereFormulario: true },
-    },
+
     {
       path: "/Pantalla5View",
       name: "pantalla5",

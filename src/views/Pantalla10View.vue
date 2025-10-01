@@ -164,8 +164,8 @@ const handleSubmit = async (event) => {
                   más
                 </h6>
                 <h4 class="sub-titulo">
-                  ¿Eres una Persona Expuesta Politicamente (PEP) o lo has sido
-                  en los ultimos años?
+                  ¿Eres una Persona Expuesta Políticamente (PEP) o lo has sido
+                  en los últimos años?
                 </h4>
                 <div class="checklist m-0" aria-required="true">
                   <label class="check-item">
@@ -176,7 +176,7 @@ const handleSubmit = async (event) => {
                       class="single-checkbox"
                     />
                     <span class="checkmark"></span>
-                    Si
+                    Sí
                   </label>
                   <label class="check-item mb-4">
                     <input
@@ -192,7 +192,7 @@ const handleSubmit = async (event) => {
                 </div>
                 <h4 class="sub-titulo">
                   ¿Tu pareja, familiar directo o asociado cercano es una Persona
-                  Expuesta Politicamente (PEP) o lo has sido en los ultimos
+                  Expuesta Políticamente (PEP) o lo ha sido en los últimos
                   años?
                 </h4>
                 <p class="font-bold">
@@ -207,7 +207,7 @@ const handleSubmit = async (event) => {
                       class="single-checkbox-1"
                     />
                     <span class="checkmark"></span>
-                    Si
+                    Sí
                   </label>
                   <label class="check-item mb-4">
                     <input
@@ -233,7 +233,7 @@ const handleSubmit = async (event) => {
                       class="single-checkbox-2"
                     />
                     <span class="checkmark"></span>
-                    Si
+                    Sí
                   </label>
                   <label class="check-item mb-4">
                     <input
@@ -249,10 +249,10 @@ const handleSubmit = async (event) => {
                 </div>
                 <p>
                   Declaro que soy nacido en Colombia, no tengo otras
-                  nacionalidades, y mi domicilio es en Colombia al igual que mi
-                  país de residencia físcal. Con el fin de de dar cumplimiento a
-                  la normatividad de FATCA/CRS certifico lo anterior y me
-                  comprometo a suministrar cualquier cambio de forma oprotuna.
+                  nacionalidades y mi domicilio es en Colombia, al igual que mi
+                  país de residencia fiscal. Con el fin de dar cumplimiento a
+                  la normatividad FATCA/CRS, certifico lo anterior y me
+                  comprometo a suministrar cualquier cambio de forma oportuna.
                 </p>
               </div>
               <Button @click="handleSubmit"></Button>
@@ -267,6 +267,7 @@ const handleSubmit = async (event) => {
   </motion.div>
   <Footer class="bottom-0 left-0 right-0"></Footer>
 </template>
+
 
 <style scoped>
 .custom-select-wrapper {
@@ -348,7 +349,7 @@ body {
   display: flex;
   width: 100%;
   -webkit-box-pack: justify;
-  justify-content: space-between;
+  justify-content: center;
   cursor: pointer;
   outline: 0px;
   -webkit-box-align: center;

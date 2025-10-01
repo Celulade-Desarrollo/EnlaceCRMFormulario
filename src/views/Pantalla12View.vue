@@ -85,7 +85,7 @@ onMounted(() => {
         </div>
         <div class="col-lg-6 botones p-5">
           <div>
-            <h2 class="titulo">Cuentanos un poco acerca de tu negocio</h2>
+            <h2 class="titulo">Cúentanos un poco </h2>
             <p class="mb-4 font-bold">
               Esta información es totalmente confidencial y esta nos permitirá
               conocerte mejor
@@ -93,7 +93,7 @@ onMounted(() => {
           </div>
 
             <div class="mt-4 tarjeta">
-              <p class="mb-4 font-bold">¿Cuanto vendes al día (opcional)?</p>
+              <p class="mb-4 font-bold">¿Cuanto vendes al día?</p>
               <div class="checklist">
               <label class="check-item mb-4">
                 <input
@@ -268,7 +268,7 @@ body {
   display: flex;
   width: 100%;
   -webkit-box-pack: justify;
-  justify-content: space-between;
+  justify-content: center;
   cursor: pointer;
   outline: 0px;
   -webkit-box-align: center;

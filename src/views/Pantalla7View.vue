@@ -143,16 +143,14 @@ onMounted(() => {
 
       <div class="select-option mt-5 p-5">
         <h3 class="mb-4 titulo-7">¿Cuéntanos dónde está tu negocio?</h3>
-        <p class="mb-4 font-bold">Por norma es necesario que te hagamos esta pregunta</p>
-        
-        <p class="font-bold">Elige un departamento</p>
+        <p class="font-bold">Elige un Departamento</p>
         <div class="custom-select-wrapper">
           <select
             v-model="selectedDepartment"
             @change="handleDepartmentChange"
             class="custom-select"
           >
-            <option disabled value="">Elige un departamento</option>
+            <option disabled value="">Elige un Departamento</option>
             <option
               v-for="nombre in departments"
               :key="nombre"
@@ -163,10 +161,10 @@ onMounted(() => {
           </select>
         </div>
 
-        <p class="font-bold">Elige una ciudad</p>
+        <p class="font-bold">Elige una Ciudad</p>
         <div class="custom-select-wrapper">
           <select v-model="selectedCity"  @change="handleCityChange" class="custom-select">
-            <option disabled selected>Elige una ciudad</option>
+            <option disabled selected>Elige una Ciudad</option>
             <option v-for="city in cities" :key="city" :value="city">
               {{ city }}
             </option>
@@ -190,6 +188,7 @@ onMounted(() => {
 .custom-select-wrapper {
   position: relative;
   margin-bottom: 24px;
+
 }
 
 .custom-select {
@@ -207,11 +206,13 @@ onMounted(() => {
   box-shadow: none;
   color: #333;
   cursor: pointer;
+  
 }
 .custom-select:focus {
   border-bottom: 2px solid #ff00f2;
   outline: none;
   box-shadow: none;
+
 }
 
 body {
@@ -233,6 +234,8 @@ body {
   border-radius: 0.25rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   appearance: none;
+
+
 }
 
 .form-select:focus {
@@ -240,6 +243,7 @@ body {
   outline: 0;
   color: #111;
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+
 }
 
 .titulo-7 {
@@ -270,31 +274,34 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  
 }
 
 .container button {
-  padding-left: 1.25rem;
-  padding-right: 1.25rem;
+  padding: 0 1.25rem;
   border-radius: 6.25rem;
   background: #dd3590;
   color: #fff;
   height: 3rem;
   display: flex;
   width: 100%;
-  justify-content: space-between;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
   outline: none;
-  align-items: center;
   text-align: center;
   overflow: hidden;
   border: none;
   transform: translate3d(0, 0, 0);
+
 }
+
 
 .container {
   background-color: white;
   color: #111;
   padding: 20px;
+
 }
 
 .parrafo {
@@ -309,6 +316,7 @@ body {
   letter-spacing: -0.03em;
   font-size: 1.875rem;
   line-height: 1.2;
+  
 }
 
 .h5 {
@@ -336,6 +344,7 @@ p {
   margin-bottom: 10px;
   font-size: 16px;
   position: relative;
+  
 }
 
 .check-item input[type="checkbox"] {
@@ -383,6 +392,7 @@ p {
     padding: 24px;
     border-radius: 16px;
     width: 100%;
+    
   }
 }
 </style>
