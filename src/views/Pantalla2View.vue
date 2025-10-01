@@ -8,7 +8,6 @@ import { useFormularioStore } from "../router/store";
 import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
 import { useFormStore } from '../stores/formStore.js'
-// Inicializar los valores de los campos
 const email = ref("");
 const confirmaremail = ref("");
 const errorMessage = ref("");

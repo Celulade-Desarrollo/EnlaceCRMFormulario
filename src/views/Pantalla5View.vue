@@ -10,7 +10,7 @@ const option1Checked = ref(false);
 const option2Checked = ref(false);
 
 function handleFormSubmit(event) {
-  event.preventDefault(); // Evita el envío del formulario por defecto
+  event.preventDefault();
 
   // Redirigir a las páginas correspondientes
   if (option1Checked.value) {

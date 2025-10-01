@@ -18,7 +18,6 @@ const router = useRouter();
 
 const nameRegex = /^[a-zA-ZÀ-ÿ\s'-]{2,50}$/;
 
-// 🟢 Campos
 const nombre = ref("");
 const apellido = ref("");
 const SegundoApellido = ref("");
