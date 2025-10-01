@@ -10,12 +10,12 @@ import { motion } from "motion-v";
 import { useFormStore } from "../stores/formStore.js";
 import axios from "axios";
 
-// 🟢 Store global
+
 const formStore = useFormStore();
 const store = useFormularioStore();
 const router = useRouter();
 
-// Regex para nombres/apellidos
+
 const nameRegex = /^[a-zA-ZÀ-ÿ\s'-]{2,50}$/;
 
 // 🟢 Campos
