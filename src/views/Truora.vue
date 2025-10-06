@@ -87,9 +87,10 @@ const enviarPorWhatsApp = () => {
               <h3 class="mb-3 font-bold text-center">
                 Necesitarás tu Cédula de Ciudadanía</h3>
               <a
-                href="https://identity.truora.com/preview/IPFf58ef097af96942b9769cea7565b4034" 
-                style=" text-decoration: none; background: #DD3590; color: #ffffff; border-radius: 6px; display: inline-block; padding: 8px 32px; font-weight: bold; " > 
-                Iniciar validación 
+                @click="enviarPorWhatsApp"
+                style="text-decoration: none; background: #DD3590; color: #ffffff; border-radius: 6px; display: inline-block; padding: 8px 32px; font-weight: bold; cursor: pointer;"
+              >
+                Iniciar validación
               </a>
             </div>
           </div>
