@@ -1,4 +1,4 @@
-<script setup>
+ <script setup>
 import Heading from "../components/UI/Heading.vue";
 import Button from "../components/UI/Button.vue";
 import Footer from "../components/UI/Footer.vue";
@@ -7,12 +7,43 @@ import { useFormularioStore } from "../router/store";
 import { useRouter } from "vue-router";
 import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
+import { useFormStore } from '../stores/formStore.js'
+
+const formStore = useFormStore()
 
 const store = useFormularioStore();
+
 const router = useRouter();
 
 const mostrarAlerta = ref(false);
+
 const mensajeAlerta = ref("");
+
+const enviarPorWhatsApp = () => {
+
+  const datos = formStore.getFinalData();
+  const numeroSinPrefijo = datos?.Numero_Celular;
+
+  if (!numeroSinPrefijo) {
+
+    alert("Número de celular no encontrado.");
+
+    return;
+  }
+
+  const numeroConCodigo = `57${numeroSinPrefijo}`;
+
+  const enlaceValidacion = "https://identity.truora.com/preview/IPFf58ef097af96942b9769cea7565b4034";
+
+  const mensaje = `Hola, por favor valida tu identidad usando este enlace: ${enlaceValidacion}`;
+
+  const mensajeCodificado = encodeURIComponent(mensaje);
+
+  const urlWhatsApp = `https://wa.me/${numeroConCodigo}?text=${mensajeCodificado}`;
+
+  window.open(urlWhatsApp, "_blank");
+
+};
 
 </script>
 
