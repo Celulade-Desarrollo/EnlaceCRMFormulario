@@ -27,8 +27,6 @@ onMounted(async () => {
   }
 });
 
-
-
 </script>
 
 <template>
@@ -54,7 +52,7 @@ onMounted(async () => {
             <h2 class="display-4 titulo text-center">
               ¡Tu solicitud ha finalizado 
  <span>exitosamente!</span><br />
-              Gracias por compartir tu información con nosotro
+              Gracias por compartir tu información con nosotros
             </h2>
           </div>
           <picture>

@@ -80,18 +80,23 @@ const enviarPorWhatsApp = () => {
               </picture>
             </p>
           </div>
-
+            <h3 class="mb-3 font-bold text-center">
+                Te enviaremos un link vía WhatsApp para validar tu identidad
+                necesitarás tu Cédula de Ciudadanía
+            </h3>
           <div class="mt-4 tarjeta">
             <div class="validar-truora flex flex-col items-center">
+              <Button @click=' router.push("/Terminado");' ></Button>
               <!-- Nuevo título encima del botón -->
-              <h3 class="mb-3 font-bold text-center">
-                Necesitarás tu Cédula de Ciudadanía</h3>
-              <a
+              <!-- <h3 class="mb-3 font-bold text-center">
+                Te enviaremos un link via whatsapp para validar tu identidad
+                Necesitarás tu Cédula de Ciudadanía</h3> -->
+              <!-- <a
                 @click="enviarPorWhatsApp"
                 style="text-decoration: none; background: #DD3590; color: #ffffff; border-radius: 6px; display: inline-block; padding: 8px 32px; font-weight: bold; cursor: pointer;"
               >
                 Iniciar validación
-              </a>
+              </a> -->
             </div>
           </div>
         </div>
