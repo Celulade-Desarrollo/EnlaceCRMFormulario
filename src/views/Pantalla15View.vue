@@ -14,6 +14,8 @@ const bienes = ref("");
 const deudas = ref("");
 const gastos = ref("");
 const error = ref("");
+const ingresosSeleccionado = ref("");
+const MontoIngresosDiferentes = ref("");
 
 const router = useRouter();
 const formStore = useFormStore()
@@ -43,14 +45,14 @@ const handleSubmit = (event) => {
   event.preventDefault();
 
   const deudaMensualSeleccionada = document.querySelector('input[name="deuda"]:checked');
-  const ingresosSeleccionado = document.querySelector('input[name="ingresosE"]:checked');
 
   if (
     !gastos.value ||
     !deudas.value ||
     !bienes.value ||
     !deudaMensualSeleccionada ||
-    !ingresosSeleccionado
+    !ingresosSeleccionado ||
+    (ingresosSeleccionado.value === 'Si' && !MontoIngresosDiferentes.value)
   ) {
     error.value = "Por favor responde todas las preguntas antes de continuar.";
     return;
@@ -63,6 +65,7 @@ const handleSubmit = (event) => {
   formStore.updateField('Gastos_Mensuales', gastos.value);
   formStore.updateField('Deuda_Mensual', deudaMensualSeleccionada.value);
   formStore.updateField('Ingresos_Diferentes_Negocio', ingresosSeleccionado.value);
+  formStore.updateField('Monto_ingresos_diferentes_negocio', MontoIngresosDiferentes.value ? MontoIngresosDiferentes.value : 'No');
   store.completarFormulario();
   router.push("/antesDeTerminar");
 };
@@ -76,6 +79,7 @@ const handleSubmit = (event) => {
     class="container registro min-h-screen flex flex-col justify-between overflow-y-auto p-4"
 >
     <div class="mt-4 tarjeta">
+        
         <p class="mb-4 font-bold">¿Cuál es el valor.... Préstamos y tus otros compromisos?</p>
         <div>
             <label for="bienes" class="input-label">
@@ -98,6 +102,7 @@ const handleSubmit = (event) => {
             <br>
 
         </div>
+        
         <p class="mb-4 font-bold">¿Cuál es el valor total de tus deudas?</p>
         <div>
             <label for="deudas" class="input-label">
@@ -119,6 +124,7 @@ const handleSubmit = (event) => {
             <p>Ten en cuenta tus prestamos tus otros compromisos financieros</p>
             <br>
         </div>
+        
         <div class="button-container">
             <p class="font-bold">¿Tienes alguna deuda que pagues mensualmente?</p>
               <input
@@ -138,9 +144,11 @@ const handleSubmit = (event) => {
             />
             <label for="deuda-no" class="button mt-4">No</label>
         </div>
+        
         <div class="button-container">
             <p class="font-bold">¿Tienes otros ingresos diferentes a las ventas de tu negocio?</p>
               <input
+              v-model= "ingresosSeleccionado"
               type="radio"
               id="ingreosE-si"
               class="checkbox-hidden"
@@ -149,6 +157,7 @@ const handleSubmit = (event) => {
             />
             <label for="ingreosE-si" class="button mt-4">Si</label>
             <input
+              v-model= "ingresosSeleccionado"
               type="radio"
               id="ingreosE-no"
               class="checkbox-hidden"
@@ -157,6 +166,27 @@ const handleSubmit = (event) => {
             />
             <label for="ingreosE-no" class="button mt-4">No</label>
         </div>
+        
+        <div v-if="ingresosSeleccionado === 'Si'"> 
+            <p class="mb-4 font-bold">¿Cuál es el monto de esos ingresos diferentes?</p>
+            <div>
+                <label for="MontoIngresosDiferentes" class="input-label">
+                    <input
+                        id="MontoIngresosDiferentes"
+                        v-model="MontoIngresosDiferentes"
+                        class="form-control"
+                        aria-required="true"
+                        name="MontoIngresosDiferentes"
+                        type="text"
+                        placeholder=" "
+                        autocomplete="off"
+                        @input="formatCurrency"
+                    />
+                    <span class="floating-label">Ingresa el monto</span>
+                </label>
+            </div>
+        </div>
+        
         <p class="mb-4 font-bold">¿Cuanto son tus gastos mensuales?</p>
         <div>
             <label for="gastos" class="input-label">
@@ -177,6 +207,7 @@ const handleSubmit = (event) => {
             </label>
             <p>Ten en cuenta lo que gastas en comida, servicios, colegio, transporte, entre otros</p>
         </div>
+        
         <Button @click="handleSubmit" class="mt-5"></Button>
         <p v-if="error" class="text-danger mt-1 flex justify-center">
             {{ error }}
