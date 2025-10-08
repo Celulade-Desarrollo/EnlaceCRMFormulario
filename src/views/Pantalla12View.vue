@@ -17,6 +17,15 @@ const mostrarAlerta = ref(false);
 const mensajeAlerta = ref("");
 const ingresos = ref(""); // valor seleccionado del checkbox
 
+// 🧮 agregado: mapa de rangos a valores promedio
+const promedioIngresos = {
+  "Menos de $100.000": 80000,
+  "Entre $100.000 y $200.000": 150000,
+  "Entre $200.000 y $300.000": 250000,
+  "Entre $300.000 y $400.000": 350000,
+  "Más de $400.000": 450000
+};
+
 const handleCheckboxChange = (event) => {
   const checkboxes = document.querySelectorAll(".single-checkbox");
   checkboxes.forEach((checkbox) => {
@@ -43,7 +52,12 @@ const handleSubmit = (event) => {
     return;
   }
 
-  formStore.updateField('Rango_de_Ingresos', ingresos.value);
+  // 🧮 agregado: calcular valor mensual
+  const valorPromedio = promedioIngresos[ingresos.value] || 0;
+  const ingresoMensual = valorPromedio * 30;
+
+  // 🧮 agregado: guardar el valor mensual en el store o BD
+  formStore.updateField('Rango_de_Ingresos', ingresoMensual);
 
   store.completarFormulario();
   router.push("/informacionFinanciera");
@@ -63,6 +77,7 @@ onMounted(() => {
   localStorage.setItem("ruta", miRuta);
 });
 </script>
+
 
 
 <template>

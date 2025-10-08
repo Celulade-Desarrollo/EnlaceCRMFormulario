@@ -20,11 +20,12 @@
   </header>
 
   <header class="app-header">
-    <!-- Botón Atrás -->
-    <button @click="goBack" class="back-button">
-      <span aria-hidden="true">🡰</span>
-      <span>Atrás</span>
-    </button>
+<button @click="goBack" class="back-button">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="white" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 1-.5.5H3.707l3.147 3.146a.5.5 0 0 1-.708.708l-4-4a.498.498 0 0 1-.146-.35v-.008a.498.498 0 0 1 .146-.35l4-4a.5.5 0 1 1 .708.708L3.707 7.5H14.5a.5.5 0 0 1 .5.5z"/>
+  </svg>
+  <span>Atrás</span>
+</button>
 
     <!-- Título centrado -->
     <h1 class="title">
