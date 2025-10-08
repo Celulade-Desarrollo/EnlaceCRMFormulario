@@ -10,7 +10,6 @@ import { motion } from "motion-v";
 import { useFormStore } from '../stores/formStore.js'
 import axios from 'axios';
 
-
 const formStore = useFormStore()
 const datosFinales = ref({})
 
@@ -20,8 +19,6 @@ const router = useRouter();
 
 const nbCliente = localStorage.getItem('nbCliente');
 const nbAgenteComercial = localStorage.getItem('nbAgenteComercial');
-// Resultado:
-console.log(datosFinales.value)
 
 const handleCheckboxChange = (event) => {
   const checkboxes = document.querySelectorAll(".single-checkbox");
@@ -64,7 +61,6 @@ const validateCheckboxes = () => {
 };
 
 onMounted(() => {
-
   const checkboxes = document.querySelectorAll(".single-checkbox");
   checkboxes.forEach((checkbox) => {
     checkbox.addEventListener("change", handleCheckboxChange);
@@ -82,190 +78,215 @@ onMounted(() => {
 
   let miRuta = window.location.pathname;
 
-  // Validar si ya existe "ruta"
   if (localStorage.getItem.length > 0) {
     localStorage.removeItem("ruta");
-
-    // Setear la ruta por defecto
     localStorage.setItem("ruta", miRuta);
   } else {
-    // Setear la ruta por defecto
     localStorage.setItem("ruta", miRuta);
   }
 });
 
 const handleSubmit = async (event) => {
+  event.preventDefault();
+
   if (!validateCheckboxes()) {
-    event.preventDefault(); // Prevent form submissio
+    error.value = "Por favor, selecciona al menos una opción de los tres grupos.";
+    setTimeout(() => {
+      error.value = "";
+    }, 3000);
+    return;
+  }
+
+  error.value = "";
+
   const persona = document.querySelector(".single-checkbox:checked")?.value;
   const familiar = document.querySelector(".single-checkbox-1:checked")?.value;
   const moneda = document.querySelector(".single-checkbox-2:checked")?.value;
 
-  const personaValue = clearUndefined(persona);
-  const familiarValue = clearUndefined(familiar);
-  const monedaValue = clearUndefined(moneda);
-
-    error.value =
-      "Por favor, selecciona al menos una opción de los tres grupos.";
-
-
-    setTimeout(() => {
-      error.value = "";
-    }, 3000);
-    return false;
-  }
-
-  // Limpiar error si no lo hay
-  error.value = "";
-  event.preventDefault(); // Evita el envío del formulario por defecto
-  store.completarFormulario();  // Marca el formulario como completado
-  formStore.updateField('Persona_expuesta_politicamente_PEP',document.querySelector(".single-checkbox:checked")?.value === "si" ? 1 : 0);
-  formStore.updateField('Familiar_expuesto_politicamente_PEP',document.querySelector(".single-checkbox-1:checked")?.value === "si" ? 1 : 0);
-  formStore.updateField('Operaciones_moneda_extranjera',document.querySelector(".single-checkbox-2:checked")?.value === "si" ? 1 : 0);
+  formStore.updateField('Persona_expuesta_politicamente_PEP', persona === "si" ? 1 : 0);
+  formStore.updateField('Familiar_expuesto_politicamente_PEP', familiar === "si" ? 1 : 0);
+  formStore.updateField('Operaciones_moneda_extranjera', moneda === "si" ? 1 : 0);
   formStore.updateField('nbCliente', nbCliente);
   formStore.updateField('nbAgenteComercial', nbAgenteComercial);
-  datosFinales.value = formStore.getFinalData()
 
-     try {
-     const response = await axios.post('api/flujoRegistroEnlace', datosFinales.value)
+  datosFinales.value = formStore.getFinalData();
 
-       console.log('Respuesta del backend:', response.data)
-     } catch (error) {
-       console.error(' Error al enviar los datos:', error)
-     }
- // console.log('Datos listos para enviar:', datosFinales.value)
-  router.push("/truora"); // Redirige a la siguiente pantalla
+  // 🔥 Convertir a string manteniendo el formato con puntos
+  const convertirAString = (valor) => {
+    if (!valor) return "0";
+    
+    // Si es número, formatear con puntos
+    if (typeof valor === 'number') {
+      return valor.toLocaleString('es-CO');
+    }
+    
+    // Si ya es string, devolverlo tal cual (ya tiene puntos)
+    return String(valor);
+  };
+
+  const datosLimpios = {
+    ...datosFinales.value,
+    Rango_de_Ingresos: convertirAString(datosFinales.value.Rango_de_Ingresos),
+    Valor_Bienes: convertirAString(datosFinales.value.Valor_Bienes),
+    Valor_Deudas: convertirAString(datosFinales.value.Valor_Deudas),
+    Gastos_Mensuales: convertirAString(datosFinales.value.Gastos_Mensuales),
+  };
+
+  try {
+    const response = await axios.post('api/flujoRegistroEnlace', datosLimpios, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    console.log('✅ Respuesta del backend:', response.data);
+    
+    store.completarFormulario();
+    router.push("/truora");
+    
+  } catch (err) {
+    console.error('❌ Error al enviar los datos:', err);
+    error.value = err.response?.data?.error || "Error al enviar los datos. Intenta de nuevo.";
+    
+    setTimeout(() => {
+      error.value = "";
+    }, 5000);
+  }
 };
 </script>
 
+
+
 <template>
-  <Heading class="mb-[40px]"></Heading>
-  <motion.div v-bind="fadeInUp">
-    <section class="container py-5 registro">
-      <div class="row align-items-center">
-        <div class="col-lg-6 desktop">
-          <picture>
-            <img
-              src="/public/pago.png"
-              alt="Pago"
-              class="img-fluid"
-              loading="lazy"
-              title="Pago"
-            />
-          </picture>
-        </div>
-        <div class="col-lg-6">
-          <div class="mt-4 tarjeta">
-            <form>
-              <div class="form-group">
-                <h3 class="titulo-10 mb-4">Antes de terminar</h3>
-                <h6 class="mb-4 font-bold">
-                  Falta poco. Solo necesitamos que respondas un par de preguntas
-                  más
-                </h6>
-                <h4 class="sub-titulo">
-                  ¿Eres una Persona Expuesta Políticamente (PEP) o lo has sido
-                  en los últimos años?
-                </h4>
-                <div class="checklist m-0" aria-required="true">
-                  <label class="check-item">
-                    <input
-                      type="checkbox"
-                      name="pep"
-                      value="si"
-                      class="single-checkbox"
-                    />
-                    <span class="checkmark"></span>
-                    Sí
-                  </label>
-                  <label class="check-item mb-4">
-                    <input
-                      type="checkbox"
-                      name="pep"
-                      value="no"
-                      class="single-checkbox"
-                      checked
-                    />
-                    <span class="checkmark"></span>
-                    No
-                  </label>
+  <div>
+    <Heading class="mb-[40px]"></Heading>
+    <motion.div v-bind="fadeInUp">
+      <section class="container py-5 registro">
+        <div class="row align-items-center">
+          <div class="col-lg-6 desktop">
+            <picture>
+              <img
+                src="/public/pago.png"
+                alt="Pago"
+                class="img-fluid"
+                loading="lazy"
+                title="Pago"
+              />
+            </picture>
+          </div>
+          <div class="col-lg-6">
+            <div class="mt-4 tarjeta">
+              <form>
+                <div class="form-group">
+                  <h3 class="titulo-10 mb-4">Antes de terminar</h3>
+                  <h6 class="mb-4 font-bold">
+                    Falta poco. Solo necesitamos que respondas un par de preguntas
+                    más
+                  </h6>
+                  <h4 class="sub-titulo">
+                    ¿Eres una Persona Expuesta Políticamente (PEP) o lo has sido
+                    en los últimos años?
+                  </h4>
+                  <div class="checklist m-0" aria-required="true">
+                    <label class="check-item">
+                      <input
+                        type="checkbox"
+                        name="pep"
+                        value="si"
+                        class="single-checkbox"
+                      />
+                      <span class="checkmark"></span>
+                      Sí
+                    </label>
+                    <label class="check-item mb-4">
+                      <input
+                        type="checkbox"
+                        name="pep"
+                        value="no"
+                        class="single-checkbox"
+                        checked
+                      />
+                      <span class="checkmark"></span>
+                      No
+                    </label>
+                  </div>
+                  <h4 class="sub-titulo">
+                    ¿Tu pareja, familiar directo o asociado cercano es una Persona
+                    Expuesta Políticamente (PEP) o lo ha sido en los últimos
+                    años?
+                  </h4>
+                  <p class="font-bold">
+                    Tu familia directa incluye padres, hermanos, abuelos o nietos
+                  </p>
+                  <div class="checklist m-0" aria-required="true">
+                    <label class="check-item">
+                      <input
+                        type="checkbox"
+                        name="familiar_pep"
+                        value="si"
+                        class="single-checkbox-1"
+                      />
+                      <span class="checkmark"></span>
+                      Sí
+                    </label>
+                    <label class="check-item mb-4">
+                      <input
+                        type="checkbox"
+                        name="familiar_pep"
+                        value="no"
+                        class="single-checkbox-1"
+                        checked
+                      />
+                      <span class="checkmark"></span>
+                      No
+                    </label>
+                  </div>
+                  <h3 class="titulo mb-4">
+                    ¿Realiza operaciones en moneda extranjera?
+                  </h3>
+                  <div class="checklist m-0" aria-required="true">
+                    <label class="check-item">
+                      <input
+                        type="checkbox"
+                        name="MonedaExtranjeraSi"
+                        value="si"
+                        class="single-checkbox-2"
+                      />
+                      <span class="checkmark"></span>
+                      Sí
+                    </label>
+                    <label class="check-item mb-4">
+                      <input
+                        type="checkbox"
+                        name="MonedaExtranjeraNo"
+                        value="no"
+                        class="single-checkbox-2"
+                        checked
+                      />
+                      <span class="checkmark"></span>
+                      No
+                    </label>
+                  </div>
+                  <p>
+                    Declaro que soy nacido en Colombia, no tengo otras
+                    nacionalidades y mi domicilio es en Colombia, al igual que mi
+                    país de residencia fiscal. Con el fin de dar cumplimiento a
+                    la normatividad FATCA/CRS, certifico lo anterior y me
+                    comprometo a suministrar cualquier cambio de forma oportuna.
+                  </p>
                 </div>
-                <h4 class="sub-titulo">
-                  ¿Tu pareja, familiar directo o asociado cercano es una Persona
-                  Expuesta Políticamente (PEP) o lo ha sido en los últimos
-                  años?
-                </h4>
-                <p class="font-bold">
-                  Tu familia directa incluye padres, hermanos, abuelos o nietos
+                <Button @click="handleSubmit"></Button>
+                <p v-if="error" class="text-danger mt-1 flex justify-center">
+                  {{ error }}
                 </p>
-                <div class="checklist m-0" aria-required="true">
-                  <label class="check-item">
-                    <input
-                      type="checkbox"
-                      name="familiar_pep"
-                      value="si"
-                      class="single-checkbox-1"
-                    />
-                    <span class="checkmark"></span>
-                    Sí
-                  </label>
-                  <label class="check-item mb-4">
-                    <input
-                      type="checkbox"
-                      name="familiar_pep"
-                      value="no"
-                      class="single-checkbox-1"
-                      checked
-                    />
-                    <span class="checkmark"></span>
-                    No
-                  </label>
-                </div>
-                <h3 class="titulo mb-4">
-                  ¿Realiza operaciones en moneda extranjera?
-                </h3>
-                <div class="checklist m-0" aria-required="true">
-                  <label class="check-item">
-                    <input
-                      type="checkbox"
-                      name="MonedaExtranjeraSi"
-                      value="si"
-                      class="single-checkbox-2"
-                    />
-                    <span class="checkmark"></span>
-                    Sí
-                  </label>
-                  <label class="check-item mb-4">
-                    <input
-                      type="checkbox"
-                      name="MonedaExtranjeraNo"
-                      value="no"
-                      class="single-checkbox-2"
-                      checked
-                    />
-                    <span class="checkmark"></span>
-                    No
-                  </label>
-                </div>
-                <p>
-                  Declaro que soy nacido en Colombia, no tengo otras
-                  nacionalidades y mi domicilio es en Colombia, al igual que mi
-                  país de residencia fiscal. Con el fin de dar cumplimiento a
-                  la normatividad FATCA/CRS, certifico lo anterior y me
-                  comprometo a suministrar cualquier cambio de forma oportuna.
-                </p>
-              </div>
-              <Button @click="handleSubmit"></Button>
-              <p v-if="error" class="text-danger mt-1 flex justify-center">
-                {{ error }}
-              </p>
-            </form>
+              </form>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
-  </motion.div>
-  <Footer class="bottom-0 left-0 right-0"></Footer>
+      </section>
+    </motion.div>
+    <Footer class="bottom-0 left-0 right-0"></Footer>
+  </div>
 </template>
 
 
