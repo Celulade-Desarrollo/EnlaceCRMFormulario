@@ -2,12 +2,12 @@
 import Heading from "../components/UI/Heading.vue";
 import Button from "../components/UI/Button.vue";
 import Footer from "../components/UI/Footer.vue";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useFormularioStore } from "../router/store";
 import { useRouter } from "vue-router";
 import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
-import { useFormStore } from '../stores/formStore.js';
+import { useFormStore } from "../stores/formStore.js";
 
 const store = useFormularioStore();
 const router = useRouter();
@@ -15,17 +15,26 @@ const formStore = useFormStore();
 
 const mostrarAlerta = ref(false);
 const mensajeAlerta = ref("");
-const ingresos = ref(""); // valor seleccionado del checkbox
+const ingresos = ref("");
 
-// 🧮 agregado: mapa de rangos a valores promedio
+// 🧮 Mapa de rangos a valores promedio diarios
 const promedioIngresos = {
   "Menos de $100.000": 80000,
   "Entre $100.000 y $200.000": 150000,
   "Entre $200.000 y $300.000": 250000,
   "Entre $300.000 y $400.000": 350000,
-  "Más de $400.000": 450000
+  "Más de $400.000": 450000,
 };
 
+// 💰 Calcular el ingreso mensual formateado para mostrar
+const ingresoMensualFormateado = computed(() => {
+  if (!ingresos.value) return "";
+  const valorPromedio = promedioIngresos[ingresos.value] || 0;
+  const ingresoMensual = valorPromedio * 30;
+  return ingresoMensual.toLocaleString('es-CO');
+});
+
+// ✅ Cuando se selecciona un checkbox
 const handleCheckboxChange = (event) => {
   const checkboxes = document.querySelectorAll(".single-checkbox");
   checkboxes.forEach((checkbox) => {
@@ -34,9 +43,10 @@ const handleCheckboxChange = (event) => {
     }
   });
 
-  ingresos.value = event.target.value; // Guarda el valor seleccionado
+  ingresos.value = event.target.value;
 };
 
+// ✅ Cuando se hace clic en "Continuar"
 const handleSubmit = (event) => {
   event.preventDefault();
 
@@ -46,24 +56,33 @@ const handleSubmit = (event) => {
   if (!algunoSeleccionado || !ingresos.value) {
     mostrarAlerta.value = true;
     mensajeAlerta.value = "Por favor selecciona una opción.";
-    setTimeout(() => {
-      mostrarAlerta.value = false;
-    }, 3000);
+    setTimeout(() => (mostrarAlerta.value = false), 3000);
     return;
   }
 
-  // 🧮 agregado: calcular valor mensual
+  // 🧮 Calcular ingreso mensual
   const valorPromedio = promedioIngresos[ingresos.value] || 0;
   const ingresoMensual = valorPromedio * 30;
 
-  // 🧮 agregado: guardar el valor mensual en el store o BD
-  formStore.updateField('Rango_de_Ingresos', ingresoMensual);
+  // 💰 Formatear con puntos para guardar en BD
+  const ingresoFormateado = ingresoMensual.toLocaleString('es-CO');
 
+  // 🧩 Guardar el valor formateado (con puntos como string)
+  formStore.updateField("Rango_de_Ingresos", ingresoFormateado);
+
+  console.log("📊 Guardando ingreso mensual:", {
+    Seleccion: ingresos.value,
+    IngresoNumerico: ingresoMensual,
+    IngresoGuardado: ingresoFormateado,
+    Tipo: typeof ingresoFormateado,
+  });
+
+  // 📨 Continuar al siguiente paso
   store.completarFormulario();
   router.push("/informacionFinanciera");
-  //router.push("/antesDeTerminar");
 };
 
+// ✅ Inicialización al montar la vista
 onMounted(() => {
   const checkboxes = document.querySelectorAll(".single-checkbox");
   checkboxes.forEach((checkbox) => {
@@ -71,56 +90,53 @@ onMounted(() => {
   });
 
   const miRuta = window.location.pathname;
-  if (localStorage.getItem("ruta")) {
-    localStorage.removeItem("ruta");
-  }
   localStorage.setItem("ruta", miRuta);
 });
 </script>
 
 
-
 <template>
-  <Heading></Heading>
+  <div>
+    <Heading></Heading>
     <motion.div v-bind="fadeInUp">
-    <section
-      class="container registro h-[100vh] flex flex-col justify-between overflow-hidden p-0"
-    >
-      <div class="row align-items-center">
-        <div class="col-lg-6 desktop">
-          <picture>
-            <img
-              src="/public/pago.png"
-              alt="Pago"
-              class="img-fluid"
-              loading="lazy"
-              title="Pago"
-            />
-          </picture>
-        </div>
-        <div class="col-lg-6 botones p-5">
-          <div>
-            <h2 class="titulo">Cúentanos un poco </h2>
-            <p class="mb-4 font-bold">
-              Esta información es totalmente confidencial y esta nos permitirá
-              conocerte mejor
-            </p>
+      <section
+        class="container registro h-[100vh] flex flex-col justify-between overflow-hidden p-0"
+      >
+        <div class="row align-items-center">
+          <div class="col-lg-6 desktop">
+            <picture>
+              <img
+                src="/public/pago.png"
+                alt="Pago"
+                class="img-fluid"
+                loading="lazy"
+                title="Pago"
+              />
+            </picture>
           </div>
+          <div class="col-lg-6 botones p-5">
+            <div>
+              <h2 class="titulo">Cúentanos un poco </h2>
+              <p class="mb-4 font-bold">
+                Esta información es totalmente confidencial y esta nos permitirá
+                conocerte mejor
+              </p>
+            </div>
 
             <div class="mt-4 tarjeta">
               <p class="mb-4 font-bold">¿Cuanto vendes al día?</p>
               <div class="checklist">
-              <label class="check-item mb-4">
-                <input
-                  type="checkbox"
-                  name="ingresos"
-                  value="Menos de $100.000"
-                  class="single-checkbox"
-                  :checked="ingresos === 'Menos de $100.000'"
-                />
-                <span class="checkmark"></span>
-                Menos de $100.000
-              </label>
+                <label class="check-item mb-4">
+                  <input
+                    type="checkbox"
+                    name="ingresos"
+                    value="Menos de $100.000"
+                    class="single-checkbox"
+                    :checked="ingresos === 'Menos de $100.000'"
+                  />
+                  <span class="checkmark"></span>
+                  Menos de $100.000
+                </label>
 
                 <label class="check-item mb-4">
                   <input
@@ -170,17 +186,18 @@ onMounted(() => {
                   Más de $400.000
                 </label>
 
-              <Button @click="handleSubmit" class="mt-5"></Button>
-              <p v-if="mostrarAlerta" class="text-danger mt-1">
-                {{ mensajeAlerta }}
-              </p>
+                <Button @click="handleSubmit" class="mt-5"></Button>
+                <p v-if="mostrarAlerta" class="text-danger mt-1">
+                  {{ mensajeAlerta }}
+                </p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
-  </motion.div>
-  <Footer class="bottom-0 left-0 right-0"></Footer>
+      </section>
+    </motion.div>
+    <Footer class="bottom-0 left-0 right-0"></Footer>
+  </div>
 </template>
 
 <style scoped>
