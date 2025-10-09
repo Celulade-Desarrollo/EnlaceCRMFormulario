@@ -59,8 +59,8 @@ const handleSubmit = async (event) => {
   }
 
   // validación checkbox obligatorio
-  if (!autorizoDatos.value) {
-    error.value = "Debes autorizar el tratamiento de datos personales.";
+  if (!autorizoDatos.value || !autorizoContacto.value) {
+    error.value = "Debes autorizar el tratamiento de datos personales y la via de contacto.";
     setTimeout(() => {
       error.value = "";
     }, 3000);
@@ -70,6 +70,8 @@ const handleSubmit = async (event) => {
   try {
     store.completarFormulario();
     formStore.updateField('Numero_Celular', celular.value.toString())
+    formStore.updateField('Autorizacion_Habeas_Data', autorizoDatos.value);
+    formStore.updateField('Autorizacion_Medios_de_Contacto', autorizoContacto.value);
     // si pasa validación, sigue al siguiente paso
     router.push("/correoElectronico");
     error.value = "";
@@ -312,9 +314,6 @@ onMounted(() => {
 
   <Footer />
 </template>
-
-
-
 
 <style scoped>
 body {
