@@ -108,8 +108,11 @@ const handleSubmit = async (event) => {
   formStore.updateField('Operaciones_moneda_extranjera', moneda === "si" ? 1 : 0);
   formStore.updateField('nbCliente', nbCliente);
   formStore.updateField('nbAgenteComercial', nbAgenteComercial);
+  formStore.updateField('Declaracion_de_nacionalidad_y_residencia_fiscal_en_Colombia', true);
 
   datosFinales.value = formStore.getFinalData();
+
+  console.log('🔍 Verificar campo declaración:', datosFinales.value.Declaracion_de_nacionalidad_y_residencia_fiscal_en_Colombia);
 
   // 🔥 Convertir a string manteniendo el formato con puntos
   const convertirAString = (valor) => {
@@ -130,7 +133,11 @@ const handleSubmit = async (event) => {
     Valor_Bienes: convertirAString(datosFinales.value.Valor_Bienes),
     Valor_Deudas: convertirAString(datosFinales.value.Valor_Deudas),
     Gastos_Mensuales: convertirAString(datosFinales.value.Gastos_Mensuales),
+    // Forzar que la declaración sea string "Si"
+    Declaracion_de_nacionalidad_y_residencia_fiscal_en_Colombia: true
   };
+
+  console.log('📦 Datos que se enviarán al backend:', JSON.stringify(datosLimpios, null, 2));
 
   try {
     const response = await axios.post('api/flujoRegistroEnlace', datosLimpios, {
@@ -154,8 +161,6 @@ const handleSubmit = async (event) => {
   }
 };
 </script>
-
-
 
 <template>
   <div>
