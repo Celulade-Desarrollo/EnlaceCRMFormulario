@@ -168,7 +168,7 @@ const handleSubmit = (event) => {
         </div>
         
         <div v-if="ingresosSeleccionado === 'Si'"> 
-            <p class="mb-4 font-bold">¿Cuál es el monto de esos ingresos diferentes?</p>
+            <p class="mb-4 font-bold">¿Cuál es el monto mensual de estos ingresos?</p>
             <div>
                 <label for="MontoIngresosDiferentes" class="input-label">
                     <input
