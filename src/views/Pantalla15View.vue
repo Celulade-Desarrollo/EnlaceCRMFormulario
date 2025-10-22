@@ -16,6 +16,8 @@ const gastos = ref("");
 const error = ref("");
 const ingresosSeleccionado = ref("");
 const MontoIngresosDiferentes = ref("");
+const MontoDeudaMensual = ref("");
+const deudaSeleccionada = ref("");
 
 const router = useRouter();
 const formStore = useFormStore()
@@ -38,13 +40,16 @@ function formatCurrency(event) {
     case 'gastos':
       gastos.value = formatted;
       break;
+    case "MontoDeudaMensual":
+      MontoDeudaMensual.value = formatted;
+      break;
   }
 }
 
 const handleSubmit = (event) => {
   event.preventDefault();
 
-  const deudaMensualSeleccionada = document.querySelector('input[name="deuda"]:checked');
+  const deudaMensualSeleccionada = deudaSeleccionada.value;
 
   if (
     !gastos.value ||
@@ -52,6 +57,7 @@ const handleSubmit = (event) => {
     !bienes.value ||
     !deudaMensualSeleccionada ||
     !ingresosSeleccionado ||
+    (deudaMensualSeleccionada === "Si" && !MontoDeudaMensual.value) ||
     (ingresosSeleccionado.value === 'Si' && !MontoIngresosDiferentes.value)
   ) {
     error.value = "Por favor responde todas las preguntas antes de continuar.";
@@ -65,6 +71,7 @@ const handleSubmit = (event) => {
   formStore.updateField('Gastos_Mensuales', gastos.value);
   formStore.updateField('Deuda_Mensual', deudaMensualSeleccionada.value);
   formStore.updateField('Ingresos_Diferentes_Negocio', ingresosSeleccionado.value);
+   formStore.updateField("Monto_Mensual_Deuda", MontoDeudaMensual.value ? MontoDeudaMensual.value : 'No');
   formStore.updateField('Monto_ingresos_diferentes_negocio', MontoIngresosDiferentes.value ? MontoIngresosDiferentes.value : 'No');
   store.completarFormulario();
   router.push("/antesDeTerminar");
@@ -127,15 +134,17 @@ const handleSubmit = (event) => {
         
         <div class="button-container">
             <p class="font-bold">¿Tienes alguna deuda que pagues mensualmente?</p>
-              <input
+            <input
+              v-model="deudaSeleccionada"
               type="radio"
               id="deuda-si"
               class="checkbox-hidden"
               name="deuda"
               value="Si"
             />
-            <label for="deuda-si" class="button mt-4">Si</label>
+            <label for="deuda-si" class="button mt-4">Sí</label>
             <input
+              v-model="deudaSeleccionada"
               type="radio"
               id="deuda-no"
               class="checkbox-hidden"
@@ -143,6 +152,27 @@ const handleSubmit = (event) => {
               value="No"
             />
             <label for="deuda-no" class="button mt-4">No</label>
+        </div>
+
+        <!-- Campo que aparece cuando selecciona "Sí" -->
+        <div v-if="deudaSeleccionada === 'Si'"> 
+            <p class="mb-4 font-bold">¿Cuál es el monto mensual que pagas por esa deuda?</p>
+            <div>
+                <label for="MontoDeudaMensual" class="input-label">
+                    <input
+                        id="MontoDeudaMensual"
+                        v-model="MontoDeudaMensual"
+                        class="form-control"
+                        aria-required="true"
+                        name="MontoDeudaMensual"
+                        type="text"
+                        placeholder=" "
+                        autocomplete="off"
+                        @input="formatCurrency"
+                    />
+                    <span class="floating-label">Ingresa el monto</span>
+                </label>
+            </div>
         </div>
         
         <div class="button-container">

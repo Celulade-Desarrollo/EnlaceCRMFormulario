@@ -112,9 +112,7 @@ const handleSubmit = async (event) => {
 
   datosFinales.value = formStore.getFinalData();
 
-  console.log('🔍 Verificar campo declaración:', datosFinales.value.Declaracion_de_nacionalidad_y_residencia_fiscal_en_Colombia);
-
-  // 🔥 Convertir a string manteniendo el formato con puntos
+  // Convertir a string manteniendo el formato con puntos
   const convertirAString = (valor) => {
     if (!valor) return "0";
     
@@ -123,7 +121,6 @@ const handleSubmit = async (event) => {
       return valor.toLocaleString('es-CO');
     }
     
-    // Si ya es string, devolverlo tal cual (ya tiene puntos)
     return String(valor);
   };
 
