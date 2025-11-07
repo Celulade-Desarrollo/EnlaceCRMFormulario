@@ -118,7 +118,7 @@ body {
 .container button {
   padding-left: 1.25rem;
   padding-right: 1.25rem;
-  border-radius: 6.25rem;
+  border-radius: 13px;
   background: #dd3590;
   color: rgb(255, 255, 255);
   --rippleLayerColor: rgba(255, 255, 255, 0.2);
