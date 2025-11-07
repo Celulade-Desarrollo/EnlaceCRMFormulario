@@ -68,18 +68,15 @@ onMounted(async () => {
             <h2 class="display-4 titulo text-center">
               <span>Pronto nos comunicaremos contigo para informarte sobre tu solicitud</span>
             </h2>
+
           </div>
-          <div class="mt-4 tarjeta flex justify-center">
-            <button
-              type="button"
-              id="email-on-hero-submit-btn"
-              class="btn btn-primary mt-2 font-semibold"
-              @click="handleInicio"
-            >
-              Tu solicitud ha sido enviada y será validada.
-            </button>
-          </div>
-        </div>
+<div class="container">
+  <button disabled style="cursor: default;">
+    Tu solicitud ha sido enviada y será validada.
+  </button>
+</div>
+
+</div>
       </div>
     </section>
   </motion.div>

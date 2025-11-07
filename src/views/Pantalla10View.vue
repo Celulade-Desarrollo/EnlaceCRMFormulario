@@ -113,26 +113,25 @@ const handleSubmit = async (event) => {
   datosFinales.value = formStore.getFinalData();
 
   // Convertir a string manteniendo el formato con puntos
-  const convertirAString = (valor) => {
-    if (!valor) return "0";
-    
-    // Si es número, formatear con puntos
-    if (typeof valor === 'number') {
-      return valor.toLocaleString('es-CO');
-    }
-    
-    return String(valor);
-  };
+// ✅ SIMPLIFICAR: Ya no necesitamos formatear con puntos
+const convertirAString = (valor) => {
+  // Si es null, undefined o vacío, enviar "0"
+  if (!valor || valor === null || valor === undefined) return "0";
+  
+  // Convertir a string tal cual (ya vienen sin formato de puntos)
+  return String(valor);
+};
 
-  const datosLimpios = {
-    ...datosFinales.value,
-    Rango_de_Ingresos: convertirAString(datosFinales.value.Rango_de_Ingresos),
-    Valor_Bienes: convertirAString(datosFinales.value.Valor_Bienes),
-    Valor_Deudas: convertirAString(datosFinales.value.Valor_Deudas),
-    Gastos_Mensuales: convertirAString(datosFinales.value.Gastos_Mensuales),
-    // Forzar que la declaración sea string "Si"
-    Declaracion_de_nacionalidad_y_residencia_fiscal_en_Colombia: true
-  };
+const datosLimpios = {
+  ...datosFinales.value,
+  Rango_de_Ingresos: convertirAString(datosFinales.value.Rango_de_Ingresos),
+  Valor_Bienes: convertirAString(datosFinales.value.Valor_Bienes),
+  Valor_Deudas: convertirAString(datosFinales.value.Valor_Deudas),
+  Gastos_Mensuales: convertirAString(datosFinales.value.Gastos_Mensuales),
+  Monto_Mensual_Deuda: convertirAString(datosFinales.value.Monto_Mensual_Deuda),
+  Monto_ingresos_diferentes_negocio: convertirAString(datosFinales.value.Monto_ingresos_diferentes_negocio),
+  Declaracion_de_nacionalidad_y_residencia_fiscal_en_Colombia: true
+};
 
   console.log('📦 Datos que se enviarán al backend:', JSON.stringify(datosLimpios, null, 2));
 

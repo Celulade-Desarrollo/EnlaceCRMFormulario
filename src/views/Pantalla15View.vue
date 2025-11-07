@@ -5,7 +5,7 @@ import { fadeInUp } from "../motion/PagesAnimation";
 import { ref } from "vue";
 import Button from "../components/UI/Button.vue";
 import Footer from "../components/UI/Footer.vue";
-import { useFormStore } from '../stores/formStore.js'
+import { useFormStore } from "../stores/formStore.js";
 import { useRouter } from "vue-router";
 import { useFormularioStore } from "../router/store";
 
@@ -16,29 +16,33 @@ const gastos = ref("");
 const error = ref("");
 const ingresosSeleccionado = ref("");
 const MontoIngresosDiferentes = ref("");
-const MontoDeudaMensual = ref("");
 const deudaSeleccionada = ref("");
+const MontoDeudaMensual = ref("");
 
 const router = useRouter();
-const formStore = useFormStore()
+const formStore = useFormStore();
 
+// 👉 Formateo automático mientras el usuario escribe
 function formatCurrency(event) {
-  let input = event.target;
-  let digits = input.value.replace(/\D/g, '');
-  let formatted = digits.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  const input = event.target;
+  let value = input.value.replace(/\D/g, ""); // solo dígitos
 
+  // Formatear con puntos cada 3 cifras
+  const formatted = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   input.value = formatted;
 
-  // Actualiza solo el campo correspondiente
   switch (input.id) {
-    case 'bienes':
+    case "bienes":
       bienes.value = formatted;
       break;
-    case 'deudas':
+    case "deudas":
       deudas.value = formatted;
       break;
-    case 'gastos':
+    case "gastos":
       gastos.value = formatted;
+      break;
+    case "MontoIngresosDiferentes":
+      MontoIngresosDiferentes.value = formatted;
       break;
     case "MontoDeudaMensual":
       MontoDeudaMensual.value = formatted;
@@ -49,35 +53,54 @@ function formatCurrency(event) {
 const handleSubmit = (event) => {
   event.preventDefault();
 
-  const deudaMensualSeleccionada = deudaSeleccionada.value;
-
+  // Validaciones básicas
   if (
-    !gastos.value ||
-    !deudas.value ||
     !bienes.value ||
-    !deudaMensualSeleccionada ||
-    !ingresosSeleccionado ||
-    (deudaMensualSeleccionada === "Si" && !MontoDeudaMensual.value) ||
-    (ingresosSeleccionado.value === 'Si' && !MontoIngresosDiferentes.value)
+    !deudas.value ||
+    !gastos.value ||
+    !deudaSeleccionada.value ||
+    !ingresosSeleccionado.value ||
+    (deudaSeleccionada.value === "Si" && !MontoDeudaMensual.value) ||
+    (ingresosSeleccionado.value === "Si" && !MontoIngresosDiferentes.value)
   ) {
     error.value = "Por favor responde todas las preguntas antes de continuar.";
+    setTimeout(() => (error.value = ""), 3000);
     return;
   }
- 
-  error.value = "";
-  event.preventDefault();
-  formStore.updateField('Valor_Bienes', bienes.value);
-  formStore.updateField('Valor_Deudas', deudas.value);
-  formStore.updateField('Gastos_Mensuales', gastos.value);
-  formStore.updateField('Deuda_Mensual', deudaMensualSeleccionada.value);
-  formStore.updateField('Ingresos_Diferentes_Negocio', ingresosSeleccionado.value);
-   formStore.updateField("Monto_Mensual_Deuda", MontoDeudaMensual.value ? MontoDeudaMensual.value : 'No');
-  formStore.updateField('Monto_ingresos_diferentes_negocio', MontoIngresosDiferentes.value ? MontoIngresosDiferentes.value : 'No');
+
+  // 🧠 Guardar en el store (exactamente como debe llegar a la BD)
+  formStore.updateField("Valor_Bienes", bienes.value);
+  formStore.updateField("Valor_Deudas", deudas.value);
+  formStore.updateField("Gastos_Mensuales", gastos.value);
+
+  // 👉 Deuda mensual
+  formStore.updateField("Deuda_Mensual", deudaSeleccionada.value);
+  formStore.updateField(
+    "Monto_Mensual_Deuda",
+    deudaSeleccionada.value === "Si" ? MontoDeudaMensual.value : ""
+  );
+
+  // 👉 Ingresos diferentes
+  formStore.updateField("Ingresos_Diferentes_Negocio", ingresosSeleccionado.value);
+  formStore.updateField(
+    "Monto_ingresos_diferentes_negocio",
+    ingresosSeleccionado.value === "Si" ? MontoIngresosDiferentes.value : ""
+  );
+
+  console.log("💰 Valor_Bienes:", bienes.value);
+  console.log("💳 Valor_Deudas:", deudas.value);
+  console.log("🏠 Gastos_Mensuales:", gastos.value);
+  console.log("❓ Deuda_Mensual:", deudaSeleccionada.value);
+  console.log("💵 Monto_Deuda_Mensual:", MontoDeudaMensual.value);
+  console.log("❓ Ingresos_Diferentes_Negocio:", ingresosSeleccionado.value);
+  console.log("💸 Monto_Ingresos_Diferentes:", MontoIngresosDiferentes.value);
+
   store.completarFormulario();
   router.push("/antesDeTerminar");
 };
-
 </script>
+
+
 
 <template>
 <Heading></Heading>
@@ -87,7 +110,7 @@ const handleSubmit = (event) => {
 >
     <div class="mt-4 tarjeta">
         
-        <p class="mb-4 font-bold">¿Cuál es el valor.... Préstamos y tus otros compromisos?</p>
+        <p class="mb-4 font-bold">¿Cuál es el valor total de tus bienes?</p>
         <div>
             <label for="bienes" class="input-label">
                 <input
@@ -110,7 +133,7 @@ const handleSubmit = (event) => {
 
         </div>
         
-        <p class="mb-4 font-bold">¿Cuál es el valor total de tus deudas?</p>
+        <p class="mb-4 font-bold">¿¿Cuál es el valor total de tus préstamos y otros compromisos?</p>
         <div>
             <label for="deudas" class="input-label">
                 <input
