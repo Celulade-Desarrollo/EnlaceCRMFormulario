@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue"; // Importa ref para crear variables reactivas
+import { ref, onMounted } from "vue";
 import Heading from "../components/UI/Heading.vue";
 import Button from "../components/UI/Button.vue";
 import Footer from "../components/UI/Footer.vue";
@@ -7,67 +7,78 @@ import { useFormularioStore } from "../router/store";
 import { useRouter } from "vue-router";
 import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
-import { useFormStore } from '../stores/formStore.js'
+import { useFormStore } from "../stores/formStore.js";
 import axios from "axios";
 
-//formulario global
-const formStore = useFormStore()
+// 🧠 Stores globales
+const formStore = useFormStore();
+const store = useFormularioStore();
+const router = useRouter();
 
-const store = useFormularioStore(); // Inicializa Vuex
-const router = useRouter(); // Inicializa Vue Router
-const direccion = ref(""); // Crea una propiedad reactiva para la dirección
-const error = ref(""); // Crea una propiedad reactiva para el mensaje de error
+// 🧩 Variables reactivas
+const direccion = ref("");
 const detalles = ref("");
-
+const selectedBarrio = ref("");
 const barrios = ref([]);
-const selectedBarrio = ref(null);
-console.log("barrrrio",selectedBarrio.value);
-const handleSubmit = (event) => {
-  // Validación
-  if (!direccion.value || !selectedBarrio.value) {
-    error.value = "Por favor, ingresa tu dirección y tu barrio.";
-    event.preventDefault(); // Evita el envío del formulario por defecto
-    setTimeout(() => {
-      error.value = "";
-    }, 3000);
-    return false;
-  }
+const error = ref("");
 
-  // Limpiar error si no lo hay
-  error.value = "";
-  event.preventDefault(); // Evita el envío del formulario por defecto
-  store.completarFormulario(); // Marca el formulario como completado
-  formStore.updateField('Direccion', direccion.value)
-  formStore.updateField('Detalles', detalles.value)
-  formStore.updateField('Barrio', selectedBarrio.value)
-
-  router.push("/informacionNegocio"); // Redirige a la siguiente pantalla
-};// Crea una propiedad reactiva para el barrio
-
+// 🧭 Cargar barrios al montar
 onMounted(async () => {
-  let miRuta = window.location.pathname;
-
-  localStorage.setItem("ruta", miRuta); // Actualiza siempre
+  const miRuta = window.location.pathname;
+  localStorage.setItem("ruta", miRuta);
 
   const cityId = localStorage.getItem("selectedCityId");
 
-
   if (cityId) {
     try {
-      const response = await axios.get(`api/ubicacion/barrios/${cityId}`);
-      barrios.value = response.data; // suponiendo que viene [{ id, nombre }]
+      const response = await axios.get(`/api/ubicacion/barrios/${cityId}`);
+      barrios.value = response.data;
     } catch (err) {
       console.error("Error al cargar los barrios:", err);
       error.value = "Error al cargar los barrios.";
     }
   }
 });
-  const ciudad = localStorage.getItem("selectedCity");
 
+// 📤 Manejar envío del formulario
+const handleSubmit = (event) => {
+  event.preventDefault();
+
+  // Validar campos obligatorios
+  if (!direccion.value || !selectedBarrio.value) {
+    error.value = "Por favor, ingresa tu dirección y tu barrio.";
+    setTimeout(() => (error.value = ""), 3000);
+    return;
+  }
+
+  // Limpiar errores
+  error.value = "";
+
+  // ✅ Guardar en el store global
+  formStore.updateField("Direccion", direccion.value);
+  formStore.updateField("Detalles", detalles.value);
+  formStore.updateField("Barrio", selectedBarrio.value);
+
+  // Debug (verificar que los valores llegan bien)
+  console.log({
+    Direccion: direccion.value,
+    Detalles: detalles.value,
+    Barrio: selectedBarrio.value,
+  });
+
+  // Marca formulario como completado
+  store.completarFormulario();
+
+  // Redirige
+  router.push("/informacionNegocio");
+};
+
+// Ciudad seleccionada (solo lectura)
+const ciudad = localStorage.getItem("selectedCity");
 </script>
 
 <template>
-  <Heading></Heading>
+  <Heading />
   <motion.div v-bind="fadeInUp">
     <section
       class="container registro p-0 flex flex-col h-[100vh] justify-between overflow-hidden"
@@ -84,13 +95,16 @@ onMounted(async () => {
             />
           </picture>
         </div>
+
         <div class="col-lg-6">
           <div class="mt-4 tarjeta">
-            <form>
+            <form @submit.prevent="handleSubmit">
               <div class="form-group">
                 <h3 class="titulo-8 mb-4 mt-1">
                   ¿Y en qué parte de {{ ciudad }}?
                 </h3>
+
+                <!-- Dirección -->
                 <label for="direccion" class="input-label mt-4">
                   <input
                     v-model="direccion"
@@ -99,39 +113,55 @@ onMounted(async () => {
                     name="direccion"
                     type="text"
                     placeholder=" "
-                    data-gtm="home-hero-email-field"
                     autocomplete="off"
                     id="direccion"
                     aria-describedby="error-direccion"
                   />
-                  <span class="floating-label">Ingresa tu dirección </span>
+                  <span class="floating-label">Ingresa tu dirección</span>
                 </label>
+
+                <!-- Detalles -->
                 <label for="detalles" class="input-label mt-4">
                   <input
+                    v-model="detalles"
                     class="form-control"
                     aria-required="false"
                     name="detalles"
                     type="text"
                     placeholder=" "
-                    data-gtm="home-hero-email-field"
                     autocomplete="off"
                     id="detalles"
                     aria-describedby="error-detalles"
                   />
-                  <span class="floating-label">Ingresa tu dirección completa</span>
+                  <span class="floating-label"
+                    >Ingresa tu dirección completa</span
+                  >
                 </label>
 
+                <!-- Barrio -->
                 <label for="barrio" class="input-label mt-4">
-                <select v-model="selectedBarrio" class="form-control" id="barrio">
-                  <option disabled value="">Selecciona un barrio</option>
-                  <option v-for="barrio in barrios" :key="barrio.id" :value="barrio.nombre">
-                    {{ barrio.nombre }}
-                  </option>
-                </select>
-                <span class="floating-label">Barrio</span>
-              </label>
+                  <select
+                    v-model="selectedBarrio"
+                    class="form-control"
+                    id="barrio"
+                  >
+                    <option disabled value=""></option>
+                    <option
+                      v-for="barrio in barrios"
+                      :key="barrio.id"
+                      :value="barrio.nombre"
+                    >
+                      {{ barrio.nombre }}
+                    </option>
+                  </select>
+                  <span class="floating-label">Barrio</span>
+                </label>
               </div>
-              <Button @click="handleSubmit"></Button>
+
+              <!-- Botón principal -->
+              <Button type="submit" />
+
+              <!-- Mensaje de error -->
               <p v-if="error" class="text-danger mt-1 flex justify-center">
                 {{ error }}
               </p>
@@ -139,10 +169,12 @@ onMounted(async () => {
           </div>
         </div>
       </div>
+
       <Footer />
     </section>
   </motion.div>
 </template>
+
 
 <style scoped>
 .form-group {
