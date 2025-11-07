@@ -2,7 +2,7 @@
 import { ref, onMounted } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
-import Heading from "../components/UI/Heading.vue";
+import HeadingNoAtras from "../components/UI/HeadingNoAtras.vue";
 import Footer from "../components/UI/Footer.vue";
 import { useFormularioStore } from "../router/store";
 import { fadeInUp } from "../motion/PagesAnimation";
@@ -109,7 +109,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Heading />
+  <HeadingNoAtras />
   <motion.div v-bind="fadeInUp">
     <section class="container registro">
       <div class="row align-items-center banner-registro">
