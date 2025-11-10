@@ -1,6 +1,6 @@
 <script setup>
 import RouterLink from "../components/UI/Routerlink.vue";
-import Heading from "../components/UI/Heading.vue";
+import HeadingNoAtras from "../components/UI/HeadingNoAtras.vue";
 import { FormKit } from "@formkit/vue";
 import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
@@ -30,7 +30,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Heading></Heading>
+  <HeadingNoAtras />
   <motion.div v-bind="fadeInUp">
     <section class="container py-5">
       <div class="row align-items-center">
