@@ -133,7 +133,7 @@ const handleSubmit = (event) => {
 
         </div>
         
-        <p class="mb-4 font-bold">¿¿Cuál es el valor total de tus préstamos y otros compromisos?</p>
+        <p class="mb-4 font-bold">¿Cuál es el valor total de tus préstamos y otros compromisos?</p>
         <div>
             <label for="deudas" class="input-label">
                 <input
