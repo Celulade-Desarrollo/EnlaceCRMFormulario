@@ -1,5 +1,5 @@
  <script setup>
-import Heading from "../components/UI/Heading.vue";
+import HeadingNoAtras from "../components/UI/HeadingNoAtras.vue";
 import Button from "../components/UI/Button.vue";
 import Footer from "../components/UI/Footer.vue";
 import { ref, onMounted } from "vue";
@@ -48,7 +48,7 @@ const enviarPorWhatsApp = () => {
 </script>
 
 <template>
-  <Heading></Heading>
+  <HeadingNoAtras />
   <motion.div v-bind="fadeInUp">
     <section
       class="container registro h-[100vh] flex flex-col justify-between overflow-hidden p-0"
