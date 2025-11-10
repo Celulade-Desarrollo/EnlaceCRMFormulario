@@ -19,11 +19,11 @@ const ingresos = ref("");
 
 // 🧮 Mapa de rangos a valores promedio diarios
 const promedioIngresos = {
-  "Menos de $100.000": 80000,
-  "Entre $100.000 y $200.000": 150000,
+  "Menos de $200.000": 150000,
   "Entre $200.000 y $300.000": 250000,
   "Entre $300.000 y $400.000": 350000,
-  "Más de $400.000": 450000,
+  "Entre $400.000 y $500.000": 450000,
+  "Más de $500.000": 550000,
 };
 
 // 💰 Calcular el ingreso mensual formateado para mostrar
@@ -130,24 +130,12 @@ onMounted(() => {
                   <input
                     type="checkbox"
                     name="ingresos"
-                    value="Menos de $100.000"
+                    value="Menos de $200.000"
                     class="single-checkbox"
-                    :checked="ingresos === 'Menos de $100.000'"
+                    :checked="ingresos === 'Menos de $200.000'"
                   />
                   <span class="checkmark"></span>
-                  Menos de $100.000
-                </label>
-
-                <label class="check-item mb-4">
-                  <input
-                    type="checkbox"
-                    name="ingresos"
-                    value="Entre $100.000 y $200.000"
-                    class="single-checkbox"
-                    :checked="ingresos === 'Entre $100.000 y $200.000'"
-                  />
-                  <span class="checkmark"></span>
-                  Entre $100.000 y $200.000
+                  Menos de $200.000
                 </label>
 
                 <label class="check-item mb-4">
@@ -178,12 +166,24 @@ onMounted(() => {
                   <input
                     type="checkbox"
                     name="ingresos"
-                    value="Más de $400.000"
+                    value="Entre $400.000 y $500.000"
                     class="single-checkbox"
-                    :checked="ingresos === 'Más de $400.000'"
+                    :checked="ingresos === 'Entre $400.000 y $500.000'"
                   />
                   <span class="checkmark"></span>
-                  Más de $400.000
+                  Entre $400.000 y $500.000
+                </label>
+
+                <label class="check-item mb-4">
+                  <input
+                    type="checkbox"
+                    name="ingresos"
+                    value="Más de $500.000"
+                    class="single-checkbox"
+                    :checked="ingresos === 'Más de $500.000'"
+                  />
+                  <span class="checkmark"></span>
+                  Más de $500.000
                 </label>
 
                 <Button @click="handleSubmit" class="mt-5"></Button>

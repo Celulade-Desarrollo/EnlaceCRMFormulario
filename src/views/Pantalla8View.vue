@@ -134,7 +134,7 @@ const ciudad = localStorage.getItem("selectedCity");
                     aria-describedby="error-detalles"
                   />
                   <span class="floating-label"
-                    >Ingresa tu dirección completa</span
+                    >Detalles</span
                   >
                 </label>
 
