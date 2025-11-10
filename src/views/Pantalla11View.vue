@@ -70,12 +70,6 @@ onMounted(async () => {
             </h2>
 
           </div>
-<div class="container">
-  <button disabled style="cursor: default;">
-    Tu solicitud ha sido enviada y será validada.
-  </button>
-</div>
-
 </div>
       </div>
     </section>
