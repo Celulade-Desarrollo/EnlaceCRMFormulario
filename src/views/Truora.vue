@@ -6,8 +6,10 @@ import { ref, onMounted } from "vue";
 import { useFormularioStore } from "../router/store";
 import { useRouter } from "vue-router";
 import { fadeInUp } from "../motion/PagesAnimation";
-import { motion } from "motion-v";
+import { motion, number } from "motion-v";
 import { useFormStore } from '../stores/formStore.js'
+import axios from "axios";
+
 
 const formStore = useFormStore()
 
@@ -21,8 +23,7 @@ const mensajeAlerta = ref("");
 
 const enviarPorWhatsApp = () => {
 
-  const datos = formStore.getFinalData();
-  const numeroSinPrefijo = datos?.Numero_Celular;
+  
 
   if (!numeroSinPrefijo) {
 
@@ -30,10 +31,6 @@ const enviarPorWhatsApp = () => {
 
     return;
   }
-
-  const numeroConCodigo = `57${numeroSinPrefijo}`;
-
-  const enlaceValidacion = "https://identity.truora.com/preview/IPFf58ef097af96942b9769cea7565b4034";
 
   const mensaje = `Hola, por favor valida tu identidad usando este enlace: ${enlaceValidacion}`;
 
@@ -43,8 +40,24 @@ const enviarPorWhatsApp = () => {
 
   window.open(urlWhatsApp, "_blank");
 
+  
+
 };
 
+const datos = formStore.getFinalData();
+const numeroSinPrefijo = datos?.Numero_Celular;
+
+const numeroConCodigo = `57${numeroSinPrefijo}`;
+
+async function handleWhatsappURL() {
+    const enlaceValidacion = "https://identity.truora.com/preview/IPFf58ef097af96942b9769cea7565b4034";
+    const message = `Hola, por favor valida tu identidad usando este enlace: ${enlaceValidacion}`;
+    axios.post("/whatsapp/send-message", {
+      number: parseInt(numeroConCodigo),
+      message: message
+    })
+    router.push("/Terminado");
+  };
 </script>
 
 <template>
@@ -86,7 +99,7 @@ const enviarPorWhatsApp = () => {
             </h3>
           <div class="mt-4 tarjeta">
             <div class="validar-truora flex flex-col items-center">
-              <Button @click=' router.push("/Terminado");' ></Button>
+              <Button @click="handleWhatsappURL" ></Button>
               <!-- Nuevo título encima del botón -->
               <!-- <h3 class="mb-3 font-bold text-center">
                 Te enviaremos un link via whatsapp para validar tu identidad
