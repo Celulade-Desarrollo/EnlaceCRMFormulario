@@ -40,7 +40,6 @@ onMounted(async () => {
   }
 });
 
-// 📤 Manejar envío del formulario
 const handleSubmit = (event) => {
   event.preventDefault();
 
@@ -51,29 +50,25 @@ const handleSubmit = (event) => {
     return;
   }
 
-  // Limpiar errores
   error.value = "";
 
-  // ✅ Guardar en el store global
   formStore.updateField("Direccion", direccion.value);
   formStore.updateField("Detalles", detalles.value);
   formStore.updateField("Barrio", selectedBarrio.value);
 
-  // Debug (verificar que los valores llegan bien)
+
   console.log({
     Direccion: direccion.value,
     Detalles: detalles.value,
     Barrio: selectedBarrio.value,
   });
 
-  // Marca formulario como completado
   store.completarFormulario();
 
-  // Redirige
   router.push("/informacionNegocio");
 };
 
-// Ciudad seleccionada (solo lectura)
+// Ciudad seleccionada
 const ciudad = localStorage.getItem("selectedCity");
 </script>
 
@@ -134,7 +129,7 @@ const ciudad = localStorage.getItem("selectedCity");
                     aria-describedby="error-detalles"
                   />
                   <span class="floating-label"
-                    >Ingresa tu dirección completa</span
+                    >Detalles de tu dirección</span
                   >
                 </label>
 

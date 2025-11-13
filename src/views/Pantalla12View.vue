@@ -116,7 +116,7 @@ onMounted(() => {
           </div>
           <div class="col-lg-6 botones p-5">
             <div>
-              <h2 class="titulo">Cúentanos un poco </h2>
+              <h2 class="titulo">Cuéntanos un poco </h2>
               <p class="mb-4 font-bold">
                 Esta información es totalmente confidencial y esta nos permitirá
                 conocerte mejor
