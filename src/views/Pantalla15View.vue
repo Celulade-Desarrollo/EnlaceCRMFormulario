@@ -22,7 +22,7 @@ const MontoDeudaMensual = ref("");
 const router = useRouter();
 const formStore = useFormStore();
 
-// 👉 Formateo automático mientras el usuario escribe
+// 👉 Formatea números con puntos (miles)
 function formatCurrency(event) {
   const input = event.target;
   let value = input.value.replace(/\D/g, ""); // solo dígitos
@@ -50,10 +50,18 @@ function formatCurrency(event) {
   }
 }
 
+// 👉 Función auxiliar: revisa si el valor es "0" o vacío
+const isZero = (val) => {
+  if (!val) return true;
+  const num = parseInt(val.replace(/\./g, ""), 10);
+  return isNaN(num) || num === 0;
+};
+
+// 👉 Envío del formulario con validaciones
 const handleSubmit = (event) => {
   event.preventDefault();
 
-  // Validaciones básicas
+  // ✅ Validaciones básicas de campos requeridos
   if (
     !bienes.value ||
     !deudas.value ||
@@ -68,7 +76,19 @@ const handleSubmit = (event) => {
     return;
   }
 
-  // 🧠 Guardar en el store (exactamente como debe llegar a la BD)
+  // 🚫 Validar que ciertos montos no sean 0
+  if (
+    isZero(bienes.value) ||
+    isZero(gastos.value) ||
+    (deudaSeleccionada.value === "Si" && isZero(MontoDeudaMensual.value)) ||
+    (ingresosSeleccionado.value === "Si" && isZero(MontoIngresosDiferentes.value))
+  ) {
+    error.value = "Los montos no pueden ser 0. Por favor ingresa valores válidos.";
+    setTimeout(() => (error.value = ""), 3000);
+    return;
+  }
+
+  // 🧠 Guardar en el store (como debe llegar a la BD)
   formStore.updateField("Valor_Bienes", bienes.value);
   formStore.updateField("Valor_Deudas", deudas.value);
   formStore.updateField("Gastos_Mensuales", gastos.value);
@@ -87,6 +107,7 @@ const handleSubmit = (event) => {
     ingresosSeleccionado.value === "Si" ? MontoIngresosDiferentes.value : ""
   );
 
+  // 🪶 Logs para ver en consola
   console.log("💰 Valor_Bienes:", bienes.value);
   console.log("💳 Valor_Deudas:", deudas.value);
   console.log("🏠 Gastos_Mensuales:", gastos.value);
@@ -95,10 +116,12 @@ const handleSubmit = (event) => {
   console.log("❓ Ingresos_Diferentes_Negocio:", ingresosSeleccionado.value);
   console.log("💸 Monto_Ingresos_Diferentes:", MontoIngresosDiferentes.value);
 
+  // 👉 Guardar y pasar a la siguiente pantalla
   store.completarFormulario();
   router.push("/antesDeTerminar");
 };
 </script>
+
 
 
 
@@ -133,7 +156,7 @@ const handleSubmit = (event) => {
 
         </div>
         
-        <p class="mb-4 font-bold">¿¿Cuál es el valor total de tus préstamos y otros compromisos?</p>
+        <p class="mb-4 font-bold">¿Cuál es el valor total de tus préstamos y otros compromisos?</p>
         <div>
             <label for="deudas" class="input-label">
                 <input
