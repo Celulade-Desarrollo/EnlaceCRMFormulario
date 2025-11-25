@@ -21,28 +21,9 @@ const mostrarAlerta = ref(false);
 
 const mensajeAlerta = ref("");
 
-const enviarPorWhatsApp = () => {
+const queryParams = new URLSearchParams(window.location.search);
 
-  
-
-  if (!numeroSinPrefijo) {
-
-    alert("Número de celular no encontrado.");
-
-    return;
-  }
-
-  const mensaje = `Hola, por favor valida tu identidad usando este enlace: ${enlaceValidacion}`;
-
-  const mensajeCodificado = encodeURIComponent(mensaje);
-
-  const urlWhatsApp = `https://wa.me/${numeroConCodigo}?text=${mensajeCodificado}`;
-
-  window.open(urlWhatsApp, "_blank");
-
-  
-
-};
+const token = queryParams.get("token");
 
 const datos = formStore.getFinalData();
 const numeroSinPrefijo = datos?.Numero_Celular;
@@ -53,8 +34,14 @@ async function handleWhatsappURL() {
     const enlaceValidacion = "https://identity.truora.com/preview/IPFf58ef097af96942b9769cea7565b4034";
     const message = `Hola, por favor valida tu identidad usando este enlace: ${enlaceValidacion}`;
     axios.post("/whatsapp/send-message", {
+  
       number: parseInt(numeroConCodigo),
       message: message
+    }, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
     })
     router.push("/Terminado");
   };
