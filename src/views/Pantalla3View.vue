@@ -23,11 +23,11 @@ const apellido = ref("");
 const SegundoApellido = ref("");
 const cedula = ref("");
 
-// 🟢 Datos almacenados en localStorage
+// Datos almacenados en localStorage
 const nbCliente = localStorage.getItem("nbCliente");
 const nbAgenteComercial = localStorage.getItem("nbAgenteComercial");
 
-// 🟢 Errores
+// Errores
 const errorMessage = ref("");
 const nombreError = ref("");
 const apellidoError = ref("");
@@ -118,7 +118,6 @@ const handleSubmit = async (event) => {
   }
 
   try {
-    // 🔹 Llamada API Alpina
     const response = await axios.post("/api/flujoRegistroEnlace/cedula", {
       nbAgenteComercial: nbAgenteComercial,
       nbCliente: nbCliente,
@@ -126,27 +125,25 @@ const handleSubmit = async (event) => {
 
     console.log("Respuesta de la API:", response.data);
 
-    // 🔹 Validación de cédula (exacto al script que funcionaba)
+    // Validación de cédula
     const cedulaApi = String(response.data);
     const cedulaInput = String(cedula.value).trim();
     const cedulaApiValue = String(cedulaApi).trim();
 
-    console.log("➡️ Cédula input:", cedulaInput);
-    console.log("➡️ Cédula API:", cedulaApiValue);
-
     if (cedulaInput !== cedulaApiValue) {
-      cedulaErrorMessage.value = "La cédula ingresada no coincide con la cédula de Alpina.";
+      const ultimos4 = cedulaApiValue.slice(-4);
+      const cedulaPista = cedulaApiValue.slice(0, -4).replace(/./g, "*") + ultimos4;
+      cedulaErrorMessage.value = `Debes ingresar la misma cédula registrada en COMPI terminada en ${cedulaPista}`;
       return;
     }
 
-    // 🔹 Guardar en el store
+    // Guardar en el store
     store.completarFormulario();
     formStore.updateField("Nombres", nombre.value);
     formStore.updateField("Primer_Apellido", apellido.value);
     formStore.updateField("2do_Apellido_opcional", SegundoApellido.value);
     formStore.updateField("Cedula_Cliente", cedula.value.toString());
 
-    // 🔹 Redirigir
     router.push("/datosPersonales");
   } catch (err) {
     console.error("❌ Error validando cédula:", err);
@@ -154,7 +151,6 @@ const handleSubmit = async (event) => {
   }
 };
 
-// ---------------- MOUNT ----------------
 onMounted(() => {
   let miRuta = window.location.pathname;
 
@@ -235,8 +231,6 @@ onMounted(() => {
                 <p v-if="SegundoApellidoError" class="text-danger mt-1">
                   {{ SegundoApellidoError }}
                 </p>
-
-                <!-- 🔹 Campo de cédula -->
                 <label for="cedula" class="input-label mt-4">
                   <input
                     id="cedula"
