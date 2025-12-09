@@ -7,7 +7,6 @@ import { motion } from "motion-v";
 import { onMounted } from 'vue';
 import axios from 'axios';
 
-const whatsappLink = "https://wa.me/573196622476";
 
 </script>
 
@@ -22,7 +21,7 @@ const whatsappLink = "https://wa.me/573196622476";
           <div>
 <h2 class="display-4 titulo text-center">
   No fue posible aprobar <br /> tu solicitud de crédito en este momento. <br />
-  Si tienes dudas, comunícate con el siguiente número.
+  Si tienes dudas, comunícate con el siguiente número <br /> 319-662-24-76.
 </h2>
 
           </div>
@@ -36,19 +35,6 @@ const whatsappLink = "https://wa.me/573196622476";
             />
           </picture>
           <div>
-    <a
-      class="whatsapp-btn"
-      :href="whatsappLink"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <img
-        src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
-        alt="WhatsApp"
-        class="whatsapp-logo"
-      />
-      Comunícate con nosotros
-    </a>
 
           </div>
 </div>
@@ -63,30 +49,6 @@ body {
   background-color: white;
 }
 
-.whatsapp-btn {
-  margin-top: auto;
-  background-color: #DD3590;
-  color: white;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 1rem;
-  padding: 0.75rem 1.5rem;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
-  transition: background-color 0.3s ease;
-}
-
-.whatsapp-btn:hover {
-  background-color: #ff00f2;
-}
-
-.whatsapp-logo {
-  width: 24px;
-  height: 24px;
-  margin-right: 0.75rem;
-}
 
 .form-group input {
   background-color: transparent;
