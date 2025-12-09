@@ -7,25 +7,7 @@ import { motion } from "motion-v";
 import { onMounted } from 'vue';
 import axios from 'axios';
 
-const handleInicio = () => {
-  window.open("/", "_self");
-};
-
-onMounted(async () => {
-  try {
-    // Obtener los parámetros de la URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const processId = urlParams.get('process_id');
-    
-    if (processId) {
-      // Realizar la petición a la API de Truora
-      const response = await axios.get(`/api/truora/${processId}`);
-      console.log('Respuesta de Truora:', response.data);
-    }
-  } catch (error) {
-    console.error('Error al obtener datos de Truora:', error);
-  }
-});
+const whatsappLink = "https://wa.me/573196622476";
 
 </script>
 
@@ -35,29 +17,18 @@ onMounted(async () => {
     <section class="container py-5">
       <div class="row align-items-center">
         <div class="col-lg-6 desktop">
-          <!--
-  <picture>
-    <img
-      src="/public/aprobado.png"
-      alt="Pago"
-      class="img-fluid"
-      loading="lazy"
-      title="Pago"
-    />
-  </picture>
-  -->
         </div>
         <div class="col-lg-6">
           <div>
-            <h2 class="display-4 titulo text-center">
-              ¡Tu solicitud ha finalizado 
- <span>exitosamente!</span><br />
-              Gracias por compartir tu información con nosotros
-            </h2>
+<h2 class="display-4 titulo text-center">
+  No fue posible aprobar <br /> tu solicitud de crédito en este momento. <br />
+  Si tienes dudas, comunícate con el siguiente número.
+</h2>
+
           </div>
           <picture>
             <img
-              src="/public/celebracion.png"
+              src="/public/tendero.png"
               alt="Pago"
               class="img-fluid mt-auto"
               loading="lazy"
@@ -65,9 +36,19 @@ onMounted(async () => {
             />
           </picture>
           <div>
-            <h2 class="display-4 titulo text-center">
-              <span>En el transcurso de dos días hábiles nos comunicaremos contigo para informarte sobre tu solicitud. </span>
-            </h2>
+    <a
+      class="whatsapp-btn"
+      :href="whatsappLink"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <img
+        src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+        alt="WhatsApp"
+        class="whatsapp-logo"
+      />
+      Comunícate con nosotros
+    </a>
 
           </div>
 </div>
@@ -80,6 +61,31 @@ onMounted(async () => {
 body {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   background-color: white;
+}
+
+.whatsapp-btn {
+  margin-top: auto;
+  background-color: #DD3590;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.3s ease;
+}
+
+.whatsapp-btn:hover {
+  background-color: #ff00f2;
+}
+
+.whatsapp-logo {
+  width: 24px;
+  height: 24px;
+  margin-right: 0.75rem;
 }
 
 .form-group input {
