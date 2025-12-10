@@ -27,7 +27,7 @@ const token = queryParams.get("token");
 
 const datos = formStore.getFinalData();
 const numeroSinPrefijo = datos?.Numero_Celular;
-const nombreCompleto = datos?.Nombres + " " + datos?.Apellidos;
+const nombreCompleto = datos?.Nombres;
 async function handleWhatsappURL() {
     axios.post(`/whatsapp/meta/truora-link/${numeroSinPrefijo}/${nombreCompleto}`, {
       headers: {
