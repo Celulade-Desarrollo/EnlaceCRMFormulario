@@ -27,17 +27,9 @@ const token = queryParams.get("token");
 
 const datos = formStore.getFinalData();
 const numeroSinPrefijo = datos?.Numero_Celular;
-
-const numeroConCodigo = `57${numeroSinPrefijo}`;
-
+const nombreCompleto = datos?.Nombres + " " + datos?.Apellidos;
 async function handleWhatsappURL() {
-    const enlaceValidacion = "https://identity.truora.com/preview/IPFf58ef097af96942b9769cea7565b4034";
-    const message = `Hola, por favor valida tu identidad usando este enlace: ${enlaceValidacion}`;
-    axios.post("/whatsapp/send-message", {
-  
-      number: parseInt(numeroConCodigo),
-      message: message
-    }, {
+    axios.post(`/whatsapp/meta/truora-link/${numeroSinPrefijo}/${nombreCompleto}`, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json'
