@@ -28,15 +28,44 @@ const token = queryParams.get("token");
 const datos = formStore.getFinalData();
 const numeroSinPrefijo = datos?.Numero_Celular;
 const nombreCompleto = datos?.Nombres;
+
 async function handleWhatsappURL() {
-    axios.post(`/whatsapp/meta/truora-link/${numeroSinPrefijo}/${nombreCompleto}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      }
-    })
-    router.push("/Terminado");
+  const datosFinales = formStore.getFinalData();
+
+  const convertirAString = (valor) => (!valor ? "0" : String(valor));
+
+  const datosLimpios = {
+    ...datosFinales,
+    Rango_de_Ingresos: convertirAString(datosFinales.Rango_de_Ingresos),
+    Valor_Bienes: convertirAString(datosFinales.Valor_Bienes),
+    Valor_Deudas: convertirAString(datosFinales.Valor_Deudas),
+    Gastos_Mensuales: convertirAString(datosFinales.Gastos_Mensuales),
+    Monto_Mensual_Deuda: convertirAString(datosFinales.Monto_Mensual_Deuda),
+    Monto_ingresos_diferentes_negocio: convertirAString(datosFinales.Monto_ingresos_diferentes_negocio),
+    Declaracion_de_nacionalidad_y_residencia_fiscal_en_Colombia: true,
+    Fecha_Envio_Formulario: new Date()
   };
+
+  try {
+    await axios.post('api/flujoRegistroEnlace', datosLimpios, {
+      headers: { 'Content-Type': 'application/json' }
+    });
+    console.log("✅ Formulario enviado correctamente");
+  } catch (err) {
+    console.error("❌ Error enviando formulario:", err);
+    alert("Error al enviar el formulario. Intenta de nuevo.");
+    return;
+  }
+
+  axios.post(`/whatsapp/meta/truora-link/${numeroSinPrefijo}/${nombreCompleto}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
+  });
+
+  router.push("/Terminado");
+};
 </script>
 
 <template>

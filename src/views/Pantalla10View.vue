@@ -86,18 +86,14 @@ onMounted(() => {
   }
 });
 
-const handleSubmit = async (event) => {
+const handleSubmit = (event) => {
   event.preventDefault();
 
   if (!validateCheckboxes()) {
     error.value = "Por favor, selecciona al menos una opción de los tres grupos.";
-    setTimeout(() => {
-      error.value = "";
-    }, 3000);
+    setTimeout(() => { error.value = ""; }, 3000);
     return;
   }
-
-  error.value = "";
 
   const persona = document.querySelector(".single-checkbox:checked")?.value;
   const familiar = document.querySelector(".single-checkbox-1:checked")?.value;
@@ -110,51 +106,7 @@ const handleSubmit = async (event) => {
   formStore.updateField('nbAgenteComercial', nbAgenteComercial);
   formStore.updateField('Declaracion_de_nacionalidad_y_residencia_fiscal_en_Colombia', true);
 
-  datosFinales.value = formStore.getFinalData();
-
-  // Convertir a string manteniendo el formato con puntos
-// ✅ SIMPLIFICAR: Ya no necesitamos formatear con puntos
-const convertirAString = (valor) => {
-  // Si es null, undefined o vacío, enviar "0"
-  if (!valor || valor === null || valor === undefined) return "0";
-  
-  // Convertir a string tal cual (ya vienen sin formato de puntos)
-  return String(valor);
-};
-
-const datosLimpios = {
-  ...datosFinales.value,
-  Rango_de_Ingresos: convertirAString(datosFinales.value.Rango_de_Ingresos),
-  Valor_Bienes: convertirAString(datosFinales.value.Valor_Bienes),
-  Valor_Deudas: convertirAString(datosFinales.value.Valor_Deudas),
-  Gastos_Mensuales: convertirAString(datosFinales.value.Gastos_Mensuales),
-  Monto_Mensual_Deuda: convertirAString(datosFinales.value.Monto_Mensual_Deuda),
-  Monto_ingresos_diferentes_negocio: convertirAString(datosFinales.value.Monto_ingresos_diferentes_negocio),
-  Declaracion_de_nacionalidad_y_residencia_fiscal_en_Colombia: true
-};
-
-  console.log('📦 Datos que se enviarán al backend:', JSON.stringify(datosLimpios, null, 2));
-
-  try {
-    const response = await axios.post('api/flujoRegistroEnlace', datosLimpios, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-    
-    console.log('✅ Respuesta del backend:', response.data);
-    
-    store.completarFormulario();
-    router.push("/truora");
-    
-  } catch (err) {
-    console.error('❌ Error al enviar los datos:', err);
-    error.value = err.response?.data?.error || "Error al enviar los datos. Intenta de nuevo.";
-    
-    setTimeout(() => {
-      error.value = "";
-    }, 5000);
-  }
+  router.push("/truora");
 };
 </script>
 
