@@ -64,6 +64,12 @@ const router = createRouter({
       component: () => import("../views/Pantalla10View.vue"),
     },
     {
+      path: "/Pantalla17View",
+      name: "cliente",
+      component: () => import("../views/Pantalla17View.vue"),
+    },
+
+    {
       path: "/Terminado",
       name: "Terminado",
       component: () => import("../views/Pantalla11View.vue"),
