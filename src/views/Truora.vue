@@ -64,7 +64,7 @@ async function handleWhatsappURL() {
     }
   });
 
-  router.push("/Terminado");
+  router.push("/Pantalla17View");
 };
 </script>
 
