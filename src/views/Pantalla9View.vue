@@ -13,6 +13,8 @@ const store = useFormularioStore();
 const router = useRouter();
 const error = ref("");
 const formStore = useFormStore()
+const nombreTienda = ref("");
+
 
 const handleSubmit = (event) => {
   event.preventDefault(); // Evita el envío del formulario por defecto
@@ -26,16 +28,23 @@ const handleSubmit = (event) => {
     'input[name="registro"]:checked'
   );
 
-  if (!neveraSeleccionada || !registroSeleccionado) {
-    error.value = "Por favor responde todas las preguntas antes de continuar.";
-    return; // Detener si falta una respuesta
-  }
+if (!nombreTienda.value.trim()) {
+  error.value = "Por favor ingresa el nombre de tu tienda.";
+  return;
+}
+
+if (!neveraSeleccionada || !registroSeleccionado) {
+  error.value = "Por favor responde todas las preguntas antes de continuar.";
+  return;
+}
+
   // Limpiar error si no lo hay
   error.value = "";
   event.preventDefault(); // Evita el envío del formulario por defecto
   store.completarFormulario(); // Marca el formulario como completado
   router.push("/ventas"); // Redirige a la siguiente pantalla
   formStore.updateField('Numero_de_neveras', numeroneveras.value)
+  formStore.updateField('Nombre_Tienda', nombreTienda.value);
   formStore.updateField('Registrado_Camara_Comercio', registro.value)
 };
 onMounted(() => {
@@ -78,6 +87,22 @@ onMounted(() => {
               conocerte mejor
             </p>
           </div>
+<div class="mb-4">
+  <p class="font">¿Cuál es el nombre de tu tienda? </p>
+  <label for="nombreTienda" class="input-label">
+    <input
+      id="nombreTienda"
+      v-model="nombreTienda"
+      class="form-control"
+      aria-required="true"
+      name="nombreTienda"
+      type="text"
+      placeholder=" "
+      autocomplete="off"
+    />
+    <span class="floating-label">Ingresa el nombre</span>
+  </label>
+</div>
           <div class="button-container">
             <p class="font-bold">¿Tu tienda tiene neveras?</p>
 
@@ -158,6 +183,59 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.input-label {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin-top: 24px;
+}
+
+.font {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px 0;
+  font-size: 16px;
+  border: none;
+  border-bottom: 2px solid #09008be1;
+  background: transparent;
+  font-family: sans-serif;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.floating-label {
+  position: absolute;
+  left: 0;
+  top: 0px;
+  color: black;
+  font-size: 16px;
+  pointer-events: none;
+  transition: 0.3s ease all;
+  font-family: sans-serif;
+}
+
+/* Animación al enfocar o escribir */
+.form-control:focus + .floating-label,
+.form-control:not(:placeholder-shown) + .floating-label {
+  top: -15px;
+  font-size: 12px;
+  color: black;
+}
+
+.input-label:hover .form-control {
+  border-bottom-color: #ff00f2;
+}
+
+.form-control:focus {
+  border-bottom-color: #ff00f2;
+  outline: none;
+  box-shadow: none;
+}
+
 .button-container {
   display: flex;
   align-items: center;
@@ -203,6 +281,7 @@ body {
 .formkit-input {
   text-align: center;
 }
+
 .formkit-help {
   margin-left: 50px;
 }
@@ -260,6 +339,7 @@ body {
 .titulo {
   font-size: 2rem;
 }
+
 .container button,
 .tarjeta button {
   padding-left: 1.25rem;
