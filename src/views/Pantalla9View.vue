@@ -51,15 +51,12 @@ onMounted(() => {
   let miRuta = window.location.pathname;
 
   // Validar si ya existe "ruta"
-  if (localStorage.getItem.length > 0) {
+  if (localStorage.getItem("ruta")) {
     localStorage.removeItem("ruta");
-
-    // Setear la ruta por defecto
-    localStorage.setItem("ruta", miRuta);
-  } else {
-    // Setear la ruta por defecto
-    localStorage.setItem("ruta", miRuta);
   }
+  
+  // Setear la ruta
+  localStorage.setItem("ruta", miRuta);
 });
 </script>
 
