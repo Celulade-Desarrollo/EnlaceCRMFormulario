@@ -1,8 +1,8 @@
-name: Deploy EnlaceCRM formulario en servidor windows automatico
+name: Deploy EnlaceCRM Desarrollo formulario en servidor windows automatico
 
 on:
   push:
-    branches: [main]
+    branches: [develop]
 
 jobs:
   deploy:
@@ -12,23 +12,23 @@ jobs:
       - name: Clonar repositorio en la ruta destino
         shell: powershell
         run: |
-          $destino = "C:\EnlaceCRM\EnlaceCRMFormulario"
+          $destino = "C:\EnlaceCRM\EnlaceCRM_desarrollo\EnlaceCRMFormulario"
           if (Test-Path $destino) {
             Set-Location $destino
             git fetch --all
-            git reset --hard origin/main
+            git reset --hard origin/develop
           }
 
       - name: Instalar dependencias
         shell: powershell
         run: |
-          Set-Location "C:\EnlaceCRM\EnlaceCRMFormulario"
+          Set-Location "C:\EnlaceCRM\EnlaceCRM_desarrollo\EnlaceCRMFormulario"
           npm install
 
       - name: Compilar Vue app
         shell: powershell
         run: |
-          Set-Location "C:\EnlaceCRM\EnlaceCRMFormulario"
+          Set-Location "C:\EnlaceCRM\EnlaceCRM_desarrollo\EnlaceCRMFormulario"
           npm run build
 
       - name: Reiniciar Nginx
