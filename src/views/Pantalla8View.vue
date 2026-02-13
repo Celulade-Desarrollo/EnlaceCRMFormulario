@@ -10,19 +10,19 @@ import { motion } from "motion-v";
 import { useFormStore } from "../stores/formStore.js";
 import axios from "axios";
 
-// 🧠 Stores globales
 const formStore = useFormStore();
 const store = useFormularioStore();
 const router = useRouter();
 
-// 🧩 Variables reactivas
 const direccion = ref("");
 const detalles = ref("");
 const selectedBarrio = ref("");
 const barrios = ref([]);
 const error = ref("");
+const buscarBarrio = ref("");
+const barriosFiltrados = ref([]);
+const mostrarBarrios = ref(false);
 
-// 🧭 Cargar barrios al montar
 onMounted(async () => {
   const miRuta = window.location.pathname;
   localStorage.setItem("ruta", miRuta);
@@ -32,7 +32,12 @@ onMounted(async () => {
   if (cityId) {
     try {
       const response = await axios.get(`/api/ubicacion/barrios/${cityId}`);
-      barrios.value = response.data;
+      const sorted = response.data.sort((a, b) => 
+      a.nombre.localeCompare(b.nombre, "es", { sensitivity: "base" })
+    );
+      barrios.value = sorted;
+      barriosFiltrados.value = sorted.map(b => b.nombre);
+
     } catch (err) {
       console.error("Error al cargar los barrios:", err);
       error.value = "Error al cargar los barrios.";
@@ -40,6 +45,19 @@ onMounted(async () => {
   }
 });
 
+  const filtrarBarrios = (input) => {
+    barriosFiltrados.value = barrios.value
+      .map(barrio => barrio.nombre)
+      .filter(nombre =>
+        nombre.toLowerCase().includes(input.toLowerCase())
+      );
+  };
+
+  const selectBarrio = (nombre) => {
+    selectedBarrio.value = nombre;
+    buscarBarrio.value = nombre;
+    mostrarBarrios.value = false;
+  }
 const handleSubmit = (event) => {
   event.preventDefault();
 
@@ -134,23 +152,32 @@ const ciudad = localStorage.getItem("selectedCity");
                 </label>
 
                 <!-- Barrio -->
-                <label for="barrio" class="input-label mt-4">
-                  <select
-                    v-model="selectedBarrio"
-                    class="form-control"
-                    id="barrio"
-                  >
-                    <option disabled value=""></option>
-                    <option
-                      v-for="barrio in barrios"
-                      :key="barrio.id"
-                      :value="barrio.nombre"
-                    >
-                      {{ barrio.nombre }}
-                    </option>
-                  </select>
-                  <span class="floating-label">Barrio</span>
-                </label>
+                <p class="font-bold mt-4">Elige un Barrio</p>
+
+<div class="custom-select-wrapper relative">
+  <input
+    type="text"
+    v-model="buscarBarrio"
+    @input="filtrarBarrios(buscarBarrio)"
+    @focus="mostrarBarrios = true"
+    placeholder="Elige un Barrio"
+    class="custom-select w-full"
+  />
+
+  <ul
+    v-show="mostrarBarrios"
+    class="absolute z-50 w-full max-h-48 overflow-auto border bg-white"
+  >
+    <li
+      v-for="b in barriosFiltrados"
+      :key="b"
+      @click="seleccionarBarrio(b)"
+      class="p-2 hover:bg-gray-200 cursor-pointer"
+    >
+      {{ b }}
+    </li>
+  </ul>
+</div>
               </div>
 
               <!-- Botón principal -->

@@ -40,7 +40,9 @@ const loadDepartments = async () => {
     const response = await axios.get("/api/ubicacion/departamentos");
     departmentsRaw.value = response.data;
 
-    let sorted = response.data.sort((a, b) => a.nombre.localeCompare(b.nombre, "es", { sensitivity: "base"}));
+    let sorted = response.data.sort((a, b) => 
+      a.nombre.localeCompare(b.nombre, "es", { sensitivity: "base"})
+    );
     const antioquiaIndex = sorted.findIndex(d => d.nombre === "ANTIOQUIA");
     if (antioquiaIndex !== -1){
       const [antioquia] = sorted.splice(antioquiaIndex, 1);
@@ -61,7 +63,9 @@ const loadCities = async (departmentId) => {
     const response = await axios.get(`/api/ubicacion/ciudades/${departmentId}`);
     citiesRaw.value = response.data;
 
-    let sorted = response.data.sort((a, b) => a.nombre.localeCompare(b.nombre, "es", { sensitivity: "base"}));
+    let sorted = response.data.sort((a, b) => 
+      a.nombre.localeCompare(b.nombre, "es", { sensitivity: "base"})
+    );
 
     const medellinIndex = sorted.findIndex(c => c.nombre === "MEDELLIN");
     if (medellinIndex !== -1){
@@ -178,7 +182,9 @@ onMounted(() => {
               :key="d"
               @click="selectDepartment(d)"
               class="p-2 hover:bg-gray-200 cursor-pointer"
-            >{{ d }}</li>
+            >
+              {{ d }}
+            </li>
           </ul>
         </div>
 
