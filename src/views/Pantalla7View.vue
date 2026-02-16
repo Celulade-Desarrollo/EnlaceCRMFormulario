@@ -12,116 +12,140 @@ import { useFormStore } from '../stores/formStore.js';
 
 const store = useFormularioStore();
 const router = useRouter();
+const formStore = useFormStore();
 
 const departments = ref([]);
 const cities = ref([]);
-const selectedDepartment = ref(""); // Será el ID del departamento
-const selectedCity = ref("");
-const selectedDepartmentName = ref(""); // Nombre del departamento
-const error = ref("");
-const formStore = useFormStore();
 const departmentsRaw = ref([]);
-const selectedDepartmentId = ref(null);// solo los nombres
-const citiesRaw = ref([]); 
+const citiesRaw = ref([]);
+
+const selectedDepartment = ref("");
+const selectedDepartmentId = ref(null);
+const selectedCity = ref("");
 const selectedCityId = ref(null);
 
-// Cargar departamentos desde API Colombia
+const departmentSearch = ref("");
+const citySearch = ref("");
+
+const filteredDepartments = ref([]);
+const filteredCities = ref([]);
+
+const showDepartments = ref(false);
+const showCities = ref(false);
+
+const error = ref("");
+
 const loadDepartments = async () => {
   try {
-    const response = await axios.get(
-      "/api/ubicacion/departamentos"
+    const response = await axios.get("/api/ubicacion/departamentos");
+    departmentsRaw.value = response.data;
+
+    let sorted = response.data.sort((a, b) => 
+      a.nombre.localeCompare(b.nombre, "es", { sensitivity: "base"})
     );
-        departmentsRaw.value = response.data;
-    departments.value = response.data.map((item) => item.nombre);
+    const antioquiaIndex = sorted.findIndex(d => d.nombre === "ANTIOQUIA");
+    if (antioquiaIndex !== -1){
+      const [antioquia] = sorted.splice(antioquiaIndex, 1);
+      sorted.unshift(antioquia);
+    }
+
+    departments.value = sorted.map(item => item.nombre);
+    filteredDepartments.value = departments.value;
   } catch (err) {
     error.value = "Error al cargar los departamentos.";
-    console.error("Error al cargar los departamentos:", err);
+    console.error(err);
   }
 };
 
-const handleDepartmentChange = () => {
-  const dept = departmentsRaw.value.find(
-    (d) => d.nombre === selectedDepartment.value
-  );
-  selectedDepartmentId.value = dept?.id || null;
-
-  loadCities();
-};
-
-const handleCityChange = () => {
-  const city = citiesRaw.value.find(
-    (c) => c.nombre.trim().toLowerCase() === selectedCity.value.trim().toLowerCase()
-  );
-  selectedCityId.value = city?.id || null;
-
-  console.log("Ciudad seleccionada:", selectedCity.value);
-  console.log("ID de ciudad:", selectedCityId.value);
-};
-
-const loadCities = async () => {
-  if (!selectedDepartmentId.value) return;
+const loadCities = async (departmentId) => {
+  if (!departmentId) return;
   try {
-    const response = await axios.get(
-      `/api/ubicacion/ciudades/${selectedDepartmentId.value}`
-    );
+    const response = await axios.get(`/api/ubicacion/ciudades/${departmentId}`);
     citiesRaw.value = response.data;
-    cities.value = response.data.map((item) => item.nombre);
+
+    let sorted = response.data.sort((a, b) => 
+      a.nombre.localeCompare(b.nombre, "es", { sensitivity: "base"})
+    );
+
+    const medellinIndex = sorted.findIndex(c => c.nombre === "MEDELLIN");
+    if (medellinIndex !== -1){
+      const [medellin] = sorted.splice(medellinIndex, 1);
+      sorted.unshift(medellin);
+    }
+
+    cities.value = sorted.map(c => c.nombre);
+    filteredCities.value = cities.value;
   } catch (err) {
     error.value = "Error al cargar las ciudades.";
-    console.error("Error al cargar las ciudades:", err);
+    console.error(err);
   }
 };
 
-// Cargar ciudades cada vez que se seleccione un nuevo departamento
-watch(selectedDepartment, (newVal) => {
-  const dept = departments.value.find((d) => d.id === newVal);
-  selectedDepartmentName.value = dept ? dept.name : "";
-  loadCities();
-});
+const filterDepartments = (input) => {
+  filteredDepartments.value = departments.value.filter(d =>
+    d.toLowerCase().includes(input.toLowerCase())
+  );
+};
 
-// Manejar el envío del formulario
+const selectDepartment = (dept) => {
+  selectedDepartment.value = dept;
+  departmentSearch.value = dept;
+  showDepartments.value = false;
+
+  const deptObj = departmentsRaw.value.find(d => d.nombre === dept);
+  selectedDepartmentId.value = deptObj?.id || null;
+
+  selectedCity.value = "";
+  citySearch.value = "";
+  selectedCityId.value = null;
+  filteredCities.value = [];
+  loadCities(selectedDepartmentId.value);
+};
+
+const filterCities = (input) => {
+  filteredCities.value = cities.value.filter(c =>
+    c.toLowerCase().includes(input.toLowerCase())
+  );
+};
+
+const selectCity = (city) => {
+  selectedCity.value = city;
+  citySearch.value = city;
+  showCities.value = false;
+
+  const cityObj = citiesRaw.value.find(c => c.nombre.trim().toLowerCase() === city.trim().toLowerCase());
+  selectedCityId.value = cityObj?.id || null;
+};
+
+// Manejar envío del formulario
 const handleSubmit = (event) => {
   if (!selectedDepartment.value || !selectedCity.value) {
     error.value = "Por favor, selecciona tu departamento y ciudad.";
-    event.preventDefault(); // Evita el envío del formulario por defecto
-    const selectedDepartment = document.querySelector('input[name="nevera"]:checked');
-    const selectedCity = document.querySelector('input[name="nevera"]:checked');
-
-    setTimeout(() => {
-      error.value = "";
-    }, 3000);
+    event.preventDefault();
+    setTimeout(() => error.value = "", 3000);
     return false;
   }
 
-  // Guardar ciudad seleccionada en localStorage
   localStorage.setItem("selectedDepartment", selectedDepartment.value);
   localStorage.setItem("selectedCity", selectedCity.value);
   localStorage.setItem("selectedCityId", selectedCityId.value);
 
-
   error.value = "";
-
-  // Redirigir a la nueva página
-  event.preventDefault(); // Evitar el envío del formulario si no es válido
-  store.completarFormulario(); // Marca el formulario como completado
-  router.push("/ubicacion"); // Redirige a la siguiente pantalla
+  event.preventDefault();
+  store.completarFormulario();
+  router.push("/ubicacion");
   formStore.updateField('Ubicacion_del_Negocio_Departamento', selectedDepartment.value);
   formStore.updateField('Ubicacion_del_Negocio_Ciudad', selectedCity.value);
-  
 };
 
 // Inicialización
 onMounted(() => {
   loadDepartments();
-
   const miRuta = window.location.pathname;
-  if (localStorage.getItem("ruta")) {
-    localStorage.removeItem("ruta");
-  }
   localStorage.setItem("ruta", miRuta);
 });
-</script>
 
+</script>
 
 <template>
   <Heading />
@@ -130,61 +154,89 @@ onMounted(() => {
       <div class="row align-items-center">
         <div class="col-lg-6 desktop">
           <picture>
-            <img
-              src="/public/pago.png"
-              alt="Pago"
-              class="img-fluid"
-              loading="lazy"
-              title="Pago"
-            />
+            <img src="/public/pago.png" alt="Pago" class="img-fluid" loading="lazy" title="Pago" />
           </picture>
         </div>
       </div>
 
       <div class="select-option mt-5 p-5">
         <h3 class="mb-4 titulo-7">¿Cuéntanos dónde está tu negocio?</h3>
+
+        <!-- DEPARTAMENTO -->
         <p class="font-bold">Elige un Departamento</p>
-        <div class="custom-select-wrapper">
-          <select
-            v-model="selectedDepartment"
-            @change="handleDepartmentChange"
-            class="custom-select"
+        <div class="custom-select-wrapper relative">
+          <input
+            type="text"
+            v-model="departmentSearch"
+            @input="filterDepartments(departmentSearch)"
+            @focus="showDepartments = true"
+            placeholder="Elige un Departamento"
+            class="custom-select w-full"
+          />
+          <ul
+            v-show="showDepartments"
+            class="absolute z-50 w-full max-h-48 overflow-auto border bg-white"
           >
-            <option disabled value="">Elige un Departamento</option>
-            <option
-              v-for="nombre in departments"
-              :key="nombre"
-              :value="nombre"
+            <li
+              v-for="d in filteredDepartments"
+              :key="d"
+              @click="selectDepartment(d)"
+              class="p-2 hover:bg-gray-200 cursor-pointer"
             >
-              {{ nombre }}
-            </option>
-          </select>
+              {{ d }}
+            </li>
+          </ul>
         </div>
 
-        <p class="font-bold">Elige una Ciudad</p>
-        <div class="custom-select-wrapper">
-          <select v-model="selectedCity"  @change="handleCityChange" class="custom-select">
-            <option disabled selected>Elige una Ciudad</option>
-            <option v-for="city in cities" :key="city" :value="city">
-              {{ city }}
-            </option>
-          </select>
+        <!-- CIUDAD -->
+        <p class="font-bold mt-4">Elige una Ciudad</p>
+        <div class="custom-select-wrapper relative">
+          <input
+            type="text"
+            v-model="citySearch"
+            @input="filterCities(citySearch)"
+            @focus="showCities = true"
+            placeholder="Elige una Ciudad"
+            class="custom-select w-full"
+            :disabled="!selectedDepartmentId"
+          />
+          <ul
+            v-show="showCities"
+            class="absolute z-50 w-full max-h-48 overflow-auto border bg-white"
+          >
+            <li
+              v-for="c in filteredCities"
+              :key="c"
+              @click="selectCity(c)"
+              class="p-2 hover:bg-gray-200 cursor-pointer"
+            >{{ c }}</li>
+          </ul>
         </div>
+
       </div>
 
       <div class="p-5">
         <Button class="mt-5" @click="handleSubmit"></Button>
       </div>
 
-      <p v-if="error" class="text-danger mt-1 flex justify-center">
-        {{ error }}
-      </p>
+      <p v-if="error" class="text-danger mt-1 flex justify-center">{{ error }}</p>
       <Footer />
     </section>
   </motion.div>
 </template>
 
+
+
 <style scoped>
+.custom-select-wrapper {
+  position: relative;
+}
+
+.combo-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
 .custom-select-wrapper {
   position: relative;
   margin-bottom: 24px;
