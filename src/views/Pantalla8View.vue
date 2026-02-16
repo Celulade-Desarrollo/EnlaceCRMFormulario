@@ -16,11 +16,16 @@ const router = useRouter();
 
 const direccion = ref("");
 const detalles = ref("");
-const selectedBarrio = ref("");
-const barrios = ref([]);
 const error = ref("");
-const buscarBarrio = ref("");
+
+const barriosRaw = ref([]);
+const barrios = ref([]);
 const barriosFiltrados = ref([]);
+
+const selectedBarrio = ref("");
+const selectedBarrioId = ref(null);
+
+const buscarBarrio = ref("");
 const mostrarBarrios = ref(false);
 
 onMounted(async () => {
@@ -29,35 +34,52 @@ onMounted(async () => {
 
   const cityId = localStorage.getItem("selectedCityId");
 
-  if (cityId) {
-    try {
-      const response = await axios.get(`/api/ubicacion/barrios/${cityId}`);
-      const sorted = response.data.sort((a, b) => 
+  if (!cityId) return;
+
+  try {
+    const response = await axios.get(`/api/ubicacion/barrios/${cityId}`);
+
+    barriosRaw.value = response.data;
+
+    let sorted = response.data.sort((a, b) =>
       a.nombre.localeCompare(b.nombre, "es", { sensitivity: "base" })
     );
-      barrios.value = sorted;
-      barriosFiltrados.value = sorted.map(b => b.nombre);
 
-    } catch (err) {
-      console.error("Error al cargar los barrios:", err);
-      error.value = "Error al cargar los barrios.";
-    }
+    barrios.value = sorted.map(b => b.nombre);
+    barriosFiltrados.value = barrios.value;
+
+  } catch (err) {
+    console.error("Error al cargar los barrios:", err);
+    error.value = "Error al cargar los barrios.";
   }
 });
 
-  const filtrarBarrios = (input) => {
-    barriosFiltrados.value = barrios.value
-      .map(barrio => barrio.nombre)
-      .filter(nombre =>
-        nombre.toLowerCase().includes(input.toLowerCase())
-      );
-  };
+const filtrarBarrios = (input) => {
+  const texto = input.trim().toLowerCase();
 
-  const selectBarrio = (nombre) => {
-    selectedBarrio.value = nombre;
-    buscarBarrio.value = nombre;
-    mostrarBarrios.value = false;
+  if (!texto) {
+    barriosFiltrados.value = barrios.value;
+  } else {
+    barriosFiltrados.value = barrios.value.filter(b =>
+      b.toLowerCase().includes(texto)
+    );
   }
+
+  mostrarBarrios.value = true;
+};
+
+const selectBarrio = (nombre) => {
+  selectedBarrio.value = nombre;
+  buscarBarrio.value = nombre;
+  mostrarBarrios.value = false;
+
+  const barrioObj = barriosRaw.value.find(
+    b => b.nombre.trim().toLowerCase() === nombre.trim().toLowerCase()
+  );
+
+  selectedBarrioId.value = barrioObj?.id || null;
+};
+
 const handleSubmit = (event) => {
   event.preventDefault();
 
@@ -154,30 +176,32 @@ const ciudad = localStorage.getItem("selectedCity");
                 <!-- Barrio -->
                 <p class="font-bold mt-4">Elige un Barrio</p>
 
-<div class="custom-select-wrapper relative">
-  <input
-    type="text"
-    v-model="buscarBarrio"
-    @input="filtrarBarrios(buscarBarrio)"
-    @focus="mostrarBarrios = true"
-    placeholder="Elige un Barrio"
-    class="custom-select w-full"
-  />
+                <div class="custom-select-wrapper relative">
+                  <input
+                    type="text"
+                  v-model="buscarBarrio"
+                  @input="filtrarBarrios(buscarBarrio)"
+                  @focus="mostrarBarrios = true"
+                  @blur="setTimeout(() => mostrarBarrios = false, 200)"
+                  placeholder="Elige un Barrio"
+                  class="custom-select w-full"
+                  />
 
-  <ul
-    v-show="mostrarBarrios"
-    class="absolute z-50 w-full max-h-48 overflow-auto border bg-white"
-  >
-    <li
-      v-for="b in barriosFiltrados"
-      :key="b"
-      @click="seleccionarBarrio(b)"
-      class="p-2 hover:bg-gray-200 cursor-pointer"
-    >
-      {{ b }}
-    </li>
-  </ul>
-</div>
+                  <ul
+                    v-show="mostrarBarrios"
+                    class="absolute z-50 w-full max-h-48 overflow-auto border bg-white"
+                  >
+                    <li
+                      v-for="b in barriosFiltrados"
+                      :key="b"
+                      @click="selectBarrio(b)"
+                      class="p-2 hover:bg-gray-200 cursor-pointer"
+                    >
+                      {{ b }}
+                    </li>
+                  </ul>
+
+                </div>
               </div>
 
               <!-- Botón principal -->
@@ -199,13 +223,42 @@ const ciudad = localStorage.getItem("selectedCity");
 
 
 <style scoped>
+
+.custom-select-wrapper {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.custom-select {
+  appearance: none;
+  border: none;
+  border-bottom: 2px solid #09008be1;
+  background-color: transparent;
+  font-size: 16px;
+  padding: 8px 30px 8px 0;
+  background-image: url('data:image/svg+xml;charset=utf8,%3Csvg fill="%23495057" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/%3E%3C/svg%3E');
+  background-position: right 12px center;
+  background-size: 16px 12px;
+  width: 100%;
+  outline: none;
+  box-shadow: none;
+  color: #333;
+}
+
+.custom-select:focus {
+  border-bottom: 2px solid #ff00f2;
+  outline: none;
+  box-shadow: none;
+}
+
 .form-group {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
   flex-direction: column;
   padding: 10px;
   gap: 10px;
+  
 }
 
 .input-label {
