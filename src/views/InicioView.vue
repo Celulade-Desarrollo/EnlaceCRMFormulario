@@ -171,7 +171,7 @@ onMounted(() => {
     <span class="checkmark"></span>
     <p>
       He leído y autorizo el tratamiento de mis datos personales por
-      <a class="link-contacto" href="#">Enlace S.A.S y Banco W</a>
+      <a class="link-contacto" href="https://enlace-crm.com/tratamientoDatosPersonales">Enlace S.A.S y Banco W</a>
     </p>
   </label>
 
