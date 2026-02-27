@@ -29,7 +29,7 @@ import { motion } from "motion-v";
 
       <p>
         <strong>1.1 App Enlace Fiado:</strong> aplicación móvil desarrollada y operada por
-        G3 NET S.A.S., a través de la cual el Tendero accede, utiliza y gestiona el crédito,
+        myAllSupport SAS, a través de la cual el Tendero accede, utiliza y gestiona el crédito,
         realiza compras con el monto disponible y consulta la información relacionada con
         el Crédito. Constituye el canal exclusivo para la originación del crédito.
       </p>
@@ -47,7 +47,7 @@ import { motion } from "motion-v";
       </p>
 
       <p>
-        <strong>1.4 Enlace:</strong> es G3 NET S.A.S. proveedor tecnológico encargado de la
+        <strong>1.4 Enlace:</strong> es myAllSupport SAS proveedor tecnológico encargado de la
         App Enlace Fiado, operación de la plataforma, validación de identidad mediante
         proveedores externos, scoring alternativo y comunicación de cupos al Banco.
       </p>
@@ -263,7 +263,7 @@ import { motion } from "motion-v";
       <h3>11. Tratamiento de datos</h3>
 
       <p>
-        El Banco y G3 NET S.A.S. utilizarán los datos personales del Tendero para los fines relacionados con el otorgamiento del Crédito a través de la App Enlace Fiado, conforme a las Políticas de Tratamiento de Datos de cada uno, disponibles en la página web <a href="www.bancow.com.co">www.bancow.com.co</a> y <a href="www.enlace-crm.com">www.enlace-crm.com</a>. 
+        El Banco y myAllSupport SAS utilizarán los datos personales del Tendero para los fines relacionados con el otorgamiento del Crédito a través de la App Enlace Fiado, conforme a las Políticas de Tratamiento de Datos de cada uno, disponibles en la página web <a href="www.bancow.com.co">www.bancow.com.co</a> y <a href="www.enlace-crm.com">www.enlace-crm.com</a>. 
       </p>
 
       <h3>12. Modificaciones contractuales</h3>
