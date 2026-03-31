@@ -171,7 +171,7 @@ onMounted(() => {
     <span class="checkmark"></span>
     <p>
       He leído y autorizo el tratamiento de mis datos personales por
-      <a class="link-contacto" href="#">Enlace S.A.S y Banco W</a>
+      <a class="link-contacto" href="https://enlace-crm.com/tratamientoDatosPersonales">Enlace S.A.S y Banco W</a>
     </p>
   </label>
 
@@ -348,10 +348,13 @@ body {
 }
 
 .checkbox-custom + .checkmark {
-  width: 50px;
-  height: 20px;
-  border-radius: 40px;
+  width: 60px;
+  height: 23px;
+  border-radius: 50%;
   background-color: #c9c7c7;
+  display: inline-block;
+  transition: 0.3s;
+  cursor: pointer;
 }
 
 .checkbox-custom:checked + .checkmark {
