@@ -66,6 +66,20 @@ async function handleWhatsappURL() {
 
   router.push("/Pantalla17View");
 };
+
+function probarAbrirNavegador() {
+  const truoraUrl = "https://identity.truora.com/preview/IPFf58ef097af96942b9769cea7565b4034";
+  const isAndroid = /android/i.test(navigator.userAgent);
+
+  if (isAndroid) {
+    window.location.href = `intent://${truoraUrl.replace(/^https?:\/\//, '')}#Intent;scheme=https;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;end`;
+  } else {
+    const ventana = window.open(truoraUrl, '_blank');
+    if (!ventana || ventana.closed || typeof ventana.closed === 'undefined') {
+      window.location.href = truoraUrl;
+    }
+  }
+}
 </script>
 
 <template>
@@ -119,7 +133,14 @@ async function handleWhatsappURL() {
                 Iniciar validación
               </a> -->
             </div>
+            
           </div>
+          <button
+              @click="probarAbrirNavegador"
+              style="width:1px; height:5px; background: #ccc; border:none; border-radius:4px; cursor:pointer; font-size:8px;"
+              title="test"
+            >
+            </button>
         </div>
       </div>
       <Footer></Footer>
