@@ -57,41 +57,17 @@ async function handleWhatsappURL() {
     return;
   }
 
-  axios.post(`/whatsapp/meta/truora-link/${numeroSinPrefijo}/${nombreCompleto}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    }
-  });
+  const truoraUrl = "https://identity.truora.com/preview/IPFf58ef097af96942b9769cea7565b4034";
+  
+  const ventana = window.open(truoraUrl, '_blank');
+  
+  if (!ventana || ventana.closed || typeof ventana.closed === 'undefined') {
+    window.location.href = truoraUrl;
+  }
 
   router.push("/Pantalla17View");
 };
 
-function probarAbrirNavegador() {
-  const truoraUrl = "https://identity.truora.com/preview/IPFf58ef097af96942b9769cea7565b4034";
-
-  // Intento 1: window.open simple
-  const ventana = window.open(truoraUrl, '_blank');
-  
-  if (!ventana || ventana.closed || typeof ventana.closed === 'undefined') {
-    // Intento 2: location.href directo
-    window.location.href = truoraUrl;
-  }
-}
-
-// function probarAbrirNavegador() {
-//   const truoraUrl = "https://identity.truora.com/preview/IPFf58ef097af96942b9769cea7565b4034";
-//   const isAndroid = /android/i.test(navigator.userAgent);
-
-//   if (isAndroid) {
-//     window.location.href = `intent://${truoraUrl.replace(/^https?:\/\//, '')}#Intent;scheme=https;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;end`;
-//   } else {
-//     const ventana = window.open(truoraUrl, '_blank');
-//     if (!ventana || ventana.closed || typeof ventana.closed === 'undefined') {
-//       window.location.href = truoraUrl;
-//     }
-//   }
-// }
 </script>
 
 <template>
@@ -128,7 +104,7 @@ function probarAbrirNavegador() {
             </p>
           </div>
             <h3 class="mb-3 font-bold text-center">
-                Te enviaremos un link vía WhatsApp para validar tu identidad
+                Para finalizar validaremos tu identidad
                 necesitarás tu Cédula de Ciudadanía
             </h3>
           <div class="mt-4 tarjeta">

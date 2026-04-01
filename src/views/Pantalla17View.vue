@@ -3,6 +3,21 @@ import RouterLink from "../components/UI/Routerlink.vue";
 import HeadingNoAtras from "../components/UI/HeadingNoAtras.vue";
 import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
+import Button from "../components/UI/Button.vue";
+
+function truoraNavegador() {
+  const truoraUrl = "https://identity.truora.com/preview/IPFf58ef097af96942b9769cea7565b4034";
+  const isAndroid = /android/i.test(navigator.userAgent);
+
+  if (isAndroid) {
+    window.location.href = `intent://${truoraUrl.replace(/^https?:\/\//, '')}#Intent;scheme=https;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;end`;
+  } else {
+    const ventana = window.open(truoraUrl, '_blank');
+    if (!ventana || ventana.closed || typeof ventana.closed === 'undefined') {
+      window.location.href = truoraUrl;
+    }
+  }
+}
 </script>
 
 <template>
@@ -12,9 +27,10 @@ import { motion } from "motion-v";
     <section class="container validacion-container">
       <div class="texto">
         <p class="texto-negrita">
-          Estamos a un paso de finalizar tu solicitud. Te hemos enviado a tu WhatsApp un mensaje para la validación de tu identidad.
+          Para completar tu solicitud, es necesario validar tu identidad. Por favor, continúa en el siguiente botón:
         </p>
       </div>
+      <Button @click="truoraNavegador" ></Button>
 
       <div class="imagen">
         <img
