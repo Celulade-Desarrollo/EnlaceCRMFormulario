@@ -57,15 +57,17 @@ async function handleWhatsappURL() {
     return;
   }
 
-  axios.post(`/whatsapp/meta/truora-link/${numeroSinPrefijo}/${nombreCompleto}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    }
-  });
+  const truoraUrl = "https://identity.truora.com/preview/IPFf58ef097af96942b9769cea7565b4034";
+  
+  const ventana = window.open(truoraUrl, '_blank');
+  
+  if (!ventana || ventana.closed || typeof ventana.closed === 'undefined') {
+    window.location.href = truoraUrl;
+  }
 
   router.push("/Pantalla17View");
 };
+
 </script>
 
 <template>
@@ -102,7 +104,7 @@ async function handleWhatsappURL() {
             </p>
           </div>
             <h3 class="mb-3 font-bold text-center">
-                Te enviaremos un link vía WhatsApp para validar tu identidad
+                Para finalizar validaremos tu identidad
                 necesitarás tu Cédula de Ciudadanía
             </h3>
           <div class="mt-4 tarjeta">
@@ -119,6 +121,7 @@ async function handleWhatsappURL() {
                 Iniciar validación
               </a> -->
             </div>
+            
           </div>
         </div>
       </div>
