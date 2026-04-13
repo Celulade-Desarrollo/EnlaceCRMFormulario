@@ -53,14 +53,25 @@ async function handleWhatsapp(numeroSinPrefijo) {
           Para completar tu solicitud, es necesario validar tu identidad. Por favor, continúa en el siguiente botón:
         </p>
       </div>
-      <Button @click="truoraNavegador" ></Button>
+      <Button @click="truoraNavegador"></Button><br>
+
       <div class="texto">
         <p class="texto-negrita">
-          Para enviar el link de validacion de identidad via whatsapp, escriba el numero y da en enviar:
+         Para enviar el enlace de validación de identidad por WhatsApp, ingrese el número y presione enviar.
         </p>
-        <input type="text" v-model="numeroSinPrefijo" placeholder="Número de WhatsApp">
+          <label for="numeroSinPrefijo" class="input-label">
+            <input
+              id="numeroSinPrefijo"
+              class="form-control"
+              v-model="numeroSinPrefijo"
+              type="text"
+              placeholder=" "
+            />
+            <span class="floating-label">Ingresa el número</span>
+          </label>
+        <!-- <input type="text" v-model="numeroSinPrefijo" placeholder="Número de WhatsApp"> -->
       </div>
-      <Button @click="handleWhatsapp(numeroSinPrefijo)" >Enviar</Button>
+      <Button @click="handleWhatsapp(numeroSinPrefijo)">Enviar</Button>
 
       <div class="imagen">
         <img
@@ -74,6 +85,34 @@ async function handleWhatsapp(numeroSinPrefijo) {
 </template>
 
 <style scoped>
+.input-label {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin-top: 24px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px 0;
+  font-size: 16px;
+  border: none;
+  border-bottom: 2px solid #09008be1;
+  background: transparent;
+  font-family: sans-serif;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+.floating-label {
+  position: absolute;
+  left: 0;
+  top: 10px;
+  color: black;
+  font-size: 16px;
+  pointer-events: none;
+  transition: 0.3s ease all;
+  font-family: sans-serif;
+}
 body {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   background-color: white;
