@@ -4,6 +4,13 @@ import HeadingNoAtras from "../components/UI/HeadingNoAtras.vue";
 import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
 import Button from "../components/UI/Button.vue";
+import { ref } from "vue";
+import axios from "axios";
+
+const numeroSinPrefijo = ref("");
+
+const queryParams = new URLSearchParams(window.location.search);
+const token = queryParams.get("token");
 
 function truoraNavegador() {
   const truoraUrl = "https://identity.truora.com/preview/IPFf58ef097af96942b9769cea7565b4034";
@@ -17,7 +24,23 @@ function truoraNavegador() {
       window.location.href = truoraUrl;
     }
   }
-}
+};
+
+async function handleWhatsapp(numeroSinPrefijo) {
+  
+  try {
+    await axios.post(`/whatsapp/meta/truora-link/${numeroSinPrefijo}/${"cliente"}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+  } catch (err) {
+    console.error("❌ Error enviando mensaje:", err);
+    return;
+  }
+  window.location.reload();
+};
 </script>
 
 <template>
@@ -31,6 +54,13 @@ function truoraNavegador() {
         </p>
       </div>
       <Button @click="truoraNavegador" ></Button>
+      <div class="texto">
+        <p class="texto-negrita">
+          Para enviar el link de validacion de identidad via whatsapp, escriba el numero y da en enviar:
+        </p>
+        <input type="text" v-model="numeroSinPrefijo" placeholder="Número de WhatsApp">
+      </div>
+      <Button @click="handleWhatsapp(numeroSinPrefijo)" >Enviar</Button>
 
       <div class="imagen">
         <img
