@@ -75,6 +75,7 @@ async function handleWhatsapp() {
       <div class="divider">
         <span>o también</span>
       </div>
+      <Button @click="truoraNavegador" ></Button>
 
       <div class="content-block">
         <p class="secundario-text">
