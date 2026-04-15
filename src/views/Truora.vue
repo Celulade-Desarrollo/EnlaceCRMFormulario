@@ -68,6 +68,7 @@ async function handleWhatsappURL() {
   router.push("/Pantalla17View");
 };
 
+
 </script>
 
 <template>
@@ -123,12 +124,6 @@ async function handleWhatsappURL() {
             </div>
             
           </div>
-          <button
-              @click="probarAbrirNavegador"
-              style="width:1px; height:5px; background: #ccc; border:none; border-radius:4px; cursor:pointer; font-size:8px;"
-              title="test"
-            >
-            </button>
         </div>
       </div>
       <Footer></Footer>
