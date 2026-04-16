@@ -61,18 +61,19 @@ const validateApellido = () => {
   apellidoError.value = (!apellido.value || !nameRegex.test(apellido.value)) ? "Apellido no válido." : "";
 };
 
-// Necesario para el campo opcional
 const validateSegundoApellido = () => {
   if (/[^a-zA-ZÀ-ÿ\s'-]/.test(SegundoApellido.value)) {
     SegundoApellido.value = SegundoApellido.value.replace(/[^a-zA-ZÀ-ÿ\s'-]/g, "");
   }
 };
 
-const validateCedula = () => {
+const handleCedulaInput = () => {
   if (!cedula.value) {
     cedulaErrorMessage.value = "";
-    return false;
   }
+};
+
+const checkCedulaFormat = () => {
   const valid = /^\d{6,10}$/.test(cedula.value);
   cedulaErrorMessage.value = !valid ? "La cédula debe tener entre 6 y 10 dígitos." : "";
   return valid;
@@ -84,13 +85,13 @@ watch([nombre, apellido], () => {
 });
 
 const handleSubmit = async (event) => {
-  event.preventDefault();
+  if (event) event.preventDefault();
   if (isLoading.value) return;
 
   errorMessage.value = "";
   cedulaErrorMessage.value = "";
 
-  if (!nombre.value || !apellido.value || !validateCedula()) {
+  if (!nombre.value || !apellido.value || !checkCedulaFormat()) {
     errorMessage.value = "Por favor, completa todos los campos correctamente.";
     return;
   }
@@ -144,7 +145,7 @@ const handleSubmit = async (event) => {
 
         <div class="col-lg-6">
           <div class="mt-4 tarjeta">
-            <form>
+            <form @submit.prevent="handleSubmit">
               <div class="form-group mt-[40px]">
                 <p class="titulo-3 mb-4">
                   Ingresa tu nombre completo tal como aparece en tu cédula
@@ -172,7 +173,7 @@ const handleSubmit = async (event) => {
                 <p v-if="SegundoApellidoError" class="text-danger mt-1">{{ SegundoApellidoError }}</p>
 
                 <label for="cedula" class="input-label mt-4">
-                  <input id="cedula" class="form-control" v-model="cedula" type="text" placeholder=" " @input="validateCedula" />
+                  <input id="cedula" class="form-control" v-model="cedula" type="text" placeholder=" " @input="handleCedulaInput" />
                   <span class="floating-label">Ingresa tu cédula</span>
                 </label>
                 
@@ -180,9 +181,11 @@ const handleSubmit = async (event) => {
                   <p class="text-danger-larga">
                     {{ cedulaErrorMessage }}. Si no reconoces esta cédula o tienes problemas con el registro, comunícate con soporte aquí:
                   </p>
-                  <a href="https://wa.me/573196622476" target="_blank" class="btn-link">
-                    Contactar Servicio al Cliente
-                  </a>
+                  <div class="text-center mt-2">
+                    <a href="https://wa.me/573196622476" target="_blank" class="btn-link">
+                      Contactar Servicio al Cliente
+                    </a>
+                  </div>
                 </div>
 
               </div>
@@ -197,6 +200,7 @@ const handleSubmit = async (event) => {
 </template>
 
 <style scoped>
+
 .text-danger-larga {
   color: red;
   font-weight: bold;
@@ -218,16 +222,9 @@ const handleSubmit = async (event) => {
   font-size: 14px;
 }
 
-.btn-azul-link:hover {
+.btn-link:hover {
   opacity: 0.9;
   color: white;
-}
-
-
-.error-message {
-  color: red;
-  font-size: 0.875em;
-  margin-top: 5px;
 }
 
 body {
@@ -257,10 +254,6 @@ body {
 
 .desktop {
   display: block;
-}
-
-#submit-btn {
-  margin-bottom: 50px;
 }
 
 @media (max-width: 767px) {
@@ -310,6 +303,7 @@ body {
   font-size: 16px;
   pointer-events: none;
   transition: 0.3s ease all;
+  font-family: sans-serif;
 }
 
 .form-control:focus + .floating-label,
