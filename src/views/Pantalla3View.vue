@@ -40,10 +40,9 @@ onMounted(async () => {
       nbAgenteComercial,
       nbCliente,
     });
-    console.log("Respuesta de la API:", response.data);
     cedulaDesdeApi.value = String(response.data).trim();
   } catch (err) {
-    console.error(err);
+    console.error("Error al cargar cédula inicial:", err);
   }
 });
 
@@ -75,7 +74,9 @@ const handleCedulaInput = () => {
 
 const checkCedulaFormat = () => {
   const valid = /^\d{6,10}$/.test(cedula.value);
-  cedulaErrorMessage.value = !valid ? "La cédula debe tener entre 6 y 10 dígitos." : "";
+  if (!valid) {
+    cedulaErrorMessage.value = "La cédula debe tener entre 6 y 10 dígitos.";
+  }
   return valid;
 };
 
@@ -98,6 +99,7 @@ const handleSubmit = async (event) => {
 
   isLoading.value = true;
 
+  // Si por alguna razón no tenemos la cédula de la API, la pedimos
   if (!cedulaDesdeApi.value) {
     try {
       const response = await axios.post("/api/flujoRegistroEnlace/cedula", {
@@ -106,7 +108,7 @@ const handleSubmit = async (event) => {
       });
       cedulaDesdeApi.value = String(response.data).trim();
     } catch (err) {
-      cedulaErrorMessage.value = "Error de red.";
+      cedulaErrorMessage.value = "Error de red al validar.";
       isLoading.value = false;
       return;
     }
@@ -114,6 +116,7 @@ const handleSubmit = async (event) => {
 
   const cedulaInput = String(cedula.value).trim();
 
+  // Comparación final
   if (cedulaInput !== cedulaDesdeApi.value) {
     const ultimos4 = cedulaDesdeApi.value.slice(-4);
     const cedulaPista = cedulaDesdeApi.value.slice(0, -4).replace(/./g, "*") + ultimos4;
@@ -122,6 +125,7 @@ const handleSubmit = async (event) => {
     return;
   }
 
+  // Si todo está bien, guardamos y saltamos
   store.completarFormulario();
   formStore.updateField("Nombres", nombre.value);
   formStore.updateField("Primer_Apellido", apellido.value);
@@ -170,7 +174,6 @@ const handleSubmit = async (event) => {
                   <input id="segundoApellido" class="form-control" v-model="SegundoApellido" type="text" placeholder=" " @input="validateSegundoApellido" />
                   <span class="floating-label">Ingresa tu segundo apellido (opcional)</span>
                 </label>
-                <p v-if="SegundoApellidoError" class="text-danger mt-1">{{ SegundoApellidoError }}</p>
 
                 <label for="cedula" class="input-label mt-4">
                   <input id="cedula" class="form-control" v-model="cedula" type="text" placeholder=" " @input="handleCedulaInput" />
@@ -187,9 +190,8 @@ const handleSubmit = async (event) => {
                     </a>
                   </div>
                 </div>
-
               </div>
-              <Button @click="handleSubmit"></Button>
+              <Button type="submit"></Button>
             </form>
           </div>
         </div>
