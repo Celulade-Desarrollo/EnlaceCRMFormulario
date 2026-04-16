@@ -67,14 +67,12 @@ const validateSegundoApellido = () => {
   }
 };
 
-// Función limpia para el input (no genera error visual)
 const handleCedulaInput = () => {
   if (!cedula.value) {
     cedulaErrorMessage.value = "";
   }
 };
 
-// Función que valida el formato solo al dar clic
 const checkCedulaFormat = () => {
   const valid = /^\d{6,10}$/.test(cedula.value);
   cedulaErrorMessage.value = !valid ? "La cédula debe tener entre 6 y 10 dígitos." : "";
@@ -93,7 +91,6 @@ const handleSubmit = async (event) => {
   errorMessage.value = "";
   cedulaErrorMessage.value = "";
 
-  // Validamos todo al final
   if (!nombre.value || !apellido.value || !checkCedulaFormat()) {
     errorMessage.value = "Por favor, completa todos los campos correctamente.";
     return;
@@ -185,7 +182,7 @@ const handleSubmit = async (event) => {
                     {{ cedulaErrorMessage }}. Si no reconoces esta cédula o tienes problemas con el registro, comunícate con soporte aquí:
                   </p>
                   <div class="text-center mt-2">
-                    <a href="https://wa.me/573002707034" target="_blank" class="btn-link">
+                    <a href="https://wa.me/573196622476" target="_blank" class="btn-link">
                       Contactar Servicio al Cliente
                     </a>
                   </div>
