@@ -1,32 +1,50 @@
 <script setup>
-import RouterLink from "../components/UI/Routerlink.vue";
 import HeadingNoAtras from "../components/UI/HeadingNoAtras.vue";
-import { FormKit } from "@formkit/vue";
 import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
-import { onMounted } from 'vue';
+import { onMounted,ref } from 'vue';
 import axios from 'axios';
 
 const handleInicio = () => {
   window.open("/", "_self");
 };
 
+const status = ref('loading'); 
+const processId = ref(null);
+
 onMounted(async () => {
-  try {
-    // Obtener los parámetros de la URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const processId = urlParams.get('process_id');
-    
-    if (processId) {
-      // Realizar la petición a la API de Truora
-      const response = await axios.get(`/api/truora/${processId}`);
-      console.log('Respuesta de Truora:', response.data);
+  const urlParams = new URLSearchParams(window.location.search);
+  const paramStatus = urlParams.get('status');
+  const paramProcessId = urlParams.get('process_id');
+
+  console.log(" Parámetros paramStatus:",  paramStatus,  );
+  console.log(" Parámetros paramProcessId:", paramProcessId);
+
+  processId.value = paramProcessId;
+
+  // asignación de estado
+  if (paramStatus === 'success') {
+    status.value = 'success';
+  } else if (paramStatus === 'failure' || paramStatus === 'declined') {
+    status.value = 'failure';
+  } else {
+    status.value = 'success';
+  }
+
+  // Solo hacemos la petición a tu API si hay un ID real
+  if (processId.value && processId.value !== '{{process_id}}') {
+    try {
+      const response = await axios.get(`/api/truora/${processId.value}`);
+      console.log('Datos sincronizados con el backend:', response.data);
+    } catch (error) {
+      console.error('Error al sincronizar con tu API:', error);
     }
-  } catch (error) {
-    console.error('Error al obtener datos de Truora:', error);
   }
 });
 
+const handleReintentar = () => {
+  window.open("https://identity.truora.com/preview/IPFf58ef097af96942b9769cea7565b4034", "_self");
+};
 </script>
 
 <template>
@@ -34,43 +52,35 @@ onMounted(async () => {
   <motion.div v-bind="fadeInUp">
     <section class="container py-5">
       <div class="row align-items-center">
-        <div class="col-lg-6 desktop">
-          <!--
-  <picture>
-    <img
-      src="/public/aprobado.png"
-      alt="Pago"
-      class="img-fluid"
-      loading="lazy"
-      title="Pago"
-    />
-  </picture>
-  -->
-        </div>
         <div class="col-lg-6">
-          <div>
+          
+          <div v-if="status === 'success' || status === 'loading'">
             <h2 class="display-4 titulo text-center">
-              ¡Tu solicitud ha finalizado 
- <span>exitosamente!</span><br />
+              ¡Tu solicitud ha finalizado <span>exitosamente!</span><br />
               Gracias por compartir tu información con nosotros
             </h2>
-          </div>
-          <picture>
-            <img
-              src="/public/celebracion.png"
-              alt="Pago"
-              class="img-fluid mt-auto"
-              loading="lazy"
-              title="Pago"
-            />
-          </picture>
-          <div>
+            <picture>
+              <img src="/public/celebracion.png" class="img-fluid mt-auto" />
+            </picture>
             <h2 class="display-4 titulo text-center">
-              <span>En el transcurso de dos días hábiles nos comunicaremos contigo para informarte sobre tu solicitud. </span>
+              <span>En el transcurso de dos días hábiles nos comunicaremos contigo.</span>
             </h2>
-
           </div>
-</div>
+
+          <div v-else class="text-center">
+            <h2 class="display-4 titulo">
+              Algo no salió <span>bien</span>
+            </h2>
+            <p class="parrafo">
+              No pudimos validar tu identidad. Asegúrate de estar en un lugar iluminado y que tu documento sea legible.
+            </p>
+            <button @click="handleReintentar">
+              Intentar nuevamente
+              <svg width="24" height="24" viewBox="0 0 24 24">...</svg>
+            </button>
+          </div>
+
+        </div>
       </div>
     </section>
   </motion.div>

@@ -10,12 +10,12 @@ import { motion } from "motion-v";
 import { useFormStore } from "../stores/formStore.js";
 import axios from "axios";
 
-
 const formStore = useFormStore();
 const store = useFormularioStore();
 const router = useRouter();
 
-
+const isLoading = ref(false);
+const cedulaDesdeApi = ref("");
 const nameRegex = /^[a-zA-ZÀ-ÿ\s'-]{2,50}$/;
 
 const nombre = ref("");
@@ -23,144 +23,112 @@ const apellido = ref("");
 const SegundoApellido = ref("");
 const cedula = ref("");
 
-// Datos almacenados en localStorage
 const nbCliente = localStorage.getItem("nbCliente");
 const nbAgenteComercial = localStorage.getItem("nbAgenteComercial");
 
-// Errores
 const errorMessage = ref("");
 const nombreError = ref("");
 const apellidoError = ref("");
 const SegundoApellidoError = ref("");
 const cedulaErrorMessage = ref("");
 
-// ---------------- VALIDACIONES ----------------
+onMounted(async () => {
+  localStorage.setItem("ruta", window.location.pathname);
+
+  try {
+    const response = await axios.post("/api/flujoRegistroEnlace/cedula", {
+      nbAgenteComercial,
+      nbCliente,
+    });
+    console.log("Respuesta de la API:", response.data);
+    cedulaDesdeApi.value = String(response.data).trim();
+  } catch (err) {
+    console.error(err);
+  }
+});
+
 const validateNombre = () => {
   if (/[^a-zA-ZÀ-ÿ\s'-]/.test(nombre.value)) {
     nombre.value = nombre.value.replace(/[^a-zA-ZÀ-ÿ\s'-]/g, "");
   }
-  if (!nombre.value || !nameRegex.test(nombre.value)) {
-    nombreError.value = "Por favor, ingresa un nombre válido, sin tildes y solo letras.";
-  } else {
-    nombreError.value = "";
-  }
+  nombreError.value = (!nombre.value || !nameRegex.test(nombre.value)) ? "Nombre no válido." : "";
 };
 
 const validateApellido = () => {
   if (/[^a-zA-ZÀ-ÿ\s'-]/.test(apellido.value)) {
     apellido.value = apellido.value.replace(/[^a-zA-ZÀ-ÿ\s'-]/g, "");
   }
-  if (!apellido.value || !nameRegex.test(apellido.value)) {
-    apellidoError.value = "Por favor, ingresa un apellido válido, sin tildes y solo letras.";
-  } else {
-    apellidoError.value = "";
-  }
+  apellidoError.value = (!apellido.value || !nameRegex.test(apellido.value)) ? "Apellido no válido." : "";
 };
 
+// Necesario para el campo opcional
 const validateSegundoApellido = () => {
   if (/[^a-zA-ZÀ-ÿ\s'-]/.test(SegundoApellido.value)) {
     SegundoApellido.value = SegundoApellido.value.replace(/[^a-zA-ZÀ-ÿ\s'-]/g, "");
   }
-  if (SegundoApellido.value && !nameRegex.test(SegundoApellido.value)) {
-    SegundoApellidoError.value = "Por favor, ingresa un apellido válido, sin tildes y solo letras.";
-  } else {
-    SegundoApellidoError.value = "";
-  }
 };
 
 const validateCedula = () => {
-  if (!/^\d{6,10}$/.test(cedula.value)) {
-    cedulaErrorMessage.value = "La cédula debe tener entre 6 y 10 dígitos.";
+  if (!cedula.value) {
+    cedulaErrorMessage.value = "";
     return false;
   }
-  cedulaErrorMessage.value = "";
-  return true;
+  const valid = /^\d{6,10}$/.test(cedula.value);
+  cedulaErrorMessage.value = !valid ? "La cédula debe tener entre 6 y 10 dígitos." : "";
+  return valid;
 };
 
-// Auto-validación al escribir
-watch([nombre, apellido, SegundoApellido], () => {
+watch([nombre, apellido], () => {
   validateNombre();
   validateApellido();
-  validateSegundoApellido();
 });
 
-// ---------------- SUBMIT ----------------
 const handleSubmit = async (event) => {
   event.preventDefault();
+  if (isLoading.value) return;
 
   errorMessage.value = "";
   cedulaErrorMessage.value = "";
 
-  let isValid = true;
-
-  if (!nombre.value || !nameRegex.test(nombre.value)) {
-    nombreError.value = "Por favor, ingresa un nombre válido, sin tildes y solo letras.";
-    isValid = false;
-  }
-
-  if (!apellido.value || !nameRegex.test(apellido.value)) {
-    apellidoError.value = "Por favor, ingresa un apellido válido, sin tildes y solo letras.";
-    isValid = false;
-  }
-
-  if (SegundoApellido.value && !nameRegex.test(SegundoApellido.value)) {
-    SegundoApellidoError.value = "Por favor, ingresa un apellido válido, sin tildes y solo letras.";
-    isValid = false;
-  }
-
-  if (!validateCedula()) {
-    isValid = false;
-  }
-
-  if (!isValid) {
+  if (!nombre.value || !apellido.value || !validateCedula()) {
     errorMessage.value = "Por favor, completa todos los campos correctamente.";
     return;
   }
 
-  try {
-    const response = await axios.post("/api/flujoRegistroEnlace/cedula", {
-      nbAgenteComercial: nbAgenteComercial,
-      nbCliente: nbCliente,
-    });
+  isLoading.value = true;
 
-    console.log("Respuesta de la API:", response.data);
-
-    // Validación de cédula
-    const cedulaApi = String(response.data);
-    const cedulaInput = String(cedula.value).trim();
-    const cedulaApiValue = String(cedulaApi).trim();
-
-    if (cedulaInput !== cedulaApiValue) {
-      const ultimos4 = cedulaApiValue.slice(-4);
-      const cedulaPista = cedulaApiValue.slice(0, -4).replace(/./g, "*") + ultimos4;
-      cedulaErrorMessage.value = `Debes ingresar la misma cédula registrada en COMPI terminada en ${cedulaPista}`;
+  if (!cedulaDesdeApi.value) {
+    try {
+      const response = await axios.post("/api/flujoRegistroEnlace/cedula", {
+        nbAgenteComercial,
+        nbCliente,
+      });
+      cedulaDesdeApi.value = String(response.data).trim();
+    } catch (err) {
+      cedulaErrorMessage.value = "Error de red.";
+      isLoading.value = false;
       return;
     }
-
-    // Guardar en el store
-    store.completarFormulario();
-    formStore.updateField("Nombres", nombre.value);
-    formStore.updateField("Primer_Apellido", apellido.value);
-    formStore.updateField("2do_Apellido_opcional", SegundoApellido.value);
-    formStore.updateField("Cedula_Cliente", cedula.value.toString());
-
-    router.push("/datosPersonales");
-  } catch (err) {
-    console.error("❌ Error validando cédula:", err);
-    cedulaErrorMessage.value = "Error al validar la cédula, inténtalo de nuevo.";
   }
+
+  const cedulaInput = String(cedula.value).trim();
+
+  if (cedulaInput !== cedulaDesdeApi.value) {
+    const ultimos4 = cedulaDesdeApi.value.slice(-4);
+    const cedulaPista = cedulaDesdeApi.value.slice(0, -4).replace(/./g, "*") + ultimos4;
+    cedulaErrorMessage.value = `Debes ingresar la misma cédula registrada en COMPI terminada en ${cedulaPista}`;
+    isLoading.value = false;
+    return;
+  }
+
+  store.completarFormulario();
+  formStore.updateField("Nombres", nombre.value);
+  formStore.updateField("Primer_Apellido", apellido.value);
+  formStore.updateField("2do_Apellido_opcional", SegundoApellido.value);
+  formStore.updateField("Cedula_Cliente", cedula.value.toString());
+
+  router.push("/datosPersonales");
 };
-
-onMounted(() => {
-  let miRuta = window.location.pathname;
-
-  if (localStorage.getItem.length > 0) {
-    localStorage.removeItem("ruta");
-    localStorage.setItem("ruta", miRuta);
-  } else {
-    localStorage.setItem("ruta", miRuta);
-  }
-});
 </script>
 
 <template>
@@ -170,13 +138,7 @@ onMounted(() => {
       <div class="row align-items-center">
         <div class="col-lg-6 desktop">
           <picture>
-            <img
-              src="/pago.png"
-              alt="Pago"
-              class="img-fluid"
-              loading="lazy"
-              title="Pago"
-            />
+            <img src="/pago.png" alt="Pago" class="img-fluid" loading="lazy" title="Pago" />
           </picture>
         </div>
 
@@ -192,59 +154,37 @@ onMounted(() => {
                 </p>
 
                 <label for="nombres" class="input-label">
-                  <input
-                    id="nombres"
-                    class="form-control"
-                    v-model="nombre"
-                    type="text"
-                    placeholder=" "
-                    @input="validateNombre"
-                  />
+                  <input id="nombres" class="form-control" v-model="nombre" type="text" placeholder=" " @input="validateNombre" />
                   <span class="floating-label">Ingresa tus nombres</span>
                 </label>
                 <p v-if="nombreError" class="text-danger mt-1">{{ nombreError }}</p>
 
                 <label for="primerApellido" class="input-label mt-4">
-                  <input
-                    id="primerApellido"
-                    class="form-control"
-                    v-model="apellido"
-                    type="text"
-                    placeholder=" "
-                    @input="validateApellido"
-                  />
+                  <input id="primerApellido" class="form-control" v-model="apellido" type="text" placeholder=" " @input="validateApellido" />
                   <span class="floating-label">Ingresa tu primer apellido</span>
                 </label>
                 <p v-if="apellidoError" class="text-danger mt-1">{{ apellidoError }}</p>
 
                 <label for="segundoApellido" class="input-label mt-4">
-                  <input
-                    id="segundoApellido"
-                    class="form-control"
-                    v-model="SegundoApellido"
-                    type="text"
-                    placeholder=" "
-                    @input="validateSegundoApellido"
-                  />
+                  <input id="segundoApellido" class="form-control" v-model="SegundoApellido" type="text" placeholder=" " @input="validateSegundoApellido" />
                   <span class="floating-label">Ingresa tu segundo apellido (opcional)</span>
                 </label>
-                <p v-if="SegundoApellidoError" class="text-danger mt-1">
-                  {{ SegundoApellidoError }}
-                </p>
+                <p v-if="SegundoApellidoError" class="text-danger mt-1">{{ SegundoApellidoError }}</p>
+
                 <label for="cedula" class="input-label mt-4">
-                  <input
-                    id="cedula"
-                    class="form-control"
-                    v-model="cedula"
-                    type="text"
-                    placeholder=" "
-                    @input="validateCedula"
-                  />
+                  <input id="cedula" class="form-control" v-model="cedula" type="text" placeholder=" " @input="validateCedula" />
                   <span class="floating-label">Ingresa tu cédula</span>
                 </label>
-                <p v-if="cedulaErrorMessage" class="text-danger mt-1">
-                  {{ cedulaErrorMessage }}
-                </p>
+                
+                <div v-if="cedulaErrorMessage" class="mt-3">
+                  <p class="text-danger-larga">
+                    {{ cedulaErrorMessage }}. Si no reconoces esta cédula o tienes problemas con el registro, comunícate con soporte aquí:
+                  </p>
+                  <a href="https://wa.me/573196622476" target="_blank" class="btn-link">
+                    Contactar Servicio al Cliente
+                  </a>
+                </div>
+
               </div>
               <Button @click="handleSubmit"></Button>
             </form>
@@ -257,7 +197,33 @@ onMounted(() => {
 </template>
 
 <style scoped>
-/* Mensajes de error personalizados */
+.text-danger-larga {
+  color: red;
+  font-weight: bold;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  text-align: left;
+  margin-top: 10px;
+}
+
+.btn-link {
+  display: inline-block;
+  margin-top: 10px;
+  background-color: #DD3590;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.btn-azul-link:hover {
+  opacity: 0.9;
+  color: white;
+}
+
+
 .error-message {
   color: red;
   font-size: 0.875em;
@@ -301,11 +267,6 @@ body {
   .desktop {
     display: none;
   }
-
-  .titulo {
-    font-weight: bold;
-  }
-
   .tarjeta {
     background-color: rgb(255, 255, 255);
     padding: 24px;
@@ -337,7 +298,6 @@ body {
   border: none;
   border-bottom: 2px solid #09008be1;
   background: transparent;
-  font-family: sans-serif;
   outline: none;
   transition: border-color 0.3s ease;
 }
@@ -350,10 +310,8 @@ body {
   font-size: 16px;
   pointer-events: none;
   transition: 0.3s ease all;
-  font-family: sans-serif;
 }
 
-/* Animación al enfocar o escribir */
 .form-control:focus + .floating-label,
 .form-control:not(:placeholder-shown) + .floating-label {
   top: -15px;
@@ -369,5 +327,9 @@ body {
   border-bottom-color: #0064e6cc;
   outline: none;
   box-shadow: none;
+}
+
+.text-danger {
+  color: red;
 }
 </style>
