@@ -40,10 +40,9 @@ onMounted(async () => {
       nbAgenteComercial,
       nbCliente,
     });
-    console.log("Respuesta de la API:", response.data);
     cedulaDesdeApi.value = String(response.data).trim();
   } catch (err) {
-    console.error(err);
+    console.error("Error al cargar cédula inicial:", err);
   }
 });
 
@@ -61,20 +60,26 @@ const validateApellido = () => {
   apellidoError.value = (!apellido.value || !nameRegex.test(apellido.value)) ? "Apellido no válido." : "";
 };
 
-// Necesario para el campo opcional
 const validateSegundoApellido = () => {
   if (/[^a-zA-ZÀ-ÿ\s'-]/.test(SegundoApellido.value)) {
     SegundoApellido.value = SegundoApellido.value.replace(/[^a-zA-ZÀ-ÿ\s'-]/g, "");
   }
 };
 
-const validateCedula = () => {
+// Esta función ahora solo limpia mientras escribes
+const handleCedulaInput = () => {
   if (!cedula.value) {
     cedulaErrorMessage.value = "";
-    return false;
   }
+  // No validamos longitud aquí para que no salga el error de una vez
+};
+
+// Esta es la que se llama al dar clic
+const checkCedulaFormat = () => {
   const valid = /^\d{6,10}$/.test(cedula.value);
-  cedulaErrorMessage.value = !valid ? "La cédula debe tener entre 6 y 10 dígitos." : "";
+  if (!valid) {
+    cedulaErrorMessage.value = "La cédula debe tener entre 6 y 10 dígitos.";
+  }
   return valid;
 };
 
@@ -90,13 +95,15 @@ const handleSubmit = async (event) => {
   errorMessage.value = "";
   cedulaErrorMessage.value = "";
 
-  if (!nombre.value || !apellido.value || !validateCedula()) {
+  // Validamos nombres y formato de cédula SOLO al dar clic
+  if (!nombre.value || !apellido.value || !checkCedulaFormat()) {
     errorMessage.value = "Por favor, completa todos los campos correctamente.";
     return;
   }
 
   isLoading.value = true;
 
+  // Si por alguna razón no tenemos la cédula de la API, la pedimos
   if (!cedulaDesdeApi.value) {
     try {
       const response = await axios.post("/api/flujoRegistroEnlace/cedula", {
@@ -105,7 +112,7 @@ const handleSubmit = async (event) => {
       });
       cedulaDesdeApi.value = String(response.data).trim();
     } catch (err) {
-      cedulaErrorMessage.value = "Error de red.";
+      cedulaErrorMessage.value = "Error de red al validar.";
       isLoading.value = false;
       return;
     }
@@ -113,6 +120,7 @@ const handleSubmit = async (event) => {
 
   const cedulaInput = String(cedula.value).trim();
 
+  // Comparación final
   if (cedulaInput !== cedulaDesdeApi.value) {
     const ultimos4 = cedulaDesdeApi.value.slice(-4);
     const cedulaPista = cedulaDesdeApi.value.slice(0, -4).replace(/./g, "*") + ultimos4;
@@ -121,6 +129,7 @@ const handleSubmit = async (event) => {
     return;
   }
 
+  // Si todo está bien, guardamos y saltamos
   store.completarFormulario();
   formStore.updateField("Nombres", nombre.value);
   formStore.updateField("Primer_Apellido", apellido.value);
@@ -144,7 +153,7 @@ const handleSubmit = async (event) => {
 
         <div class="col-lg-6">
           <div class="mt-4 tarjeta">
-            <form>
+            <form @submit.prevent="handleSubmit">
               <div class="form-group mt-[40px]">
                 <p class="titulo-3 mb-4">
                   Ingresa tu nombre completo tal como aparece en tu cédula
@@ -169,10 +178,9 @@ const handleSubmit = async (event) => {
                   <input id="segundoApellido" class="form-control" v-model="SegundoApellido" type="text" placeholder=" " @input="validateSegundoApellido" />
                   <span class="floating-label">Ingresa tu segundo apellido (opcional)</span>
                 </label>
-                <p v-if="SegundoApellidoError" class="text-danger mt-1">{{ SegundoApellidoError }}</p>
 
                 <label for="cedula" class="input-label mt-4">
-                  <input id="cedula" class="form-control" v-model="cedula" type="text" placeholder=" " @input="validateCedula" />
+                  <input id="cedula" class="form-control" v-model="cedula" type="text" placeholder=" " @input="handleCedulaInput" />
                   <span class="floating-label">Ingresa tu cédula</span>
                 </label>
                 
@@ -184,9 +192,8 @@ const handleSubmit = async (event) => {
                     Contactar Servicio al Cliente
                   </a>
                 </div>
-
               </div>
-              <Button @click="handleSubmit"></Button>
+              <Button type="submit"></Button>
             </form>
           </div>
         </div>
@@ -197,6 +204,7 @@ const handleSubmit = async (event) => {
 </template>
 
 <style scoped>
+/* Estilos originales mantenidos */
 .text-danger-larga {
   color: red;
   font-weight: bold;
@@ -216,18 +224,6 @@ const handleSubmit = async (event) => {
   text-decoration: none;
   font-weight: bold;
   font-size: 14px;
-}
-
-.btn-azul-link:hover {
-  opacity: 0.9;
-  color: white;
-}
-
-
-.error-message {
-  color: red;
-  font-size: 0.875em;
-  margin-top: 5px;
 }
 
 body {
@@ -253,26 +249,6 @@ body {
   font-size: 1.875rem;
   line-height: 1.2;
   margin-top: -100px;
-}
-
-.desktop {
-  display: block;
-}
-
-#submit-btn {
-  margin-bottom: 50px;
-}
-
-@media (max-width: 767px) {
-  .desktop {
-    display: none;
-  }
-  .tarjeta {
-    background-color: rgb(255, 255, 255);
-    padding: 24px;
-    border-radius: 16px;
-    width: 100%;
-  }
 }
 
 .form-group {
