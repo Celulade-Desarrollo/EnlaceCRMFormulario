@@ -185,7 +185,7 @@ const handleSubmit = async (event) => {
                     {{ cedulaErrorMessage }}. Si no reconoces esta cédula o tienes problemas con el registro, comunícate con soporte aquí:
                   </p>
                   <div class="text-center mt-2">
-                    <a href="https://wa.me/573002707034" target="_blank" class="btn-link">
+                    <a href="https://wa.me/573196622476" target="_blank" class="btn-link">
                       Contactar Servicio al Cliente
                     </a>
                   </div>
