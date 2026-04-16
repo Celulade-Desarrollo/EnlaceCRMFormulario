@@ -40,9 +40,10 @@ onMounted(async () => {
       nbAgenteComercial,
       nbCliente,
     });
+    console.log("Respuesta de la API:", response.data);
     cedulaDesdeApi.value = String(response.data).trim();
   } catch (err) {
-    console.error("Error al cargar cédula inicial:", err);
+    console.error(err);
   }
 });
 
@@ -60,27 +61,23 @@ const validateApellido = () => {
   apellidoError.value = (!apellido.value || !nameRegex.test(apellido.value)) ? "Apellido no válido." : "";
 };
 
-// Necesario para el campo opcional
 const validateSegundoApellido = () => {
   if (/[^a-zA-ZÀ-ÿ\s'-]/.test(SegundoApellido.value)) {
     SegundoApellido.value = SegundoApellido.value.replace(/[^a-zA-ZÀ-ÿ\s'-]/g, "");
   }
 };
 
-// Esta función ahora solo limpia mientras escribes
+// Función limpia para el input (no genera error visual)
 const handleCedulaInput = () => {
   if (!cedula.value) {
     cedulaErrorMessage.value = "";
   }
-  // No validamos longitud aquí para que no salga el error de una vez
 };
 
-// Esta es la que se llama al dar clic
+// Función que valida el formato solo al dar clic
 const checkCedulaFormat = () => {
   const valid = /^\d{6,10}$/.test(cedula.value);
-  if (!valid) {
-    cedulaErrorMessage.value = "La cédula debe tener entre 6 y 10 dígitos.";
-  }
+  cedulaErrorMessage.value = !valid ? "La cédula debe tener entre 6 y 10 dígitos." : "";
   return valid;
 };
 
@@ -90,13 +87,13 @@ watch([nombre, apellido], () => {
 });
 
 const handleSubmit = async (event) => {
-  event.preventDefault();
+  if (event) event.preventDefault();
   if (isLoading.value) return;
 
   errorMessage.value = "";
   cedulaErrorMessage.value = "";
 
-  // Validamos nombres y formato de cédula SOLO al dar clic
+  // Validamos todo al final
   if (!nombre.value || !apellido.value || !checkCedulaFormat()) {
     errorMessage.value = "Por favor, completa todos los campos correctamente.";
     return;
@@ -104,7 +101,6 @@ const handleSubmit = async (event) => {
 
   isLoading.value = true;
 
-  // Si por alguna razón no tenemos la cédula de la API, la pedimos
   if (!cedulaDesdeApi.value) {
     try {
       const response = await axios.post("/api/flujoRegistroEnlace/cedula", {
@@ -113,7 +109,7 @@ const handleSubmit = async (event) => {
       });
       cedulaDesdeApi.value = String(response.data).trim();
     } catch (err) {
-      cedulaErrorMessage.value = "Error de red al validar.";
+      cedulaErrorMessage.value = "Error de red.";
       isLoading.value = false;
       return;
     }
@@ -121,7 +117,6 @@ const handleSubmit = async (event) => {
 
   const cedulaInput = String(cedula.value).trim();
 
-  // Comparación final
   if (cedulaInput !== cedulaDesdeApi.value) {
     const ultimos4 = cedulaDesdeApi.value.slice(-4);
     const cedulaPista = cedulaDesdeApi.value.slice(0, -4).replace(/./g, "*") + ultimos4;
@@ -130,7 +125,6 @@ const handleSubmit = async (event) => {
     return;
   }
 
-  // Si todo está bien, guardamos y saltamos
   store.completarFormulario();
   formStore.updateField("Nombres", nombre.value);
   formStore.updateField("Primer_Apellido", apellido.value);
@@ -179,6 +173,7 @@ const handleSubmit = async (event) => {
                   <input id="segundoApellido" class="form-control" v-model="SegundoApellido" type="text" placeholder=" " @input="validateSegundoApellido" />
                   <span class="floating-label">Ingresa tu segundo apellido (opcional)</span>
                 </label>
+                <p v-if="SegundoApellidoError" class="text-danger mt-1">{{ SegundoApellidoError }}</p>
 
                 <label for="cedula" class="input-label mt-4">
                   <input id="cedula" class="form-control" v-model="cedula" type="text" placeholder=" " @input="handleCedulaInput" />
@@ -189,12 +184,15 @@ const handleSubmit = async (event) => {
                   <p class="text-danger-larga">
                     {{ cedulaErrorMessage }}. Si no reconoces esta cédula o tienes problemas con el registro, comunícate con soporte aquí:
                   </p>
-                  <a href="https://wa.me/573196622476" target="_blank" class="btn-link">
-                    Contactar Servicio al Cliente
-                  </a>
+                  <div class="text-center mt-2">
+                    <a href="https://wa.me/573002707034" target="_blank" class="btn-link">
+                      Contactar Servicio al Cliente
+                    </a>
+                  </div>
                 </div>
+
               </div>
-              <Button type="submit"></Button>
+              <Button @click="handleSubmit"></Button>
             </form>
           </div>
         </div>
@@ -205,7 +203,7 @@ const handleSubmit = async (event) => {
 </template>
 
 <style scoped>
-/* Estilos originales mantenidos */
+
 .text-danger-larga {
   color: red;
   font-weight: bold;
@@ -225,6 +223,11 @@ const handleSubmit = async (event) => {
   text-decoration: none;
   font-weight: bold;
   font-size: 14px;
+}
+
+.btn-link:hover {
+  opacity: 0.9;
+  color: white;
 }
 
 body {
@@ -250,6 +253,22 @@ body {
   font-size: 1.875rem;
   line-height: 1.2;
   margin-top: -100px;
+}
+
+.desktop {
+  display: block;
+}
+
+@media (max-width: 767px) {
+  .desktop {
+    display: none;
+  }
+  .tarjeta {
+    background-color: rgb(255, 255, 255);
+    padding: 24px;
+    border-radius: 16px;
+    width: 100%;
+  }
 }
 
 .form-group {
@@ -287,6 +306,7 @@ body {
   font-size: 16px;
   pointer-events: none;
   transition: 0.3s ease all;
+  font-family: sans-serif;
 }
 
 .form-control:focus + .floating-label,
