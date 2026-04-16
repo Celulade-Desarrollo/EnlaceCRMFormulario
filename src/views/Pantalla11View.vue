@@ -14,34 +14,35 @@ const processId = ref(null);
 
 onMounted(async () => {
   const urlParams = new URLSearchParams(window.location.search);
-  const paramStatus = urlParams.get('status');
-  const paramProcessId = urlParams.get('process_id');
 
-  console.log(" Parámetros paramStatus:",  paramStatus,  );
-  console.log(" Parámetros paramProcessId:", paramProcessId);
-
-  processId.value = paramProcessId;
-
-  // asignación de estado
-  if (paramStatus === 'success') {
-    status.value = 'success';
-  } else if (paramStatus === 'failure' || paramStatus === 'declined') {
-    status.value = 'failure';
-  } else {
-    status.value = 'success';
+  let paramStatus = urlParams.get('status');
+  if (!paramStatus || paramStatus.includes('{{')) {
+    paramStatus = 'success'; 
   }
 
-  // Solo hacemos la petición a tu API si hay un ID real
-  if (processId.value && processId.value !== '{{process_id}}') {
+  const allIds = urlParams.getAll('process_id');
+  const realId = allIds.find(id => id && !id.includes('{{'));
+
+  processId.value = realId;
+  status.value = (paramStatus === 'success') ? 'success' : 'failure';
+
+  // 3. Si encontramos un ID real, disparamos la sincronización
+  if (processId.value) {
     try {
+      console.log("Sincronizando ID real:", processId.value);
       const response = await axios.get(`/api/truora/${processId.value}`);
-      console.log('Datos sincronizados con el backend:', response.data);
+      
+      // REFUERZO: Si el backend dice que en verdad falló, cambiamos la pantalla
+      if (response.data.status === 'failed' || response.data.status === 'declined') {
+        status.value = 'failure';
+      }
+      
+      console.log('Datos en BD:', response.data);
     } catch (error) {
-      console.error('Error al sincronizar con tu API:', error);
+      console.error('Error al sincronizar:', error);
     }
   }
 });
-
 const handleReintentar = () => {
   window.open("https://identity.truora.com/preview/IPFf58ef097af96942b9769cea7565b4034", "_self");
 };
