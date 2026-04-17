@@ -33,7 +33,7 @@ onMounted(async () => {
       const response = await axios.get(`/api/truora/${processId.value}`);
       
       // REFUERZO: Si el backend dice que en verdad falló, cambiamos la pantalla
-      if (response.data.status === 'failed' || response.data.status === 'declined') {
+      if (response.data.Confirmacion_Identidad === 'failure' || response.data.Confirmacion_Identidad=== 'declined') {
         status.value = 'failure';
       }
       
