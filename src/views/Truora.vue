@@ -26,8 +26,6 @@ const queryParams = new URLSearchParams(window.location.search);
 const token = queryParams.get("token");
 
 const datos = formStore.getFinalData();
-const numeroSinPrefijo = datos?.Numero_Celular;
-const nombreCompleto = datos?.Nombres;
 
 async function handleWhatsappURL() {
   const datosFinales = formStore.getFinalData();
