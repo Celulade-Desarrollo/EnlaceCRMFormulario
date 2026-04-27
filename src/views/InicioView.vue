@@ -17,8 +17,10 @@ const celularInput = ref(null);
 const router = useRouter();
 const store = useFormularioStore();
 const mostrarModal = ref(false);
-
+const token = localStorage.getItem("token");
+console.log("Token en InicioView:", token);
 const clienteNum = ref("");
+
 
 // formulario global
 const formStore = useFormStore();
@@ -83,10 +85,14 @@ const handleSubmit = async (event) => {
       headers: { 'Content-Type': 'application/json' }
     });
 
-   const usuarioNum = await axios.post (`/api/flujoRegistroEnlace/num/${celular.value}`, {
-      headers: { 'Content-Type': 'application/json' }
+   const usuarioNum = await axios.get(`/api/flujoRegistroEnlace/num/${celular.value}`, {
+       headers: {
+        Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NzcyOTg0MzEsImV4cCI6MTc3NzMwMjAzMSwianRpIjoiYTBlN2E4YTMtN2JlMi00M2JhLWEyNTgtZTgzNjgwYjBlMjg2In0.-dlr5BsEqyMAN6oA8N9hCbDaaOmb_xhUzJDZDqN6ip4`,
+        "Content-Type": "application/json",
+      },
     });
     clienteNum.value = usuarioNum.data;
+    console.log("Número de cliente obtenido:", clienteNum.value[0].Id);
     mostrarModal.value = true;
     console.log("✅ Formulario enviado correctamente");
     // si pasa validación, sigue al siguiente paso
@@ -109,6 +115,11 @@ onMounted(() => {
   const queryParams = new URLSearchParams(window.location.search);
   const nbCliente = queryParams.get('nbCliente');
   const nbAgenteComercial = queryParams.get('nbAgenteComercial');
+  const Asesor = queryParams.get('Asesor');
+
+    if(Asesor === 'true') {
+        router.push('/correoElectronico');
+    }
 
   if (nbCliente && nbAgenteComercial) {
     localStorage.setItem('nbCliente', nbCliente);
@@ -125,18 +136,18 @@ onMounted(() => {
 });
 
 const continuarSolo = async () => {
-  
- /api/flujoRegistroEnlace/estado/pendiente/{id}
+
     router.push("/correoElectronico");
 };
 
 const irConAsesor = async () => {
+
   try {
-  const usuarioNum = await axios.put(`/api/flujoRegistroEnlace/estado/pendiente/${clienteNum.value.id}`, {
+  const usuarioNum = await axios.put(`/api/flujoRegistroEnlace/estado/pendiente/${clienteNum.value[0].Id}`, {
       Estado: "Asesor"
       }, {
        headers: {
-        Authorization: `Bearer ${props.token}`,
+        Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NzcyOTg0MzEsImV4cCI6MTc3NzMwMjAzMSwianRpIjoiYTBlN2E4YTMtN2JlMi00M2JhLWEyNTgtZTgzNjgwYjBlMjg2In0.-dlr5BsEqyMAN6oA8N9hCbDaaOmb_xhUzJDZDqN6ip4`,
         "Content-Type": "application/json",
       },
     });

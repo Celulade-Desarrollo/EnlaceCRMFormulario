@@ -15,7 +15,10 @@ const emailErrorMessage = ref("");
 const confirmEmailErrorMessage = ref("");
 const router = useRouter();
 const store = useFormularioStore();
-
+const nbnbCliente = localStorage.getItem("nbCliente");
+const nbAgenteComercial = localStorage.getItem("nbAgenteComercial");
+console.log("nbnbCliente",nbnbCliente)
+console.log("nbAgenteComercial",nbAgenteComercial)
 //formulario global
 const formStore = useFormStore()
 // Función para limpiar valores undefined o null
