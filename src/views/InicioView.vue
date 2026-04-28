@@ -17,8 +17,7 @@ const celularInput = ref(null);
 const router = useRouter();
 const store = useFormularioStore();
 const mostrarModal = ref(false);
-const token = localStorage.getItem("token");
-console.log("Token en InicioView:", token);
+
 const clienteNum = ref("");
 
 
@@ -87,7 +86,7 @@ const handleSubmit = async (event) => {
 
    const usuarioNum = await axios.get(`/api/flujoRegistroEnlace/num/${celular.value}`, {
        headers: {
-        Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NzcyOTg0MzEsImV4cCI6MTc3NzMwMjAzMSwianRpIjoiYTBlN2E4YTMtN2JlMi00M2JhLWEyNTgtZTgzNjgwYjBlMjg2In0.-dlr5BsEqyMAN6oA8N9hCbDaaOmb_xhUzJDZDqN6ip4`,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     });
@@ -116,6 +115,8 @@ onMounted(() => {
   const nbCliente = queryParams.get('nbCliente');
   const nbAgenteComercial = queryParams.get('nbAgenteComercial');
   const Asesor = queryParams.get('Asesor');
+  
+  const token = localStorage.getItem('token');
 
     if(Asesor === 'true') {
         router.push('/correoElectronico');
@@ -147,12 +148,12 @@ const irConAsesor = async () => {
       Estado: "Asesor"
       }, {
        headers: {
-        Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NzcyOTg0MzEsImV4cCI6MTc3NzMwMjAzMSwianRpIjoiYTBlN2E4YTMtN2JlMi00M2JhLWEyNTgtZTgzNjgwYjBlMjg2In0.-dlr5BsEqyMAN6oA8N9hCbDaaOmb_xhUzJDZDqN6ip4`,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     });
 
-    router.push("/graciasAsesor");
+    router.push("/PantallaAsesor");
   } catch (err) {
     console.error(err);
   }
@@ -160,7 +161,8 @@ const irConAsesor = async () => {
 </script>
 
 <template>
-  <HeadingNoAtras />
+  <div>
+    <HeadingNoAtras />
   <motion.div v-bind="fadeInUp">
     <section class="container registro">
       <div class="row align-items-center banner-registro">
@@ -378,7 +380,8 @@ const irConAsesor = async () => {
     </div>
   </div>
 </div>
-  <Footer />
+    <Footer />
+  </div>
 </template>
 
 <style scoped>
