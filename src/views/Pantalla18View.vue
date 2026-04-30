@@ -5,31 +5,33 @@ import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
 </script>
 <template>
-  <HeadingNoAtras />
-  <motion.div v-bind="fadeInUp">
-    <section class="asesor-wrap">
+  <div>
+    <HeadingNoAtras />
+    <motion.div v-bind="fadeInUp">
+      <section class="asesor-wrap">
 
-      <div class="asesor-icon-ring">
-        <!-- icono persona -->
-      </div>
+        <div class="asesor-icon-ring">
+          <!-- icono persona -->
+        </div>
 
-      <h1 class="asesor-titulo">Tu proceso está en <span>buenas manos</span></h1>
-      <p class="asesor-desc">
-        Un asesor revisará tu solicitud y te contactará pronto para ayudarte 
-        a completar tu registro con Enlace y Banco W.
-      </p>
+        <h1 class="asesor-titulo">Tu proceso está en <span>buenas manos</span></h1>
+        <p class="asesor-desc">
+          Un asesor revisará tu solicitud y te contactará pronto para ayudarte 
+          a completar tu registro con Enlace y Banco W.
+        </p>
 
-      <div class="asesor-pasos">
-        <div class="paso"><span class="paso-num">1</span><div class="paso-texto"><strong>Revisión de tu solicitud</strong><span>Nuestro equipo verificará tu información en las próximas horas hábiles.</span></div></div>
-        <div class="paso"><span class="paso-num">2</span><div class="paso-texto"><strong>Contacto personalizado</strong><span>Un asesor se comunicará contigo por WhatsApp o llamada para guiarte.</span></div></div>
-        <div class="paso"><span class="paso-num">3</span><div class="paso-texto"><strong>Activación de tu cupo</strong><span>Una vez completado el proceso, tu cupo Enlace quedará activo.</span></div></div>
-      </div>
+        <div class="asesor-pasos">
+          <div class="paso"><span class="paso-num">1</span><div class="paso-texto"><strong>Revisión de tu solicitud</strong><span>Nuestro equipo verificará tu información en las próximas horas hábiles.</span></div></div>
+          <div class="paso"><span class="paso-num">2</span><div class="paso-texto"><strong>Contacto personalizado</strong><span>Un asesor se comunicará contigo por WhatsApp o llamada para guiarte.</span></div></div>
+          <div class="paso"><span class="paso-num">3</span><div class="paso-texto"><strong>Activación de tu cupo</strong><span>Una vez completado el proceso, tu cupo Enlace quedará activo.</span></div></div>
+        </div>
 
-      <div class="asesor-badge">✓ Solicitud recibida exitosamente</div>
+        <div class="asesor-badge">✓ Solicitud recibida exitosamente</div>
 
-    </section>
-  </motion.div>
-  <Footer />
+      </section>
+    </motion.div>
+    <Footer />
+  </div>
 </template>
 <style scoped>
 .asesor-wrap {

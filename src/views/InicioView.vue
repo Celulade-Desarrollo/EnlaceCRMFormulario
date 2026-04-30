@@ -19,8 +19,7 @@ const store = useFormularioStore();
 const mostrarModal = ref(false);
 
 const clienteNum = ref("");
-
-
+const token = ref(localStorage.getItem('token'));
 // formulario global
 const formStore = useFormStore();
 
@@ -86,12 +85,13 @@ const handleSubmit = async (event) => {
 
    const usuarioNum = await axios.get(`/api/flujoRegistroEnlace/num/${celular.value}`, {
        headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3Nzc1ODY1MzMsImV4cCI6MTc3NzU5MDEzMywianRpIjoiOTgyMDgzMzMtNzQ0MS00MmJiLWJlMTQtOTA3YzY1NDAzOWEwIn0.PTwHUzL7sIPA13Eh2JefbUSNCGZdFRdAMTNcHuKOodo`,
         "Content-Type": "application/json",
       },
     });
     clienteNum.value = usuarioNum.data;
     console.log("Número de cliente obtenido:", clienteNum.value[0].Id);
+    localStorage.setItem('Id',clienteNum.value[0].Id)
     mostrarModal.value = true;
     console.log("✅ Formulario enviado correctamente");
     // si pasa validación, sigue al siguiente paso
@@ -115,8 +115,16 @@ onMounted(() => {
   const nbCliente = queryParams.get('nbCliente');
   const nbAgenteComercial = queryParams.get('nbAgenteComercial');
   const Asesor = queryParams.get('Asesor');
-  
-  const token = localStorage.getItem('token');
+
+    const tokenGuardado = localStorage.getItem('token');
+    if (tokenGuardado) {
+        token.value = tokenGuardado;
+        console.log("Token:", token.value);
+    }
+
+    if (nbCliente) localStorage.setItem('nbCliente', nbCliente);
+    if (nbAgenteComercial) localStorage.setItem('nbAgenteComercial', nbAgenteComercial);
+
 
     if(Asesor === 'true') {
         router.push('/correoElectronico');
@@ -134,6 +142,8 @@ onMounted(() => {
   } else {
     localStorage.setItem("ruta", miRuta);
   }
+
+  
 });
 
 const continuarSolo = async () => {
@@ -148,7 +158,7 @@ const irConAsesor = async () => {
       Estado: "Asesor"
       }, {
        headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3Nzc1ODY1MzMsImV4cCI6MTc3NzU5MDEzMywianRpIjoiOTgyMDgzMzMtNzQ0MS00MmJiLWJlMTQtOTA3YzY1NDAzOWEwIn0.PTwHUzL7sIPA13Eh2JefbUSNCGZdFRdAMTNcHuKOodo`,
         "Content-Type": "application/json",
       },
     });

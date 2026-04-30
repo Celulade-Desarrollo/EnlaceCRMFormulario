@@ -17,8 +17,9 @@ const router = useRouter();
 const store = useFormularioStore();
 const nbnbCliente = localStorage.getItem("nbCliente");
 const nbAgenteComercial = localStorage.getItem("nbAgenteComercial");
-console.log("nbnbCliente",nbnbCliente)
-console.log("nbAgenteComercial",nbAgenteComercial)
+const tokenAlpina = localStorage.getItem("tokenAlpina");
+
+
 //formulario global
 const formStore = useFormStore()
 // Función para limpiar valores undefined o null
@@ -93,7 +94,20 @@ const handleSubmit = (event) => {
   router.push("/nombres"); // Redirige a la siguiente pantalla
 };
 
+const Id = ref(null);
 onMounted(() => {
+    const queryParams = new URLSearchParams(window.location.search);
+    const IdParam = queryParams.get('Id');
+    
+    if (IdParam) {
+        localStorage.setItem('Id', IdParam);
+        Id.value = IdParam;
+    } else {
+        Id.value = localStorage.getItem('Id');
+    }
+    
+    console.log('Id final:', Id.value);
+  
   let miRuta = window.location.pathname;
 
   // Validar si ya existe "ruta"
@@ -110,97 +124,97 @@ onMounted(() => {
 </script>
 
 <template>
-  <Heading class="mb-[80px]" />
-  <motion.div v-bind="fadeInUp">
-    <div class="relative">
-      <section class="container registro">
-        <div class="row align-items-center">
-          <div class="col-lg-6 desktop">
-            <picture>
-              <img
-                src="/pago.png"
-                alt="Pago"
-                class="img-fluid"
-                loading="lazy"
-                title="Pago"
-              />
-            </picture>
-          </div>
-
-          <div class="col-lg-6">
-            <div className="flex justify-center">
-              <h2 class="display-4 titulo-2 w-[350px] text-center">
-                ¡Contar con tu fiado Enlace es muy fácil!
-              </h2>
+  <div>
+    <Heading class="mb-[80px]" />
+    <motion.div v-bind="fadeInUp">
+      <div class="relative">
+        <section class="container registro">
+          <div class="row align-items-center">
+            <div class="col-lg-6 desktop">
+              <picture>
+                <img
+                  src="/pago.png"
+                  alt="Pago"
+                  class="img-fluid"
+                  loading="lazy"
+                  title="Pago"
+                />
+              </picture>
             </div>
-            <div class="mt-4 tarjeta">
-              <form id="myForm">
-                <div class="form-group">
-                  <p class="mb-4 font-bold">Registra tus datos</p>
 
-                  <label for="email" class="input-label">
-                    <input
-                      id="email"
-                      v-model="email"
-                      class="form-control"
-                      aria-required="true"
-                      name="email"
-                      type="text"
-                      placeholder=" "
-                      autocomplete="off"
-                    />
+            <div class="col-lg-6">
+              <div className="flex justify-center">
+                <h2 class="display-4 titulo-2 w-[350px] text-center">
+                  ¡Contar con tu fiado Enlace es muy fácil!
+                </h2>
+              </div>
+              <div class="mt-4 tarjeta">
+                <form id="myForm">
+                  <div class="form-group">
+                    <p class="mb-4 font-bold">Registra tus datos</p>
 
-                    <span class="floating-label"
-                      >Ingresa tu correo electrónico</span
+                    <label for="email" class="input-label">
+                      <input
+                        id="email"
+                        v-model="email"
+                        class="form-control"
+                        aria-required="true"
+                        name="email"
+                        type="text"
+                        placeholder=" "
+                        autocomplete="off"
+                      />
+
+                      <span class="floating-label"
+                        >Ingresa tu correo electrónico</span
+                      >
+                    </label>
+
+                    <label for="confirmaremail" class="input-label mt-4 mb-0">
+                      <input
+                        id="confirmaremail"
+                        v-model="confirmaremail"
+                        class="form-control"
+                        aria-required="true"
+                        name="confirmaremail"
+                        type="text"
+                        placeholder=" "
+                        autocomplete="off"
+                      />
+
+                      <span class="floating-label"
+                        >Confirma tu correo electrónico</span
+                      >
+                    </label>
+                    <p
+                      v-if="errorMessage"
+                      id="error-celular"
+                      class="text-danger mt-1"
                     >
-                  </label>
-
-                  <label for="confirmaremail" class="input-label mt-4 mb-0">
-                    <input
-                      id="confirmaremail"
-                      v-model="confirmaremail"
-                      class="form-control"
-                      aria-required="true"
-                      name="confirmaremail"
-                      type="text"
-                      placeholder=" "
-                      autocomplete="off"
-                    />
-
-                    <span class="floating-label"
-                      >Confirma tu correo electrónico</span
+                      {{ errorMessage }}
+                    </p>
+                    <span
+                      v-if="emailErrorMessage"
+                      class="text-danger text-sm mt-1 d-block"
                     >
-                  </label>
-                  <p
-                    v-if="errorMessage"
-                    id="error-celular"
-                    class="text-danger mt-1"
-                  >
-                    {{ errorMessage }}
-                  </p>
-                  <span
-                    v-if="emailErrorMessage"
-                    class="text-danger text-sm mt-1 d-block"
-                  >
-                    {{ emailErrorMessage }}
-                  </span>
-                  <span class="error-message">{{
-                    confirmEmailErrorMessage
-                  }}</span>
-                </div>
-                <Button @click="handleSubmit"></Button>
-              </form>
+                      {{ emailErrorMessage }}
+                    </span>
+                    <span class="error-message">{{
+                      confirmEmailErrorMessage
+                    }}</span>
+                  </div>
+                  <Button @click="handleSubmit"></Button>
+                </form>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <Footer class="absolute bottom-0 left-0 right-0" />
-    </div>
-  </motion.div>
+        <Footer class="absolute bottom-0 left-0 right-0" />
+      </div>
+    </motion.div>
+  </div>
 </template>
-
-
 
 
 <style scoped>
