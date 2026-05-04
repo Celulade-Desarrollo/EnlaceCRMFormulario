@@ -9,7 +9,6 @@ import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
 import { useFormStore } from '../stores/formStore.js'
 
-// Variables reactivas
 const celular = ref("");
 const data = ref(null);
 const error = ref("");
@@ -17,24 +16,18 @@ const celularInput = ref(null);
 const router = useRouter();
 const store = useFormularioStore();
 const mostrarModal = ref(false);
-
 const clienteNum = ref("");
 const token = ref(localStorage.getItem('token'));
-// formulario global
 const formStore = useFormStore();
-
-// checkboxes de autorización
 const autorizoDatos = ref(false);
 const autorizoContacto = ref(false);
 
-// Función para obtener datos
 const fetchData = async () => {
   try {
     const response = await axios.get(
       `https://enlacecrm.com/api/get_data.php?celular=${celular.value}`
     );
     data.value = response.data;
-    console.log(data.value);
     localStorage.setItem("nombre", data.value.NOMBRE_Y_APELLIDO);
     localStorage.setItem("cedula", data.value.CEDULA);
     localStorage.setItem("ciudadNacimiento", data.value.CIUDAD_NACIMIENTO);
@@ -47,26 +40,19 @@ const fetchData = async () => {
   }
 };
 
-// Validar al enviar el formulario
 const handleSubmit = async (event) => {
   event.preventDefault();
 
-  // validación celular
   const regex = /^[0-9]{10}$/;
   if (!regex.test(celular.value)) {
     error.value = "Por favor, ingresa un número celular válido.";
-    setTimeout(() => {
-      error.value = "";
-    }, 3000);
+    setTimeout(() => { error.value = ""; }, 3000);
     return;
   }
 
-  // validación checkbox obligatorio
   if (!autorizoDatos.value || !autorizoContacto.value) {
     error.value = "Debes autorizar el tratamiento de datos personales y la via de contacto.";
-    setTimeout(() => {
-      error.value = "";
-    }, 3000);
+    setTimeout(() => { error.value = ""; }, 3000);
     return;
   }
 
@@ -83,86 +69,79 @@ const handleSubmit = async (event) => {
       headers: { 'Content-Type': 'application/json' }
     });
 
-   const usuarioNum = await axios.get(`/api/flujoRegistroEnlace/num/${celular.value}`, {
-       headers: {
-        Authorization: `Bearer ${token}`,
+    const usuarioNum = await axios.get(`/api/flujoRegistroEnlace/num/${celular.value}`, {
+      headers: {
+        Authorization: `Bearer ${token.value}`,
         "Content-Type": "application/json",
       },
     });
+
     clienteNum.value = usuarioNum.data;
     console.log("Número de cliente obtenido:", clienteNum.value[0].Id);
-    localStorage.setItem('Id',clienteNum.value[0].Id)
+    localStorage.setItem('Id', clienteNum.value[0].Id);
     mostrarModal.value = true;
-    console.log("✅ Formulario enviado correctamente");
-    // si pasa validación, sigue al siguiente paso
-    //router.push("/correoElectronico");
     error.value = "";
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
   }
 };
 
-// Función para enfocar el input
 const focusInput = () => {
-  if (celularInput.value) {
-    celularInput.value.focus();
-  }
+  if (celularInput.value) celularInput.value.focus();
 };
 
-// Montar el event listener para el envío del formulario
-onMounted(() => {
+onMounted(async () => {
   const queryParams = new URLSearchParams(window.location.search);
   const nbCliente = queryParams.get('nbCliente');
   const nbAgenteComercial = queryParams.get('nbAgenteComercial');
+  const Id = queryParams.get('Id');
   const Asesor = queryParams.get('Asesor');
 
-    const tokenGuardado = localStorage.getItem('token');
-    if (tokenGuardado) {
-        token.value = tokenGuardado;
-        console.log("Token:", token.value);
-    }
+  if (nbCliente) localStorage.setItem('nbCliente', nbCliente);
+  if (nbAgenteComercial) localStorage.setItem('nbAgenteComercial', nbAgenteComercial);
+  if (Id) localStorage.setItem('Id', Id);
 
-    if (nbCliente) localStorage.setItem('nbCliente', nbCliente);
-    if (nbAgenteComercial) localStorage.setItem('nbAgenteComercial', nbAgenteComercial);
-
-
-    if(Asesor === 'true') {
-        router.push('/correoElectronico');
-    }
-
+  // obtener token desde el backend
   if (nbCliente && nbAgenteComercial) {
-    localStorage.setItem('nbCliente', nbCliente);
-    localStorage.setItem('nbAgenteComercial', nbAgenteComercial);
-  }
-  
-  let miRuta = window.location.pathname;
-  if (localStorage.getItem.length > 0) {
-    localStorage.removeItem("ruta");
-    localStorage.setItem("ruta", miRuta);
-  } else {
-    localStorage.setItem("ruta", miRuta);
+    try {
+      const response = await axios.post('/api/user/login', {
+        nbCliente,
+        nbAgenteComercial,
+        token: null
+      });
+      token.value = response.data.token;
+      localStorage.setItem('token', token.value);
+    } catch (err) {
+      if (err.response?.status === 400) {
+        token.value = err.response.data.token;
+        localStorage.setItem('token', token.value);
+      }
+    }
   }
 
-  
+  if (Asesor === 'true') {
+    router.push('/correoElectronico');
+  }
+
+  let miRuta = window.location.pathname;
+  localStorage.removeItem("ruta");
+  localStorage.setItem("ruta", miRuta);
 });
 
 const continuarSolo = async () => {
-
-    router.push("/correoElectronico");
+  router.push("/correoElectronico");
 };
 
 const irConAsesor = async () => {
-
   try {
-  const usuarioNum = await axios.put(`/api/flujoRegistroEnlace/estado/pendiente/${clienteNum.value[0].Id}`, {
+    await axios.put(`/api/flujoRegistroEnlace/estado/pendiente/${clienteNum.value[0].Id}`, {
       Estado: "Asesor"
-      }, {
-       headers: {
-        Authorization: `Bearer ${token}`,
+    }, {
+      headers: {
+        Authorization: `Bearer ${token.value}`,
         "Content-Type": "application/json",
       },
     });
-
     router.push("/PantallaAsesor");
   } catch (err) {
     console.error(err);
@@ -171,6 +150,8 @@ const irConAsesor = async () => {
 </script>
 
 <template>
+  <div>
+    <HeadingNoAtras />
   <div>
     <HeadingNoAtras />
   <motion.div v-bind="fadeInUp">
@@ -392,9 +373,58 @@ const irConAsesor = async () => {
 </div>
     <Footer />
   </div>
+  <div v-if="mostrarModal" class="modal-overlay">
+  <div class="modal-content">
+    <h3>¿Cómo quieres continuar?</h3>
+    <p>Puedes terminar tu registro ahora o dejar que un asesor te ayude.</p>
+
+    <div class="modal-buttons">
+      <button class="btn btn-primary" @click="continuarSolo">
+        Continuar yo mismo
+      </button>
+
+      <button class="btn btn-secondary" @click="irConAsesor">
+        Que me contacte un asesor
+      </button>
+    </div>
+  </div>
+</div>
+    <Footer />
+  </div>
 </template>
 
 <style scoped>
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+}
+
+.modal-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+
 
 .modal-overlay {
   position: fixed;
