@@ -111,12 +111,10 @@ onMounted(async () => {
       });
       token.value = response.data.token;
       localStorage.setItem('token', token.value);
-      console.log("Token 200:", token.value);
     } catch (err) {
       if (err.response?.status === 400) {
         token.value = err.response.data.token;
         localStorage.setItem('token', token.value);
-        console.log("Token 400:", token.value);
       }
     }
   }
