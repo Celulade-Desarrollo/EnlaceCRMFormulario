@@ -26,8 +26,7 @@ const queryParams = new URLSearchParams(window.location.search);
 const token = queryParams.get("token");
 
 const datos = formStore.getFinalData();
-const numeroSinPrefijo = datos?.Numero_Celular;
-const nombreCompleto = datos?.Nombres;
+const id = localStorage.getItem('Id');
 
 async function handleWhatsappURL() {
   const datosFinales = formStore.getFinalData();
@@ -47,8 +46,10 @@ async function handleWhatsappURL() {
   };
 
   try {
-    await axios.post('api/flujoRegistroEnlace', datosLimpios, {
-      headers: { 'Content-Type': 'application/json' }
+        await axios.put(`/api/flujoRegistroEnlace/${id}`, datosLimpios, {
+      headers: {
+        'Content-Type': 'application/json' 
+      }
     });
     console.log("✅ Formulario enviado correctamente");
   } catch (err) {
@@ -72,63 +73,65 @@ async function handleWhatsappURL() {
 </script>
 
 <template>
-  <HeadingNoAtras />
-  <motion.div v-bind="fadeInUp">
-    <section
-      class="container registro h-[100vh] flex flex-col justify-between overflow-hidden p-0"
-    >
-      <div class="row align-items-center">
-        <div class="col-lg-6 desktop">
-          <picture>
-            <img
-              src="/public/pago.png"
-              alt="Pago"
-              class="img-fluid"
-              loading="lazy"
-              title="Pago"
-            />
-          </picture>
-        </div>
-        <div class="col-lg-6 botones p-5">
-          <div>
-            <h2 class="titulo">Validaremos tu identidad</h2>
-            <p class="mb-4 font-bold">
-              <picture>
-                <img
-                  src="/public/pago.png"
-                  alt="Pago"
-                  class="img-fluid"
-                  loading="lazy"
-                  title="Pago"
-                />
-              </picture>
-            </p>
+  <div>
+    <HeadingNoAtras />
+    <motion.div v-bind="fadeInUp">
+      <section
+        class="container registro h-[100vh] flex flex-col justify-between overflow-hidden p-0"
+      >
+        <div class="row align-items-center">
+          <div class="col-lg-6 desktop">
+            <picture>
+              <img
+                src="/public/pago.png"
+                alt="Pago"
+                class="img-fluid"
+                loading="lazy"
+                title="Pago"
+              />
+            </picture>
           </div>
-            <h3 class="mb-3 font-bold text-center">
-                Para finalizar validaremos tu identidad
-                necesitarás tu Cédula de Ciudadanía
-            </h3>
-          <div class="mt-4 tarjeta">
-            <div class="validar-truora flex flex-col items-center">
-              <Button @click="handleWhatsappURL" ></Button>
-              <!-- Nuevo título encima del botón -->
-              <!-- <h3 class="mb-3 font-bold text-center">
-                Te enviaremos un link via whatsapp para validar tu identidad
-                Necesitarás tu Cédula de Ciudadanía</h3> -->
-              <!-- <a
-                @click="enviarPorWhatsApp"
-                style="text-decoration: none; background: #DD3590; color: #ffffff; border-radius: 6px; display: inline-block; padding: 8px 32px; font-weight: bold; cursor: pointer;"
-              >
-                Iniciar validación
-              </a> -->
+          <div class="col-lg-6 botones p-5">
+            <div>
+              <h2 class="titulo">Validaremos tu identidad</h2>
+              <p class="mb-4 font-bold">
+                <picture>
+                  <img
+                    src="/public/pago.png"
+                    alt="Pago"
+                    class="img-fluid"
+                    loading="lazy"
+                    title="Pago"
+                  />
+                </picture>
+              </p>
             </div>
-            
+              <h3 class="mb-3 font-bold text-center">
+                  Para finalizar validaremos tu identidad
+                  necesitarás tu Cédula de Ciudadanía
+              </h3>
+            <div class="mt-4 tarjeta">
+              <div class="validar-truora flex flex-col items-center">
+                <Button @click="handleWhatsappURL" ></Button>
+                <!-- Nuevo título encima del botón -->
+                <!-- <h3 class="mb-3 font-bold text-center">
+                  Te enviaremos un link via whatsapp para validar tu identidad
+                  Necesitarás tu Cédula de Ciudadanía</h3> -->
+                <!-- <a
+                  @click="enviarPorWhatsApp"
+                  style="text-decoration: none; background: #DD3590; color: #ffffff; border-radius: 6px; display: inline-block; padding: 8px 32px; font-weight: bold; cursor: pointer;"
+                >
+                  Iniciar validación
+                </a> -->
+              </div>
+              
+            </div>
           </div>
         </div>
-      </div>
-      <Footer></Footer>
-    </section>
-  </motion.div>
+        <Footer></Footer>
+      </section>
+    </motion.div>
+  </div>
 </template>
 
 
