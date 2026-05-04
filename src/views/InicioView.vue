@@ -154,6 +154,8 @@ const irConAsesor = async () => {
 <template>
   <div>
     <HeadingNoAtras />
+  <div>
+    <HeadingNoAtras />
   <motion.div v-bind="fadeInUp">
     <section class="container registro">
       <div class="row align-items-center banner-registro">
@@ -373,9 +375,58 @@ const irConAsesor = async () => {
 </div>
     <Footer />
   </div>
+  <div v-if="mostrarModal" class="modal-overlay">
+  <div class="modal-content">
+    <h3>¿Cómo quieres continuar?</h3>
+    <p>Puedes terminar tu registro ahora o dejar que un asesor te ayude.</p>
+
+    <div class="modal-buttons">
+      <button class="btn btn-primary" @click="continuarSolo">
+        Continuar yo mismo
+      </button>
+
+      <button class="btn btn-secondary" @click="irConAsesor">
+        Que me contacte un asesor
+      </button>
+    </div>
+  </div>
+</div>
+    <Footer />
+  </div>
 </template>
 
 <style scoped>
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+}
+
+.modal-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+
 
 .modal-overlay {
   position: fixed;
