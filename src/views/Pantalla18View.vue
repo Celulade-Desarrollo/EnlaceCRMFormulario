@@ -45,7 +45,7 @@ import { motion } from "motion-v";
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: #ffc107;
+  background: #dd3590;
   margin: 0 auto 30px;
   display: flex;
   align-items: center;
@@ -59,7 +59,7 @@ import { motion } from "motion-v";
   margin-bottom: 20px;
 }
 .asesor-titulo span {
-  color: #ffc107;
+  color: #dd3590;
 }
 
 .asesor-desc {

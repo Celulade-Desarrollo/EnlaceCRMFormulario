@@ -85,7 +85,7 @@ const handleSubmit = async (event) => {
 
    const usuarioNum = await axios.get(`/api/flujoRegistroEnlace/num/${celular.value}`, {
        headers: {
-        Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3Nzc1ODY1MzMsImV4cCI6MTc3NzU5MDEzMywianRpIjoiOTgyMDgzMzMtNzQ0MS00MmJiLWJlMTQtOTA3YzY1NDAzOWEwIn0.PTwHUzL7sIPA13Eh2JefbUSNCGZdFRdAMTNcHuKOodo`,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     });
@@ -158,7 +158,7 @@ const irConAsesor = async () => {
       Estado: "Asesor"
       }, {
        headers: {
-        Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3Nzc1ODY1MzMsImV4cCI6MTc3NzU5MDEzMywianRpIjoiOTgyMDgzMzMtNzQ0MS00MmJiLWJlMTQtOTA3YzY1NDAzOWEwIn0.PTwHUzL7sIPA13Eh2JefbUSNCGZdFRdAMTNcHuKOodo`,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     });
