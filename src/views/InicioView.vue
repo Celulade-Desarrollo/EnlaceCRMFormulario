@@ -16,7 +16,10 @@ const error = ref("");
 const celularInput = ref(null);
 const router = useRouter();
 const store = useFormularioStore();
+const mostrarModal = ref(false);
 
+const clienteNum = ref("");
+const token = ref(localStorage.getItem('token'));
 // formulario global
 const formStore = useFormStore();
 
@@ -68,12 +71,31 @@ const handleSubmit = async (event) => {
   }
 
   try {
-    store.completarFormulario();
-    formStore.updateField('Numero_Celular', celular.value.toString())
-    formStore.updateField('Autorizacion_Habeas_Data', autorizoDatos.value);
-    formStore.updateField('Autorizacion_Medios_de_Contacto', autorizoContacto.value);
+    const payload = {
+      Numero_Celular: celular.value.toString(),
+      Autorizacion_Habeas_Data: autorizoDatos.value,
+      Autorizacion_Medios_de_Contacto: autorizoContacto.value,
+      nbCliente: localStorage.getItem('nbCliente') || '',
+      nbAgenteComercial: localStorage.getItem('nbAgenteComercial') || ''
+    };
+    
+    await axios.post('api/flujoRegistroEnlace', payload, {
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+   const usuarioNum = await axios.get(`/api/flujoRegistroEnlace/num/${celular.value}`, {
+       headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    clienteNum.value = usuarioNum.data;
+    console.log("Número de cliente obtenido:", clienteNum.value[0].Id);
+    localStorage.setItem('Id',clienteNum.value[0].Id)
+    mostrarModal.value = true;
+    console.log("✅ Formulario enviado correctamente");
     // si pasa validación, sigue al siguiente paso
-    router.push("/correoElectronico");
+    //router.push("/correoElectronico");
     error.value = "";
   } catch (error) {
     console.error(error);
@@ -92,6 +114,21 @@ onMounted(() => {
   const queryParams = new URLSearchParams(window.location.search);
   const nbCliente = queryParams.get('nbCliente');
   const nbAgenteComercial = queryParams.get('nbAgenteComercial');
+  const Asesor = queryParams.get('Asesor');
+
+    const tokenGuardado = localStorage.getItem('token');
+    if (tokenGuardado) {
+        token.value = tokenGuardado;
+        console.log("Token:", token.value);
+    }
+
+    if (nbCliente) localStorage.setItem('nbCliente', nbCliente);
+    if (nbAgenteComercial) localStorage.setItem('nbAgenteComercial', nbAgenteComercial);
+
+
+    if(Asesor === 'true') {
+        router.push('/correoElectronico');
+    }
 
   if (nbCliente && nbAgenteComercial) {
     localStorage.setItem('nbCliente', nbCliente);
@@ -105,11 +142,37 @@ onMounted(() => {
   } else {
     localStorage.setItem("ruta", miRuta);
   }
+
+  
 });
+
+const continuarSolo = async () => {
+
+    router.push("/correoElectronico");
+};
+
+const irConAsesor = async () => {
+
+  try {
+  const usuarioNum = await axios.put(`/api/flujoRegistroEnlace/estado/pendiente/${clienteNum.value[0].Id}`, {
+      Estado: "Asesor"
+      }, {
+       headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    router.push("/PantallaAsesor");
+  } catch (err) {
+    console.error(err);
+  }
+};
 </script>
 
 <template>
-  <HeadingNoAtras />
+  <div>
+    <HeadingNoAtras />
   <motion.div v-bind="fadeInUp">
     <section class="container registro">
       <div class="row align-items-center banner-registro">
@@ -311,11 +374,58 @@ onMounted(() => {
       </div>
     </section>
   </motion.div>
+  <div v-if="mostrarModal" class="modal-overlay">
+  <div class="modal-content">
+    <h3>¿Cómo quieres continuar?</h3>
+    <p>Puedes terminar tu registro ahora o dejar que un asesor te ayude.</p>
 
-  <Footer />
+    <div class="modal-buttons">
+      <button class="btn btn-primary" @click="continuarSolo">
+        Continuar yo mismo
+      </button>
+
+      <button class="btn btn-secondary" @click="irConAsesor">
+        Que me contacte un asesor
+      </button>
+    </div>
+  </div>
+</div>
+    <Footer />
+  </div>
 </template>
 
 <style scoped>
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+}
+
+.modal-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+
 body {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   background-color: white;

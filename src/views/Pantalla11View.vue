@@ -77,7 +77,10 @@ const handleReintentar = () => {
             </p>
             <button @click="handleReintentar">
               Intentar nuevamente
-              <svg width="24" height="24" viewBox="0 0 24 24">...</svg>
+             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 21 20" class="icon">
+    <title>Arrow Right</title>
+    <path d="M18.5 10H2.5M18.5 10L12 16.5M18.5 10L12 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="round"/>
+  </svg>
             </button>
           </div>
 
@@ -121,22 +124,26 @@ body {
   text-overflow: ellipsis;
 }
 .container button {
+  font-weight: 500;
   padding-left: 1.25rem;
   padding-right: 1.25rem;
-  border-radius: 13px;
+  border-radius: 6.25rem;
   background: #dd3590;
   color: rgb(255, 255, 255);
   --rippleLayerColor: rgba(255, 255, 255, 0.2);
   height: 3rem;
   display: flex;
-  width: 100%;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
   margin-bottom: 1rem;
   -webkit-box-pack: justify;
-  justify-content: space-between;
+  justify-content: center;
   cursor: pointer;
   outline: 0px;
   -webkit-box-align: center;
   align-items: center;
+  gap: 0.5rem;
   vertical-align: middle;
   overflow: hidden;
   position: relative;

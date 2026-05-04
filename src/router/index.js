@@ -108,6 +108,11 @@ const router = createRouter({
       component: () => import("../views/Pantalla15View.vue"),
       meta: { requiereFormulario: true },
     },
+    {
+      path: "/PantallaAsesor",
+      name: "PantallaAsesor",
+      component: () => import("../views/Pantalla18View.vue"),
+    },
   ],
 });
 
