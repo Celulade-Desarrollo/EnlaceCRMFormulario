@@ -153,7 +153,6 @@ const irConAsesor = async () => {
   <div>
     <HeadingNoAtras />
   <div>
-    <HeadingNoAtras />
   <motion.div v-bind="fadeInUp">
     <section class="container registro">
       <div class="row align-items-center banner-registro">
