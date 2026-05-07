@@ -129,7 +129,19 @@ onMounted(async () => {
 });
 
 const continuarSolo = async () => {
-  router.push("/correoElectronico");
+   try {
+    await axios.put(`/api/flujoRegistroEnlace/estado/pendiente/${clienteNum.value[0].Id}`, {
+      Estado: "Incompleto"
+    }, {
+      headers: {
+        Authorization: `Bearer ${token.value}`,
+        "Content-Type": "application/json",
+      },
+    });
+      router.push("/correoElectronico");
+  } catch (err) {
+    console.error(err);
+  }
 };
 
 const irConAsesor = async () => {
