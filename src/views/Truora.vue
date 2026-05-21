@@ -77,7 +77,7 @@ async function handleWhatsappURL() {
     <HeadingNoAtras />
     <motion.div v-bind="fadeInUp">
       <section
-        class="container registro h-[100vh] flex flex-col justify-between overflow-hidden p-0"
+        class="container registro min-h-screen flex flex-col justify-between p-0"
       >
         <div class="row align-items-center">
           <div class="col-lg-6 desktop">
@@ -128,8 +128,10 @@ async function handleWhatsappURL() {
             </div>
           </div>
         </div>
-        <Footer></Footer>
       </section>
+      
+      <Footer></Footer>
+
     </motion.div>
   </div>
 </template>

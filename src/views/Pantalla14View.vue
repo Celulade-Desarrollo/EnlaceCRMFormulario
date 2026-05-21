@@ -73,7 +73,7 @@ onMounted(() => {
   <motion.div v-bind="fadeInUp">
     <h2 class="titulo">Datos Personales</h2>
     <!-- Select de generos -->
-    <section class="h-[100vh] flex flex-col justify-between overflow-hidden">
+    <section class="min-h-screen flex flex-col justify-between mb-5">
       <form>
         <div class="form-group">
           <label for="nivel educativo">Nivel Educativo</label>
@@ -150,8 +150,9 @@ onMounted(() => {
           </p>
         </div>
       </form>
-      <Footer></Footer>
     </section>
+    <Footer></Footer>
+
   </motion.div>
 </template>
 

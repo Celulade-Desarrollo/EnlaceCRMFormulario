@@ -132,26 +132,25 @@
   </script>
 
 <template>
-  <div>
+  <div class="min-h-screen flex flex-col">
     <Heading class="mb-[80px]" />
-    <motion.div v-bind="fadeInUp">
-      <div class="relative">
-        <section class="container registro">
-          <div class="row align-items-center">
-            <div class="col-lg-6 desktop">
-              <picture>
-                <img
-                  src="/pago.png"
-                  alt="Pago"
-                  class="img-fluid"
-                  loading="lazy"
-                  title="Pago"
-                />
-              </picture>
-            </div>
+    <motion.div v-bind="fadeInUp" class="flex-auto overflow-y-auto">
+      <section class="container registro view-container flex flex-col justify-between min-h-full">
+        <div class="row align-items-center">
+          <div class="col-lg-6 desktop">
+            <picture>
+              <img
+                src="/pago.png"
+                alt="Pago"
+                class="img-fluid"
+                loading="lazy"
+                title="Pago"
+              />
+            </picture>
+          </div>
 
             <div class="col-lg-6">
-              <div className="flex justify-center">
+              <div class="flex justify-center">
                 <h2 class="display-4 titulo-2 w-[350px] text-center">
                   ¡Contar con tu fiado Enlace es muy fácil!
                 </h2>
@@ -217,10 +216,8 @@
             </div>
           </div>
         </section>
-
-        <Footer class="absolute bottom-0 left-0 right-0" />
-      </div>
     </motion.div>
+    <Footer />
   </div>
 </template>
 
@@ -256,17 +253,20 @@ body {
 .container {
   background-color: white;
   color: #111111;
-  min-height: 100vh;
+  min-height: 0;
+  max-height: none;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: 20px;
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 
-.tarjeta {
-  background-color: rgb(255, 255, 255);
-  padding: 24px;
-  border-radius: 16px;
+.view-container {
+  min-height: 0;
+  max-height: none;
+  overflow-y: auto;
 }
 
 .centrar .container button {

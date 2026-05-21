@@ -176,7 +176,7 @@ onMounted(() => {
       </div>
     </section>
   </motion.div>
-  <Footer class="bottom-0 left-0 right-0"></Footer>
+  <Footer></Footer>
 </template>
 
 <style scoped>

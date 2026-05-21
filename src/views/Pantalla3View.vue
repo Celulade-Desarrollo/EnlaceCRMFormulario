@@ -32,19 +32,19 @@ const apellidoError = ref("");
 const SegundoApellidoError = ref("");
 const cedulaErrorMessage = ref("");
 
-onMounted(async () => {
-  localStorage.setItem("ruta", window.location.pathname);
+// onMounted(async () => {
+//   localStorage.setItem("ruta", window.location.pathname);
 
-  try {
-    const response = await axios.post("/api/flujoRegistroEnlace/cedula", {
-      nbAgenteComercial,
-      nbCliente,
-    });
-    cedulaDesdeApi.value = String(response.data).trim();
-  } catch (err) {
-    console.error("Error al cargar cédula inicial:", err);
-  }
-});
+//   try {
+//     const response = await axios.post("/api/flujoRegistroEnlace/cedula", {
+//       nbAgenteComercial,
+//       nbCliente,
+//     });
+//     cedulaDesdeApi.value = String(response.data).trim();
+//   } catch (err) {
+//     console.error("Error al cargar cédula inicial:", err);
+//   }
+// });
 
 const validateNombre = () => {
   if (/[^a-zA-ZÀ-ÿ\s'-]/.test(nombre.value)) {
@@ -99,40 +99,59 @@ const handleSubmit = async (event) => {
 
   isLoading.value = true;
 
-  // Si por alguna razón no tenemos la cédula de la API, la pedimos
-  if (!cedulaDesdeApi.value) {
-    try {
+  try {
+
+    if (!cedulaDesdeApi.value) {
+
       const response = await axios.post("/api/flujoRegistroEnlace/cedula", {
         nbAgenteComercial,
         nbCliente,
       });
+
       cedulaDesdeApi.value = String(response.data).trim();
-    } catch (err) {
-      cedulaErrorMessage.value = "Error de red al validar.";
-      isLoading.value = false;
+    }
+
+    const cedulaInput = String(cedula.value).trim();
+
+    if (cedulaInput !== cedulaDesdeApi.value) {
+
+      const ultimos4 = cedulaDesdeApi.value.slice(-4);
+
+      const cedulaPista =
+        cedulaDesdeApi.value.slice(0, -4).replace(/./g, "*") +
+        ultimos4;
+
+      cedulaErrorMessage.value =
+        `Debes ingresar la misma cédula registrada en COMPI terminada en ${cedulaPista}. Si no reconoces esta cédula o tienes problemas con el registro, comunícate con soporte aquí: `;
+
       return;
     }
-  }
 
-  const cedulaInput = String(cedula.value).trim();
+    store.completarFormulario();
 
-  // Comparación final
-  if (cedulaInput !== cedulaDesdeApi.value) {
-    const ultimos4 = cedulaDesdeApi.value.slice(-4);
-    const cedulaPista = cedulaDesdeApi.value.slice(0, -4).replace(/./g, "*") + ultimos4;
-    cedulaErrorMessage.value = `Debes ingresar la misma cédula registrada en COMPI terminada en ${cedulaPista}`;
+    formStore.updateField("Nombres", nombre.value);
+    formStore.updateField("Primer_Apellido", apellido.value);
+    formStore.updateField("2do_Apellido_opcional", SegundoApellido.value);
+    formStore.updateField("Cedula_Cliente", cedula.value.toString());
+
+    router.push("/datosPersonales");
+
+  } catch (err) {
+
+    if (
+      err.response?.status === 404 &&
+      err.response?.data?.message === "No encontrado"
+    ) {
+
+      cedulaErrorMessage.value = "Cédula no encontrada en COMPI. Por favor, contacta soporte.";
+
+    } else {
+      cedulaErrorMessage.value ="Error de red al validar.";
+    }
+
+  } finally {
     isLoading.value = false;
-    return;
   }
-
-  // Si todo está bien, guardamos y saltamos
-  store.completarFormulario();
-  formStore.updateField("Nombres", nombre.value);
-  formStore.updateField("Primer_Apellido", apellido.value);
-  formStore.updateField("2do_Apellido_opcional", SegundoApellido.value);
-  formStore.updateField("Cedula_Cliente", cedula.value.toString());
-
-  router.push("/datosPersonales");
 };
 </script>
 
@@ -182,7 +201,7 @@ const handleSubmit = async (event) => {
                 
                 <div v-if="cedulaErrorMessage" class="mt-3">
                   <p class="text-danger-larga">
-                    {{ cedulaErrorMessage }}. Si no reconoces esta cédula o tienes problemas con el registro, comunícate con soporte aquí:
+                    {{ cedulaErrorMessage }}
                   </p>
                   <div class="text-center mt-2">
                     <a href="https://wa.me/573196622476" target="_blank" class="btn-link">
@@ -191,7 +210,10 @@ const handleSubmit = async (event) => {
                   </div>
                 </div>
               </div>
-              <Button type="submit"></Button>
+              <div v-if="isLoading" class="loader-container">
+                <div class="loader"></div>
+              </div>
+              <Button v-else type="submit"></Button>
             </form>
           </div>
         </div>
@@ -202,6 +224,32 @@ const handleSubmit = async (event) => {
 </template>
 
 <style scoped>
+
+.loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 2rem 0;
+}
+
+.loader {
+  border: 5px solid #5708eb;
+  border-top: 5px solid #ff00f2;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
 
 .text-danger-larga {
   color: red;
