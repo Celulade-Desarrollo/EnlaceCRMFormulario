@@ -1,127 +1,135 @@
-<script setup>
-import { ref, watch, onMounted } from "vue";
-import Heading from "../components/UI/Heading.vue";
-import Button from "../components/UI/Button.vue";
-import Footer from "../components/UI/Footer.vue";
-import { useRouter } from "vue-router";
-import { useFormularioStore } from "../router/store";
-import { fadeInUp } from "../motion/PagesAnimation";
-import { motion } from "motion-v";
-import { useFormStore } from '../stores/formStore.js'
-const email = ref("");
-const confirmaremail = ref("");
-const errorMessage = ref("");
-const emailErrorMessage = ref("");
-const confirmEmailErrorMessage = ref("");
-const router = useRouter();
-const store = useFormularioStore();
-const nbnbCliente = localStorage.getItem("nbCliente");
-const nbAgenteComercial = localStorage.getItem("nbAgenteComercial");
-const tokenAlpina = localStorage.getItem("tokenAlpina");
+  <script setup>
+  import { ref, watch, onMounted } from "vue";
+  import Heading from "../components/UI/Heading.vue";
+  import Button from "../components/UI/Button.vue";
+  import Footer from "../components/UI/Footer.vue";
+  import { useRouter } from "vue-router";
+  import { useFormularioStore } from "../router/store";
+  import { fadeInUp } from "../motion/PagesAnimation";
+  import { motion } from "motion-v";
+  import { useFormStore } from '../stores/formStore.js'
+  const email = ref("");
+  const confirmaremail = ref("");
+  const errorMessage = ref("");
+  const emailErrorMessage = ref("");
+  const confirmEmailErrorMessage = ref("");
+  const router = useRouter();
+  const store = useFormularioStore();
+  const tokenAlpina = localStorage.getItem("tokenAlpina");
 
 
-//formulario global
-const formStore = useFormStore()
-// Función para limpiar valores undefined o null
-const clearUndefined = (value) => {
-  return value === undefined || value === null ? "" : value;
-};
+  //formulario global
+  const formStore = useFormStore()
+  // Función para limpiar valores undefined o null
+  const clearUndefined = (value) => {
+    return value === undefined || value === null ? "" : value;
+  };
 
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-// Validar que los correos coincidan
-const validateEmail = () => {
-  const emailValue = clearUndefined(email.value);
-  const confirmEmailValue = clearUndefined(confirmaremail.value);
+  // Validar que los correos coincidan
+  const validateEmail = () => {
+    const emailValue = clearUndefined(email.value);
+    const confirmEmailValue = clearUndefined(confirmaremail.value);
 
-  let isValid = true;
+    let isValid = true;
 
-  emailErrorMessage.value = "";
-  confirmEmailErrorMessage.value = "";
+    emailErrorMessage.value = "";
+    confirmEmailErrorMessage.value = "";
 
-  if (emailValue && !emailRegex.test(emailValue)) {
-    emailErrorMessage.value =
-      "Por favor, ingresa un correo electrónico válido.";
-    isValid = false;
-  }
-
-  if (confirmEmailValue && !emailRegex.test(confirmEmailValue)) {
-    confirmEmailErrorMessage.value =
-      "Por favor, ingresa un correo electrónico válido.";
-    isValid = false;
-  }
-
-  if (
-    emailRegex.test(emailValue) &&
-    emailRegex.test(confirmEmailValue) &&
-    emailValue.toLowerCase() !== confirmEmailValue.toLowerCase()
-  ) {
-    confirmEmailErrorMessage.value = "Los correos electrónicos no coinciden.";
-    isValid = false;
-  }
-
-  return isValid;
-};
-
-// Validar en tiempo real mientras se escriben los correos
-watch([email, confirmaremail], validateEmail);
-
-// Validar al enviar el formulario
-const handleSubmit = (event) => {
-  const emailValue = clearUndefined(email.value);
-  const confirmEmailValue = clearUndefined(confirmaremail.value);
-
-  errorMessage.value = "";
-
-  if (!emailValue || !confirmEmailValue) {
-    event.preventDefault();
-    errorMessage.value = "Por favor, completa todos los campos obligatorios.";
-
-    setTimeout(() => {
-      errorMessage.value = "";
-    }, 3000);
-
-    return;
-  }
-
-  if (!validateEmail()) {
-    event.preventDefault(); // evita enviar si hay errores
-    return;
-  }
-  event.preventDefault();
-  store.completarFormulario(); // Marca el formulario como completado
-  formStore.updateField('Correo_Electronico', confirmaremail.value)
-  router.push("/nombres"); // Redirige a la siguiente pantalla
-};
-
-const Id = ref(null);
-onMounted(() => {
-    const queryParams = new URLSearchParams(window.location.search);
-    const IdParam = queryParams.get('Id');
-    
-    if (IdParam) {
-        localStorage.setItem('Id', IdParam);
-        Id.value = IdParam;
-    } else {
-        Id.value = localStorage.getItem('Id');
+    if (emailValue && !emailRegex.test(emailValue)) {
+      emailErrorMessage.value =
+        "Por favor, ingresa un correo electrónico válido.";
+      isValid = false;
     }
+
+    if (confirmEmailValue && !emailRegex.test(confirmEmailValue)) {
+      confirmEmailErrorMessage.value =
+        "Por favor, ingresa un correo electrónico válido.";
+      isValid = false;
+    }
+
+    if (
+      emailRegex.test(emailValue) &&
+      emailRegex.test(confirmEmailValue) &&
+      emailValue.toLowerCase() !== confirmEmailValue.toLowerCase()
+    ) {
+      confirmEmailErrorMessage.value = "Los correos electrónicos no coinciden.";
+      isValid = false;
+    }
+
+    return isValid;
+  };
+
+  // Validar en tiempo real mientras se escriben los correos
+  watch([email, confirmaremail], validateEmail);
+
+  // Validar al enviar el formulario
+  const handleSubmit = (event) => {
+    const emailValue = clearUndefined(email.value);
+    const confirmEmailValue = clearUndefined(confirmaremail.value);
+
+    errorMessage.value = "";
+
+    if (!emailValue || !confirmEmailValue) {
+      event.preventDefault();
+      errorMessage.value = "Por favor, completa todos los campos obligatorios.";
+
+      setTimeout(() => {
+        errorMessage.value = "";
+      }, 3000);
+
+      return;
+    }
+
+    if (!validateEmail()) {
+      event.preventDefault(); // evita enviar si hay errores
+      return;
+    }
+    event.preventDefault();
+    store.completarFormulario(); // Marca el formulario como completado
+    formStore.updateField('Correo_Electronico', confirmaremail.value)
+    router.push("/nombres"); // Redirige a la siguiente pantalla
+  };
+
+  const Id = ref(null);
+  onMounted(() => {
+      const queryParams = new URLSearchParams(window.location.search);
+      const IdParam = queryParams.get('Id');
+      const nbClienteParam = queryParams.get("nbCliente");
+      const nbAgenteComercialParam = queryParams.get("nbAgenteComercial");
+
+      if (IdParam) {
+          localStorage.setItem('Id', IdParam);
+          Id.value = IdParam;
+      } else {
+          Id.value = localStorage.getItem('Id');
+      }
+      
+      console.log('Id final:', Id.value);
+
+    if (nbClienteParam) {
+      localStorage.setItem("nbCliente", nbClienteParam);
+    };
+
+    if (nbAgenteComercialParam) {
+      localStorage.setItem( "nbAgenteComercial",nbAgenteComercialParam);
+    };
     
-    console.log('Id final:', Id.value);
-  
-  let miRuta = window.location.pathname;
+    let miRuta = window.location.pathname;
 
-  // Validar si ya existe "ruta"
-  if (localStorage.getItem.length > 0) {
-    localStorage.removeItem("ruta");
+    // Validar si ya existe "ruta"
+    if (localStorage.getItem.length > 0) {
+      localStorage.removeItem("ruta");
 
-    // Setear la ruta por defecto
-    localStorage.setItem("ruta", miRuta);
-  } else {
-    // Setear la ruta por defecto
-    localStorage.setItem("ruta", miRuta);
-  }
-});
-</script>
+      // Setear la ruta por defecto
+      localStorage.setItem("ruta", miRuta);
+    } else {
+      // Setear la ruta por defecto
+      localStorage.setItem("ruta", miRuta);
+    }
+  });
+  </script>
 
 <template>
   <div class="min-h-screen flex flex-col">
