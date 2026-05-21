@@ -1,3 +1,24 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html, body, #app {
+  min-height: 100%;
+  height: 100%;
+}
+
+section.container.registro,
+section.min-h-screen,
+section.h-\[100vh\] {
+  min-height: calc(100vh - 100px);
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  padding-bottom: 1rem;
+  box-sizing: border-box;
+}
+
+section.container.registro > *,
+section.min-h-screen > *,
+section.h-\[100vh\] > * {
+  min-height: 0;
+}
