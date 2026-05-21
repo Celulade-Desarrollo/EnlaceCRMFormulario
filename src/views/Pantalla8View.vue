@@ -116,7 +116,7 @@ const ciudad = localStorage.getItem("selectedCity");
   <Heading />
   <motion.div v-bind="fadeInUp">
     <section
-      class="container registro p-0 flex flex-col h-[100vh] justify-between overflow-hidden"
+      class="container registro p-0 flex flex-col min-h-screen justify-between"
     >
       <div class="row align-items-center">
         <div class="col-lg-6 desktop">
@@ -217,7 +217,7 @@ const ciudad = localStorage.getItem("selectedCity");
       </div>
 
       <Footer />
-    </section>
+    </section>  
   </motion.div>
 </template>
 
