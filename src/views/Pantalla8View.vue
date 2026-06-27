@@ -140,7 +140,7 @@ const ciudad = localStorage.getItem("selectedCity");
                 </h3>
 
                 <!-- Dirección -->
-                <label for="direccion" class="input-label mt-4">
+                <!-- <label for="direccion" class="input-label mt-4">
                   <input
                     v-model="direccion"
                     class="form-control"
@@ -153,10 +153,10 @@ const ciudad = localStorage.getItem("selectedCity");
                     aria-describedby="error-direccion"
                   />
                   <span class="floating-label">Ingresa tu dirección</span>
-                </label>
+                </label> -->
 
                 <!-- Detalles -->
-                <label for="detalles" class="input-label mt-4">
+                <!-- <label for="detalles" class="input-label mt-4">
                   <input
                     v-model="detalles"
                     class="form-control"
@@ -171,7 +171,7 @@ const ciudad = localStorage.getItem("selectedCity");
                   <span class="floating-label"
                     >Detalles de tu dirección</span
                   >
-                </label>
+                </label> -->
 
                 <!-- Barrio -->
                 <p class="font-bold mt-4">Elige un Barrio</p>

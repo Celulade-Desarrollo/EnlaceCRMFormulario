@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted } from "vue";
 import axios from "axios";
 import Heading from "../components/UI/Heading.vue";
 import Button from "../components/UI/Button.vue";
@@ -14,27 +14,39 @@ const store = useFormularioStore();
 const router = useRouter();
 const formStore = useFormStore();
 
+// Departamentos
 const departments = ref([]);
-const cities = ref([]);
 const departmentsRaw = ref([]);
-const citiesRaw = ref([]);
-
 const selectedDepartment = ref("");
 const selectedDepartmentId = ref(null);
+const departmentSearch = ref("");
+const filteredDepartments = ref([]);
+const showDepartments = ref(false);
+
+// Ciudades
+const cities = ref([]);
+const citiesRaw = ref([]);
 const selectedCity = ref("");
 const selectedCityId = ref(null);
-
-const departmentSearch = ref("");
 const citySearch = ref("");
-
-const filteredDepartments = ref([]);
 const filteredCities = ref([]);
-
-const showDepartments = ref(false);
 const showCities = ref(false);
+
+// Barrios
+const barriosRaw = ref([]);
+const barrios = ref([]);
+const barriosFiltrados = ref([]);
+const selectedBarrio = ref("");
+const selectedBarrioId = ref(null);
+const buscarBarrio = ref("");
+const mostrarBarrios = ref(false);
+
+// Dirección
+const direccion = ref("");
 
 const error = ref("");
 
+// Cargar Departamentos
 const loadDepartments = async () => {
   try {
     const response = await axios.get("/api/ubicacion/departamentos");
@@ -57,6 +69,7 @@ const loadDepartments = async () => {
   }
 };
 
+// Cargar Ciudades
 const loadCities = async (departmentId) => {
   if (!departmentId) return;
   try {
@@ -81,6 +94,26 @@ const loadCities = async (departmentId) => {
   }
 };
 
+// Cargar Barrios basados en la Ciudad
+const loadBarrios = async (cityId) => {
+  if (!cityId) return;
+  try {
+    const response = await axios.get(`/api/ubicacion/barrios/${cityId}`);
+    barriosRaw.value = response.data;
+
+    let sorted = response.data.sort((a, b) =>
+      a.nombre.localeCompare(b.nombre, "es", { sensitivity: "base" })
+    );
+
+    barrios.value = sorted.map(b => b.nombre);
+    barriosFiltrados.value = barrios.value;
+  } catch (err) {
+    error.value = "Error al cargar los barrios.";
+    console.error(err);
+  }
+};
+
+// Filtros y Selecciones
 const filterDepartments = (input) => {
   filteredDepartments.value = departments.value.filter(d =>
     d.toLowerCase().includes(input.toLowerCase())
@@ -95,10 +128,17 @@ const selectDepartment = (dept) => {
   const deptObj = departmentsRaw.value.find(d => d.nombre === dept);
   selectedDepartmentId.value = deptObj?.id || null;
 
+  // Resetear Hijos
   selectedCity.value = "";
   citySearch.value = "";
   selectedCityId.value = null;
   filteredCities.value = [];
+  
+  selectedBarrio.value = "";
+  buscarBarrio.value = "";
+  selectedBarrioId.value = null;
+  barriosFiltrados.value = [];
+
   loadCities(selectedDepartmentId.value);
 };
 
@@ -115,36 +155,108 @@ const selectCity = (city) => {
 
   const cityObj = citiesRaw.value.find(c => c.nombre.trim().toLowerCase() === city.trim().toLowerCase());
   selectedCityId.value = cityObj?.id || null;
+
+  // Resetear y cargar Barrios
+  selectedBarrio.value = "";
+  buscarBarrio.value = "";
+  selectedBarrioId.value = null;
+  barriosFiltrados.value = [];
+  
+  loadBarrios(selectedCityId.value);
+};
+
+const filtrarBarrios = (input) => {
+  const texto = input.trim().toLowerCase();
+  if (!texto) {
+    barriosFiltrados.value = barrios.value;
+  } else {
+    barriosFiltrados.value = barrios.value.filter(b =>
+      b.toLowerCase().includes(texto)
+    );
+  }
+};
+
+const selectBarrio = (nombre) => {
+  selectedBarrio.value = nombre;
+  buscarBarrio.value = nombre;
+  mostrarBarrios.value = false;
+
+  const barrioObj = barriosRaw.value.find(
+    b => b.nombre.trim().toLowerCase() === nombre.trim().toLowerCase()
+  );
+  selectedBarrioId.value = barrioObj?.id || null;
 };
 
 // Manejar envío del formulario
 const handleSubmit = (event) => {
-  if (!selectedDepartment.value || !selectedCity.value) {
-    error.value = "Por favor, selecciona tu departamento y ciudad.";
-    event.preventDefault();
+  event.preventDefault();
+
+  if (!selectedDepartment.value || !selectedCity.value || !selectedBarrio.value || !direccion.value.trim()) {
+    error.value = "Por favor, completa todos los campos";
     setTimeout(() => error.value = "", 3000);
     return false;
   }
 
+  // Guardar en LocalStorage
   localStorage.setItem("selectedDepartment", selectedDepartment.value);
   localStorage.setItem("selectedCity", selectedCity.value);
   localStorage.setItem("selectedCityId", selectedCityId.value);
+  localStorage.setItem("selectedBarrio", selectedBarrio.value);
+  localStorage.setItem("direccion", direccion.value);
 
   error.value = "";
-  event.preventDefault();
-  store.completarFormulario();
-  router.push("/ubicacion");
+  
+  // Actualizar Stores
   formStore.updateField('Ubicacion_del_Negocio_Departamento', selectedDepartment.value);
   formStore.updateField('Ubicacion_del_Negocio_Ciudad', selectedCity.value);
+  formStore.updateField('Barrio', selectedBarrio.value);
+  formStore.updateField('Direccion', direccion.value);
+
+  store.completarFormulario();
+  router.push("/informacionNegocio"); 
 };
 
-// Inicialización
-onMounted(() => {
-  loadDepartments();
+onMounted(async () => {
+  await loadDepartments();
+  
   const miRuta = window.location.pathname;
   localStorage.setItem("ruta", miRuta);
-});
 
+  const deptoGuardado = localStorage.getItem("departamento"); 
+  const ciudadGuardada = localStorage.getItem("ciudad");
+
+  if (deptoGuardado) {
+    // Buscamos el objeto real para sacar el ID
+    const deptObj = departmentsRaw.value.find(
+      d => d.nombre.trim().toUpperCase() === deptoGuardado.trim().toUpperCase()
+    );
+
+    if (deptObj) {
+      selectedDepartment.value = deptObj.nombre;
+      departmentSearch.value = deptObj.nombre;
+      selectedDepartmentId.value = deptObj.id;
+
+      // 3. Cargamos las ciudades asociadas a este ID de departamento de forma asíncrona
+      await loadCities(deptObj.id);
+
+      if (ciudadGuardada) {
+        // Buscamos el objeto de la ciudad real para sacar su ID
+        const cityObj = citiesRaw.value.find(
+          c => c.nombre.trim().toUpperCase() === ciudadGuardada.trim().toUpperCase()
+        );
+
+        if (cityObj) {
+          selectedCity.value = cityObj.nombre;
+          citySearch.value = cityObj.nombre;
+          selectedCityId.value = cityObj.id;
+
+          // 4. Dejamos los barrios cargados listos para que el usuario solo despliegue y seleccione
+          await loadBarrios(cityObj.id);
+        }
+      }
+    }
+  }
+});
 </script>
 
 <template>
@@ -162,7 +274,6 @@ onMounted(() => {
       <div class="select-option mt-5 p-5">
         <h3 class="mb-4 titulo-7">¿Cuéntanos dónde está tu negocio?</h3>
 
-        <!-- DEPARTAMENTO -->
         <p class="font-bold">Elige un Departamento</p>
         <div class="custom-select-wrapper relative">
           <input
@@ -170,6 +281,7 @@ onMounted(() => {
             v-model="departmentSearch"
             @input="filterDepartments(departmentSearch)"
             @focus="showDepartments = true"
+            @blur="setTimeout(() => showDepartments = false, 200)"
             placeholder="Elige un Departamento"
             class="custom-select w-full"
           />
@@ -188,7 +300,6 @@ onMounted(() => {
           </ul>
         </div>
 
-        <!-- CIUDAD -->
         <p class="font-bold mt-4">Elige una Ciudad</p>
         <div class="custom-select-wrapper relative">
           <input
@@ -196,6 +307,7 @@ onMounted(() => {
             v-model="citySearch"
             @input="filterCities(citySearch)"
             @focus="showCities = true"
+            @blur="setTimeout(() => showCities = false, 200)"
             placeholder="Elige una Ciudad"
             class="custom-select w-full"
             :disabled="!selectedDepartmentId"
@@ -213,37 +325,65 @@ onMounted(() => {
           </ul>
         </div>
 
-      </div>
+        <p class="font-bold mt-4">Elige un Barrio</p>
+        <div class="custom-select-wrapper relative">
+          <input
+            type="text"
+            v-model="buscarBarrio"
+            @input="filtrarBarrios(buscarBarrio)"
+            @focus="mostrarBarrios = true"
+            @blur="setTimeout(() => mostrarBarrios = false, 200)"
+            placeholder="Elige un Barrio"
+            class="custom-select w-full"
+            :disabled="!selectedCityId"
+          />
+          <ul
+            v-show="mostrarBarrios"
+            class="absolute z-50 w-full max-h-48 overflow-auto border bg-white"
+          >
+            <li
+              v-for="b in barriosFiltrados"
+              :key="b"
+              @click="selectBarrio(b)"
+              class="p-2 hover:bg-gray-200 cursor-pointer"
+            >
+              {{ b }}
+            </li>
+          </ul>
+        </div>
 
+        <label for="direccion" class="input-label mt-5">
+          <input
+            v-model="direccion"
+            class="form-control"
+            aria-required="true"
+            name="direccion"
+            type="text"
+            placeholder=" "
+            autocomplete="off"
+            id="direccion"
+          />
+          <span class="floating-label font-bold">Ingresa tu dirección</span>
+        </label>
+
+      </div>
+    
       <div class="p-5">
         <Button class="mt-5" @click="handleSubmit"></Button>
+        <p v-if="error" class="text-danger mt-1 flex justify-center">{{ error }}</p>
       </div>
+      
 
-      <p v-if="error" class="text-danger mt-1 flex justify-center">{{ error }}</p>
     </section>
     <Footer />
-
   </motion.div>
 </template>
-
-
 
 <style scoped>
 .custom-select-wrapper {
   position: relative;
-}
-
-.combo-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.custom-select-wrapper {
-  position: relative;
   margin-bottom: 24px;
-
 }
-
 .custom-select {
   appearance: none;
   border: none;
@@ -259,44 +399,56 @@ onMounted(() => {
   box-shadow: none;
   color: #333;
   cursor: pointer;
-  
 }
 .custom-select:focus {
   border-bottom: 2px solid #ff00f2;
-  outline: none;
-  box-shadow: none;
-
+}
+.custom-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
-body {
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  background-color: white;
-}
-
-.form-select {
+/* Estilos de Dirección de la Segunda Pantalla */
+.input-label {
+  position: relative;
   display: block;
   width: 100%;
-  padding: 0.375rem 1.75rem 0.375rem 0.75rem;
-  font-size: 1rem;
-  font-weight: 400;
-  line-height: 1.5;
-  color: #111;
-  background-color: #fff;
-  background-clip: padding-box;
-  border: 1px solid #ced4da;
-  border-radius: 0.25rem;
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  appearance: none;
-
-
+  margin-top: 32px;
 }
-
-.form-select:focus {
-  border-color: #80bdff;
-  outline: 0;
-  color: #111;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-
+.form-control {
+  width: 100%;
+  padding: 10px 0;
+  font-size: 16px;
+  border: none;
+  border-bottom: 2px solid #09008be1;
+  background: transparent;
+  font-family: sans-serif;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+.floating-label {
+  position: absolute;
+  left: 0;
+  top: 10px;
+  color: black;
+  font-size: 16px;
+  pointer-events: none;
+  transition: 0.3s ease all;
+  font-family: sans-serif;
+}
+.form-control:focus + .floating-label,
+.form-control:not(:placeholder-shown) + .floating-label {
+  top: -20px;
+  font-size: 13px;
+  color: #dd3590; /* cambia al color rosa al enfocar/escribir */
+}
+.input-label:hover .form-control {
+  border-bottom-color: #ff00f2;
+}
+.form-control:focus {
+  border-bottom-color: #ff00f2;
+  outline: none;
+  box-shadow: none;
 }
 
 .titulo-7 {
@@ -308,28 +460,6 @@ body {
   line-height: 1.2;
   margin-top: -50px;
 }
-
-.form-group input {
-  background-color: transparent;
-  border-width: 0 0 1px;
-  border-style: solid;
-  border-color: #09008be1;
-  border-radius: 0;
-  box-sizing: border-box;
-  color: rgb(17, 17, 17);
-  caret-color: currentColor;
-  display: block;
-  margin: 0;
-  padding: 8px 0;
-  text-align: left;
-  outline: none;
-  width: 100%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  
-}
-
 .container button {
   padding: 0 1.25rem;
   border-radius: 6.25rem;
@@ -341,111 +471,20 @@ body {
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  outline: none;
-  text-align: center;
-  overflow: hidden;
   border: none;
-  transform: translate3d(0, 0, 0);
-
 }
-
-
 .container {
   background-color: white;
   color: #111;
   padding: 20px;
-
 }
-
-.parrafo {
-  font-size: medium;
-}
-
-.info-banner {
-  font-family: Graphik-Medium, Graphik-Regular, "Gotham SSm A", "Gotham SSm B",
-    "Helvetica Neue", Helvetica, Arial, sans-serif;
-  margin: 0 0 12px;
-  font-weight: 500;
-  letter-spacing: -0.03em;
-  font-size: 1.875rem;
-  line-height: 1.2;
-  
-}
-
-.h5 {
-  font-weight: bold;
-}
-
 p {
   color: black;
   font-size: 1rem;
 }
-
-.checklist {
-  max-width: 300px;
-  margin-top: 30px;
-  margin: 0 auto;
-}
-
-.titulo {
-  font-weight: bold;
-}
-
-.check-item {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-  font-size: 16px;
-  position: relative;
-  
-}
-
-.check-item input[type="checkbox"] {
-  opacity: 0;
-  position: absolute;
-}
-
-.checkmark {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background-color: #e0e0e0;
-  margin-right: 10px;
-  position: relative;
-}
-
-.check-item input[type="checkbox"]:checked + .checkmark {
-  background-color: #dd3590;
-  border: 2px solid #dd3590;
-}
-
-.check-item input[type="checkbox"]:checked + .checkmark::after {
-  content: "";
-  position: absolute;
-  left: 6px;
-  top: 2px;
-  width: 6px;
-  height: 12px;
-  border: solid white;
-  border-width: 0 3px 3px 0;
-  transform: rotate(45deg);
-  display: block;
-}
-
 @media (max-width: 767px) {
   .desktop {
     display: none;
-  }
-  .titulo {
-    font-weight: bold;
-  }
-  .tarjeta {
-    background-color: rgb(255, 255, 255);
-    padding: 24px;
-    border-radius: 16px;
-    width: 100%;
-    
   }
 }
 </style>

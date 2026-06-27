@@ -28,6 +28,9 @@ const token = queryParams.get("token");
 const datos = formStore.getFinalData();
 const id = localStorage.getItem('Id');
 
+const Nombre = localStorage.getItem("nombre"); 
+const Apellido = localStorage.getItem("apellido");
+
 async function handleWhatsappURL() {
   const datosFinales = formStore.getFinalData();
 
@@ -35,6 +38,10 @@ async function handleWhatsappURL() {
 
   const datosLimpios = {
     ...datosFinales,
+    Ubicacion_del_Negocio_Departamento: localStorage.getItem("selectedDepartment") || "",
+    Ubicacion_del_Negocio_Ciudad: localStorage.getItem("selectedCity") || "",
+    Barrio: localStorage.getItem("selectedBarrio") || "",
+    Direccion: localStorage.getItem("direccion") || "",
     Rango_de_Ingresos: convertirAString(datosFinales.Rango_de_Ingresos),
     Valor_Bienes: convertirAString(datosFinales.Valor_Bienes),
     Valor_Deudas: convertirAString(datosFinales.Valor_Deudas),
@@ -42,9 +49,16 @@ async function handleWhatsappURL() {
     Monto_Mensual_Deuda: convertirAString(datosFinales.Monto_Mensual_Deuda),
     Monto_ingresos_diferentes_negocio: convertirAString(datosFinales.Monto_ingresos_diferentes_negocio),
     Declaracion_de_nacionalidad_y_residencia_fiscal_en_Colombia: true,
-    Fecha_Envio_Formulario: new Date()
+    Fecha_Envio_Formulario: new Date(),
+    Estado_Civil: "Soltero",
+    Nivel_Educativo: "SECUNDARIA",
+    Grupo_Etnico: "NINGUNO",
+    Declara_Renta: "NO",
+    Esta_obligado_a_tener_RUT_por_tu_actividad_economica: "SI",
+    Nombres: Nombre,
+    Primer_Apellido: Apellido
   };
-
+   console.log("datos para enviar",datosLimpios)
   try {
         await axios.put(`/api/flujoRegistroEnlace/${id}`, datosLimpios, {
       headers: {

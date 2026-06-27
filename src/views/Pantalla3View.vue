@@ -92,7 +92,11 @@ const handleSubmit = async (event) => {
   errorMessage.value = "";
   cedulaErrorMessage.value = "";
 
-  if (!nombre.value || !apellido.value || !checkCedulaFormat()) {
+  // if (!nombre.value || !apellido.value || !checkCedulaFormat()) {
+  //   errorMessage.value = "Por favor, completa todos los campos correctamente.";
+  //   return;
+  // }
+    if (!checkCedulaFormat()) {
     errorMessage.value = "Por favor, completa todos los campos correctamente.";
     return;
   }
@@ -107,8 +111,9 @@ const handleSubmit = async (event) => {
         nbAgenteComercial,
         nbCliente,
       });
+      console.log("cedularesponse",response.data)
 
-      cedulaDesdeApi.value = String(response.data).trim();
+      cedulaDesdeApi.value = String(response.data.documento).trim();
     }
 
     const cedulaInput = String(cedula.value).trim();
@@ -134,7 +139,7 @@ const handleSubmit = async (event) => {
     formStore.updateField("2do_Apellido_opcional", SegundoApellido.value);
     formStore.updateField("Cedula_Cliente", cedula.value.toString());
 
-    router.push("/datosPersonales");
+    router.push("/negocio");
 
   } catch (err) {
 
@@ -171,13 +176,13 @@ const handleSubmit = async (event) => {
             <form @submit.prevent="handleSubmit">
               <div class="form-group mt-[40px]">
                 <p class="titulo-3 mb-4">
-                  Ingresa tu nombre completo tal como aparece en tu cédula
+                  Ingresa tu cédula debe ser la misma registrada en app compi
                 </p>
                 <p v-if="errorMessage" class="text-danger mt-1">
                   {{ errorMessage }}
                 </p>
 
-                <label for="nombres" class="input-label">
+                <!-- <label for="nombres" class="input-label">
                   <input id="nombres" class="form-control" v-model="nombre" type="text" placeholder=" " @input="validateNombre" />
                   <span class="floating-label">Ingresa tus nombres</span>
                 </label>
@@ -192,7 +197,7 @@ const handleSubmit = async (event) => {
                 <label for="segundoApellido" class="input-label mt-4">
                   <input id="segundoApellido" class="form-control" v-model="SegundoApellido" type="text" placeholder=" " @input="validateSegundoApellido" />
                   <span class="floating-label">Ingresa tu segundo apellido (opcional)</span>
-                </label>
+                </label> -->
 
                 <label for="cedula" class="input-label mt-4">
                   <input id="cedula" class="form-control" v-model="cedula" type="text" placeholder=" " @input="handleCedulaInput" />
