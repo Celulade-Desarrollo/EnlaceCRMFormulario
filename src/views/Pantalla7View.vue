@@ -282,7 +282,7 @@ onMounted(async () => {
             @input="filterDepartments(departmentSearch)"
             @focus="showDepartments = true"
             @blur="setTimeout(() => showDepartments = false, 200)"
-            placeholder="Elige un Departamento"
+            placeholder="Selecciona"
             class="custom-select w-full"
           />
           <ul
@@ -308,7 +308,7 @@ onMounted(async () => {
             @input="filterCities(citySearch)"
             @focus="showCities = true"
             @blur="setTimeout(() => showCities = false, 200)"
-            placeholder="Elige una Ciudad"
+            placeholder="Selecciona"
             class="custom-select w-full"
             :disabled="!selectedDepartmentId"
           />
@@ -333,7 +333,7 @@ onMounted(async () => {
             @input="filtrarBarrios(buscarBarrio)"
             @focus="mostrarBarrios = true"
             @blur="setTimeout(() => mostrarBarrios = false, 200)"
-            placeholder="Elige un Barrio"
+            placeholder="Selecciona"
             class="custom-select w-full"
             :disabled="!selectedCityId"
           />
@@ -351,30 +351,28 @@ onMounted(async () => {
             </li>
           </ul>
         </div>
-
-        <label for="direccion" class="input-label mt-5">
-          <input
-            v-model="direccion"
-            class="form-control"
-            aria-required="true"
-            name="direccion"
-            type="text"
-            placeholder=" "
-            autocomplete="off"
-            id="direccion"
-          />
-          <span class="floating-label font-bold">Ingresa tu dirección</span>
-        </label>
-
+        <div class="custom-select-wrapper relative">
+          <label for="direccion" class="input-label mt-5">
+            <input
+              v-model="direccion"
+              class="form-control"
+              aria-required="true"
+              name="direccion"
+              type="text"
+              placeholder=" "
+              autocomplete="off"
+              id="direccion"
+            />
+            <span class="floating-label font-bold">Ingresa tu dirección</span>
+          </label>
+        </div>
       </div>
     
       <div class="p-5">
         <Button class="mt-5" @click="handleSubmit"></Button>
-        <p v-if="error" class="text-danger mt-1 flex justify-center">{{ error }}</p>
       </div>
-      
-
     </section>
+    <p v-if="error" class="text-danger mt-1 flex justify-center">{{ error }}</p>
     <Footer />
   </motion.div>
 </template>

@@ -11,14 +11,19 @@ import { useFormStore } from '../stores/formStore.js'
 import axios from 'axios';
 
 const formStore = useFormStore()
-const datosFinales = ref({})
-
 const error = ref("");
 const store = useFormularioStore();
 const router = useRouter();
 
 const nbCliente = localStorage.getItem('nbCliente');
 const nbAgenteComercial = localStorage.getItem('nbAgenteComercial');
+
+const id = localStorage.getItem("Id");
+
+const Nombre = localStorage.getItem("nombre");
+const primerApellido = localStorage.getItem("primerApellido");
+const segundoApellido = localStorage.getItem("segundoApellido");
+const convertirAString = (valor) => (!valor ? "0" : String(valor));
 
 const handleCheckboxChange = (event) => {
   const checkboxes = document.querySelectorAll(".single-checkbox");
@@ -86,12 +91,17 @@ onMounted(() => {
   }
 });
 
-const handleSubmit = (event) => {
+const handleSubmit = async (event) => {
   event.preventDefault();
 
   if (!validateCheckboxes()) {
-    error.value = "Por favor, selecciona al menos una opción de los tres grupos.";
-    setTimeout(() => { error.value = ""; }, 3000);
+    error.value =
+      "Por favor, selecciona al menos una opción de los tres grupos.";
+
+    setTimeout(() => {
+      error.value = "";
+    }, 3000);
+
     return;
   }
 
@@ -99,14 +109,58 @@ const handleSubmit = (event) => {
   const familiar = document.querySelector(".single-checkbox-1:checked")?.value;
   const moneda = document.querySelector(".single-checkbox-2:checked")?.value;
 
-  formStore.updateField('Persona_expuesta_politicamente_PEP', persona === "si" ? 1 : 0);
-  formStore.updateField('Familiar_expuesto_politicamente_PEP', familiar === "si" ? 1 : 0);
-  formStore.updateField('Operaciones_moneda_extranjera', moneda === "si" ? 1 : 0);
-  formStore.updateField('nbCliente', nbCliente);
-  formStore.updateField('nbAgenteComercial', nbAgenteComercial);
-  formStore.updateField('Declaracion_de_nacionalidad_y_residencia_fiscal_en_Colombia', true);
+  formStore.updateField( "Persona_expuesta_politicamente_PEP", persona === "si" ? 1 : 0);
+  formStore.updateField( "Familiar_expuesto_politicamente_PEP",familiar === "si" ? 1 : 0);
+  formStore.updateField("Operaciones_moneda_extranjera",moneda === "si" ? 1 : 0);
+  formStore.updateField("nbCliente", nbCliente);
+  formStore.updateField("nbAgenteComercial", nbAgenteComercial);
+  formStore.updateField("Declaracion_de_nacionalidad_y_residencia_fiscal_en_Colombia",true);
 
-  router.push("/truora");
+  const datosFinales = formStore.getFinalData();
+  const datosLimpios = {
+    ...datosFinales,
+
+    Ubicacion_del_Negocio_Departamento:
+      localStorage.getItem("selectedDepartment") || "",
+    Ubicacion_del_Negocio_Ciudad:
+      localStorage.getItem("selectedCity") || "",
+    Barrio: localStorage.getItem("selectedBarrio") || "",
+    Direccion: localStorage.getItem("direccion") || "",
+    Rango_de_Ingresos: convertirAString(datosFinales.Rango_de_Ingresos ),
+    Valor_Bienes: convertirAString(datosFinales.Valor_Bienes),
+    Valor_Deudas: convertirAString(datosFinales.Valor_Deudas),
+    Gastos_Mensuales: convertirAString(datosFinales.Gastos_Mensuales),
+    Monto_Mensual_Deuda: convertirAString(datosFinales.Monto_Mensual_Deuda),
+    Monto_ingresos_diferentes_negocio: convertirAString(datosFinales.Monto_ingresos_diferentes_negocio),
+    Declaracion_de_nacionalidad_y_residencia_fiscal_en_Colombia: true,
+    Fecha_Envio_Formulario: new Date(),
+    Estado_Civil: "Soltero",
+    Nivel_Educativo: "SECUNDARIA",
+    Grupo_Etnico: "NINGUNO",
+    Declara_Renta: false,
+    Esta_obligado_a_tener_RUT_por_tu_actividad_economica: true,
+    Nombres: Nombre,
+    Primer_Apellido: primerApellido,
+    "2do_Apellido_opcional": segundoApellido,
+  };
+
+  console.log("Datos enviados:", datosLimpios);
+
+  try {
+    await axios.put(`/api/flujoRegistroEnlace/${id}`, datosLimpios, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    console.log("✅ Formulario enviado correctamente");
+
+    router.push("/truora");
+  } catch (err) {
+    console.error("Error enviando formulario:", err);
+
+    error.value = "Error al enviar el formulario";
+  }
 };
 </script>
 

@@ -122,8 +122,13 @@ onMounted(async () => {
         }
 
         if (cliente) {
+          const apellidos = (cliente.apellido || "").trim().split(/\s+/);
+          const primerApellido = apellidos[0] || "";
+          const segundoApellido = apellidos.slice(1).join(" ") || "";
+
           localStorage.setItem("nombre", cliente.nombre || '');
-          localStorage.setItem("apellido", cliente.apellido || '');
+          localStorage.setItem("primerApellido", primerApellido);
+          localStorage.setItem("segundoApellido", segundoApellido);
           localStorage.setItem("departamento", cliente.departamento || '');
           localStorage.setItem("ciudad", cliente.ciudad || '');
 

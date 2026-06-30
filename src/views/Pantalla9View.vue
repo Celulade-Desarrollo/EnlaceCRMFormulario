@@ -15,6 +15,7 @@ const error = ref("");
 const formStore = useFormStore()
 const nombreTienda = ref("");
 
+const estrato = ref("");
 
 const handleSubmit = (event) => {
   event.preventDefault(); // Evita el envío del formulario por defecto
@@ -33,7 +34,7 @@ if (!nombreTienda.value.trim()) {
   return;
 }
 
-if (!neveraSeleccionada || !registroSeleccionado) {
+if (!neveraSeleccionada || !registroSeleccionado || !estrato.value) {
   error.value = "Por favor responde todas las preguntas antes de continuar.";
   return;
 }
@@ -46,6 +47,7 @@ if (!neveraSeleccionada || !registroSeleccionado) {
   formStore.updateField('Numero_de_neveras', numeroneveras.value)
   formStore.updateField('Nombre_Tienda', nombreTienda.value);
   formStore.updateField('Registrado_Camara_Comercio', registro.value)
+  formStore.updateField('Estrato', estrato.value);
 };
 onMounted(() => {
   let miRuta = window.location.pathname;
@@ -164,6 +166,18 @@ onMounted(() => {
             <label for="registro-no" class="button mt-4">No</label>
           </div>
 
+           <p class="font-bold mt-4">Estrato</p>
+            <div class="custom-select-wrapper relative">
+              <select v-model="estrato" name="estrato" class="custom-select">
+                <option selected disabled value="">Selecciona</option>
+                <option value="1">Estrato 1</option>
+                <option value="2">Estrato 2</option>
+                <option value="3">Estrato 3</option>
+                <option value="4">Estrato 4</option>
+                <option value="5">Estrato 5</option>
+                <option value="6">Estrato 6</option>
+              </select>
+            </div>
           <div class="mt-4 tarjeta">
             <div class="checklist">
               <Button @click="handleSubmit"></Button>
@@ -180,6 +194,34 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.custom-select-wrapper {
+  position: relative;
+  margin-bottom: 24px;
+}
+.custom-select {
+  appearance: none;
+  border: none;
+  border-bottom: 2px solid #09008be1;
+  background-color: transparent;
+  font-size: 16px;
+  padding: 8px 30px 8px 0;
+  background-image: url('data:image/svg+xml;charset=utf8,%3Csvg fill="%23495057" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/%3E%3C/svg%3E');
+  background-position: right 12px center;
+  background-size: 16px 12px;
+  width: 100%;
+  outline: none;
+  box-shadow: none;
+  color: #333;
+  cursor: pointer;
+}
+.custom-select:focus {
+  border-bottom: 2px solid #ff00f2;
+}
+.custom-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 .input-label {
   position: relative;
   display: block;

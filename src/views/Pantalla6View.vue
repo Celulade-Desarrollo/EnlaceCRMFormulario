@@ -57,7 +57,7 @@ onMounted(loadCountries); */
           class="custom-select"
           aria-label="Default select example"
           ref="countrySelect"
-        >
+        > 
           <option selected disabled>Selecciona tu país</option>
           <option value="colombia">Colombia</option>
         </select>

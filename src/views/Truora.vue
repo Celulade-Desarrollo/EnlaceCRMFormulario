@@ -29,60 +29,21 @@ const datos = formStore.getFinalData();
 const id = localStorage.getItem('Id');
 
 const Nombre = localStorage.getItem("nombre"); 
-const Apellido = localStorage.getItem("apellido");
+const primerApellido = localStorage.getItem("primerApellido");
+const segundoApellido = localStorage.getItem("segundoApellido");
 
-async function handleWhatsappURL() {
-  const datosFinales = formStore.getFinalData();
+const handleWhatsappURL = () => {
+  const truoraUrl =
+    "https://identity.truora.com/preview/IPFf58ef097af96942b9769cea7565b4034";
 
-  const convertirAString = (valor) => (!valor ? "0" : String(valor));
+  const ventana = window.open(truoraUrl, "_blank");
 
-  const datosLimpios = {
-    ...datosFinales,
-    Ubicacion_del_Negocio_Departamento: localStorage.getItem("selectedDepartment") || "",
-    Ubicacion_del_Negocio_Ciudad: localStorage.getItem("selectedCity") || "",
-    Barrio: localStorage.getItem("selectedBarrio") || "",
-    Direccion: localStorage.getItem("direccion") || "",
-    Rango_de_Ingresos: convertirAString(datosFinales.Rango_de_Ingresos),
-    Valor_Bienes: convertirAString(datosFinales.Valor_Bienes),
-    Valor_Deudas: convertirAString(datosFinales.Valor_Deudas),
-    Gastos_Mensuales: convertirAString(datosFinales.Gastos_Mensuales),
-    Monto_Mensual_Deuda: convertirAString(datosFinales.Monto_Mensual_Deuda),
-    Monto_ingresos_diferentes_negocio: convertirAString(datosFinales.Monto_ingresos_diferentes_negocio),
-    Declaracion_de_nacionalidad_y_residencia_fiscal_en_Colombia: true,
-    Fecha_Envio_Formulario: new Date(),
-    Estado_Civil: "Soltero",
-    Nivel_Educativo: "SECUNDARIA",
-    Grupo_Etnico: "NINGUNO",
-    Declara_Renta: "NO",
-    Esta_obligado_a_tener_RUT_por_tu_actividad_economica: "SI",
-    Nombres: Nombre,
-    Primer_Apellido: Apellido
-  };
-   console.log("datos para enviar",datosLimpios)
-  try {
-        await axios.put(`/api/flujoRegistroEnlace/${id}`, datosLimpios, {
-      headers: {
-        'Content-Type': 'application/json' 
-      }
-    });
-    console.log("✅ Formulario enviado correctamente");
-  } catch (err) {
-    console.error("❌ Error enviando formulario:", err);
-    alert("Error al enviar el formulario. Intenta de nuevo.");
-    return;
-  }
-
-  const truoraUrl = "https://identity.truora.com/preview/IPFf58ef097af96942b9769cea7565b4034";
-  
-  const ventana = window.open(truoraUrl, '_blank');
-  
-  if (!ventana || ventana.closed || typeof ventana.closed === 'undefined') {
+  if (!ventana || ventana.closed || typeof ventana.closed === "undefined") {
     window.location.href = truoraUrl;
   }
 
   router.push("/Pantalla17View");
 };
-
 
 </script>
 
