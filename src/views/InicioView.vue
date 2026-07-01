@@ -137,11 +137,6 @@ onMounted(async () => {
     }
   }
 
-  console.log("nombre:", localStorage.getItem("nombre"));
-  console.log("apellido:", localStorage.getItem("apellido"));
-  console.log("departamento:", localStorage.getItem("departamento"));
-  console.log("ciudad:", localStorage.getItem("ciudad"));
-
   if (Asesor === 'true') {
     router.push('/correoElectronico');
   }

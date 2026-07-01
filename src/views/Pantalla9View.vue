@@ -15,8 +15,6 @@ const error = ref("");
 const formStore = useFormStore()
 const nombreTienda = ref("");
 
-const estrato = ref("");
-
 const handleSubmit = (event) => {
   event.preventDefault(); // Evita el envío del formulario por defecto
   const numeroneveras = document.querySelector('input[name="nevera"]:checked');
@@ -34,20 +32,18 @@ if (!nombreTienda.value.trim()) {
   return;
 }
 
-if (!neveraSeleccionada || !registroSeleccionado || !estrato.value) {
+if (!neveraSeleccionada || !registroSeleccionado) {
   error.value = "Por favor responde todas las preguntas antes de continuar.";
   return;
 }
 
-  // Limpiar error si no lo hay
   error.value = "";
-  event.preventDefault(); // Evita el envío del formulario por defecto
-  store.completarFormulario(); // Marca el formulario como completado
-  router.push("/ventas"); // Redirige a la siguiente pantalla
+  event.preventDefault();
+  store.completarFormulario();
+  router.push("/ventas");
   formStore.updateField('Numero_de_neveras', numeroneveras.value)
   formStore.updateField('Nombre_Tienda', nombreTienda.value);
   formStore.updateField('Registrado_Camara_Comercio', registro.value)
-  formStore.updateField('Estrato', estrato.value);
 };
 onMounted(() => {
   let miRuta = window.location.pathname;
@@ -86,22 +82,22 @@ onMounted(() => {
               conocerte mejor
             </p>
           </div>
-<div class="mb-4">
-  <p class="font">¿Cuál es el nombre de tu tienda? </p>
-  <label for="nombreTienda" class="input-label">
-    <input
-      id="nombreTienda"
-      v-model="nombreTienda"
-      class="form-control"
-      aria-required="true"
-      name="nombreTienda"
-      type="text"
-      placeholder=" "
-      autocomplete="off"
-    />
-    <span class="floating-label">Ingresa el nombre</span>
-  </label>
-</div>
+          <div class="mb-4">
+            <p class="font">¿Cuál es el nombre de tu tienda? </p>
+            <label for="nombreTienda" class="input-label">
+              <input
+                id="nombreTienda"
+                v-model="nombreTienda"
+                class="form-control"
+                aria-required="true"
+                name="nombreTienda"
+                type="text"
+                placeholder=" "
+                autocomplete="off"
+              />
+              <span class="floating-label">Ingresa el nombre</span>
+            </label>
+          </div>
           <div class="button-container">
             <p class="font-bold">¿Tu tienda tiene neveras?</p>
 
@@ -165,19 +161,6 @@ onMounted(() => {
             />
             <label for="registro-no" class="button mt-4">No</label>
           </div>
-
-           <p class="font-bold mt-4">Estrato</p>
-            <div class="custom-select-wrapper relative">
-              <select v-model="estrato" name="estrato" class="custom-select">
-                <option selected disabled value="">Selecciona</option>
-                <option value="1">Estrato 1</option>
-                <option value="2">Estrato 2</option>
-                <option value="3">Estrato 3</option>
-                <option value="4">Estrato 4</option>
-                <option value="5">Estrato 5</option>
-                <option value="6">Estrato 6</option>
-              </select>
-            </div>
           <div class="mt-4 tarjeta">
             <div class="checklist">
               <Button @click="handleSubmit"></Button>

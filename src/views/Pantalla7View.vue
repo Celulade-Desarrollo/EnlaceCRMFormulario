@@ -282,6 +282,7 @@ onMounted(async () => {
             @input="filterDepartments(departmentSearch)"
             @focus="showDepartments = true"
             @blur="setTimeout(() => showDepartments = false, 200)"
+            @click="showDepartments = !showDepartments"
             placeholder="Selecciona"
             class="custom-select w-full"
           />
@@ -308,6 +309,7 @@ onMounted(async () => {
             @input="filterCities(citySearch)"
             @focus="showCities = true"
             @blur="setTimeout(() => showCities = false, 200)"
+            @click="showCities = !showCities"
             placeholder="Selecciona"
             class="custom-select w-full"
             :disabled="!selectedDepartmentId"
@@ -333,6 +335,7 @@ onMounted(async () => {
             @input="filtrarBarrios(buscarBarrio)"
             @focus="mostrarBarrios = true"
             @blur="setTimeout(() => mostrarBarrios = false, 200)"
+            @click="mostrarBarrios = !mostrarBarrios"
             placeholder="Selecciona"
             class="custom-select w-full"
             :disabled="!selectedCityId"

@@ -142,9 +142,8 @@ const handleSubmit = async (event) => {
     Nombres: Nombre,
     Primer_Apellido: primerApellido,
     "2do_Apellido_opcional": segundoApellido,
+    Estrato: "3",
   };
-
-  console.log("Datos enviados:", datosLimpios);
 
   try {
     await axios.put(`/api/flujoRegistroEnlace/${id}`, datosLimpios, {
@@ -153,10 +152,9 @@ const handleSubmit = async (event) => {
       },
     });
 
-    console.log("✅ Formulario enviado correctamente");
-
     router.push("/truora");
   } catch (err) {
+    alert("Error al enviar el formulario");
     console.error("Error enviando formulario:", err);
 
     error.value = "Error al enviar el formulario";
@@ -295,7 +293,6 @@ const handleSubmit = async (event) => {
     <Footer></Footer>
   </div>
 </template>
-
 
 <style scoped>
 .custom-select-wrapper {
