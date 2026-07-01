@@ -61,7 +61,7 @@ onMounted(loadCountries); */
           <option selected disabled>Selecciona tu país</option>
           <option value="colombia">Colombia</option>
         </select>
-      </div>
+      </div>z
 
       <form action="Pantalla7View">
         <Button></Button>
