@@ -15,7 +15,6 @@ const error = ref("");
 const formStore = useFormStore()
 const nombreTienda = ref("");
 
-
 const handleSubmit = (event) => {
   event.preventDefault(); // Evita el envío del formulario por defecto
   const numeroneveras = document.querySelector('input[name="nevera"]:checked');
@@ -38,11 +37,10 @@ if (!neveraSeleccionada || !registroSeleccionado) {
   return;
 }
 
-  // Limpiar error si no lo hay
   error.value = "";
-  event.preventDefault(); // Evita el envío del formulario por defecto
-  store.completarFormulario(); // Marca el formulario como completado
-  router.push("/ventas"); // Redirige a la siguiente pantalla
+  event.preventDefault();
+  store.completarFormulario();
+  router.push("/ventas");
   formStore.updateField('Numero_de_neveras', numeroneveras.value)
   formStore.updateField('Nombre_Tienda', nombreTienda.value);
   formStore.updateField('Registrado_Camara_Comercio', registro.value)
@@ -84,22 +82,22 @@ onMounted(() => {
               conocerte mejor
             </p>
           </div>
-<div class="mb-4">
-  <p class="font">¿Cuál es el nombre de tu tienda? </p>
-  <label for="nombreTienda" class="input-label">
-    <input
-      id="nombreTienda"
-      v-model="nombreTienda"
-      class="form-control"
-      aria-required="true"
-      name="nombreTienda"
-      type="text"
-      placeholder=" "
-      autocomplete="off"
-    />
-    <span class="floating-label">Ingresa el nombre</span>
-  </label>
-</div>
+          <div class="mb-4">
+            <p class="font">¿Cuál es el nombre de tu tienda? </p>
+            <label for="nombreTienda" class="input-label">
+              <input
+                id="nombreTienda"
+                v-model="nombreTienda"
+                class="form-control"
+                aria-required="true"
+                name="nombreTienda"
+                type="text"
+                placeholder=" "
+                autocomplete="off"
+              />
+              <span class="floating-label">Ingresa el nombre</span>
+            </label>
+          </div>
           <div class="button-container">
             <p class="font-bold">¿Tu tienda tiene neveras?</p>
 
@@ -163,7 +161,6 @@ onMounted(() => {
             />
             <label for="registro-no" class="button mt-4">No</label>
           </div>
-
           <div class="mt-4 tarjeta">
             <div class="checklist">
               <Button @click="handleSubmit"></Button>
@@ -180,6 +177,34 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.custom-select-wrapper {
+  position: relative;
+  margin-bottom: 24px;
+}
+.custom-select {
+  appearance: none;
+  border: none;
+  border-bottom: 2px solid #09008be1;
+  background-color: transparent;
+  font-size: 16px;
+  padding: 8px 30px 8px 0;
+  background-image: url('data:image/svg+xml;charset=utf8,%3Csvg fill="%23495057" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/%3E%3C/svg%3E');
+  background-position: right 12px center;
+  background-size: 16px 12px;
+  width: 100%;
+  outline: none;
+  box-shadow: none;
+  color: #333;
+  cursor: pointer;
+}
+.custom-select:focus {
+  border-bottom: 2px solid #ff00f2;
+}
+.custom-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 .input-label {
   position: relative;
   display: block;

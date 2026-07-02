@@ -101,7 +101,6 @@ onMounted(async () => {
   if (nbAgenteComercial) localStorage.setItem('nbAgenteComercial', nbAgenteComercial);
   if (Id) localStorage.setItem('Id', Id);
 
-  // obtener token desde el backend
   if (nbCliente && nbAgenteComercial) {
     try {
       const response = await axios.post('/api/user/login', {
@@ -109,12 +108,31 @@ onMounted(async () => {
         nbAgenteComercial,
         token: null
       });
+      
       token.value = response.data.token;
       localStorage.setItem('token', token.value);
+
     } catch (err) {
       if (err.response?.status === 400) {
-        token.value = err.response.data.token;
-        localStorage.setItem('token', token.value);
+        const { token: badToken, cliente } = err.response.data;
+        
+        if (badToken) {
+          token.value = badToken;
+          localStorage.setItem('token', badToken);
+        }
+
+        if (cliente) {
+          const apellidos = (cliente.apellido || "").trim().split(/\s+/);
+          const primerApellido = apellidos[0] || "";
+          const segundoApellido = apellidos.slice(1).join(" ") || "";
+
+          localStorage.setItem("nombre", cliente.nombre || '');
+          localStorage.setItem("primerApellido", primerApellido);
+          localStorage.setItem("segundoApellido", segundoApellido);
+          localStorage.setItem("departamento", cliente.departamento || '');
+          localStorage.setItem("ciudad", cliente.ciudad || '');
+
+        }
       }
     }
   }
@@ -237,7 +255,7 @@ const irConAsesor = async () => {
       id="autorizo-contacto"
       v-model="autorizoContacto"
       class="checkbox-custom rounded-checkbox"
-    />
+    />  
     <span class="checkmark"></span>
     <p class="p-checkmark-2">
       Autorizo a <span>Enlace S.A.S y Banco W</span> contactarme vía
