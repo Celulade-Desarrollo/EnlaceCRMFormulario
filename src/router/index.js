@@ -123,6 +123,11 @@ const router = createRouter({
       name: "PantallaloaderTruora",
       component: () => import("../views/PantallaLoaderTruoraView.vue"),
     },
+    {
+      path: "/PantallaPendingTruora",
+      name: "PantallaPendingTruora",
+      component: () => import("../views/PantallaPendingView.vue"),
+    }
   ],
 });
 
