@@ -21,7 +21,6 @@ const router = useRouter();
    const queryParams = new URLSearchParams(window.location.search);
    const idProcess = queryParams.get('process_id');
     
-
  try {
    const response = await axios.get(`api/truora/${idProcess}`);
    const data = response.data;
@@ -32,9 +31,11 @@ const router = useRouter();
 
       router.push("/Terminado");
 
-    } else if (data.Confirmacion_Identidad === "failure" || data.Confirmacion_Identidad === "pending") {
+    } else if (data.Confirmacion_Identidad === "failure") {
         router.push("/PantallafailedTruora");
-    } 
+    }else if (data.Confirmacion_Identidad === "pending"){
+      router.push("/PantallaPendingTruora");
+    }
  } catch (error) { 
     console.error("Error inesperado:", error);
     }
