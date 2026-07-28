@@ -62,7 +62,12 @@ const handleSubmit = async (event) => {
       Autorizacion_Habeas_Data: autorizoDatos.value,
       Autorizacion_Medios_de_Contacto: autorizoContacto.value,
       nbCliente: localStorage.getItem('nbCliente') || '',
-      nbAgenteComercial: localStorage.getItem('nbAgenteComercial') || ''
+      nbAgenteComercial: localStorage.getItem('nbAgenteComercial') || '',
+      Nombres: localStorage.getItem('nombre') || '',
+      Primer_Apellido: localStorage.getItem('primerApellido') || '',
+      "2do_Apellido_opcional": localStorage.getItem('segundoApellido') || '',
+      Ubicacion_del_Negocio_Departamento: localStorage.getItem('departamento') || '',
+      Ubicacion_del_Negocio_Ciudad: localStorage.getItem('ciudad') || ''
     };
     
     await axios.post('api/flujoRegistroEnlace', payload, {

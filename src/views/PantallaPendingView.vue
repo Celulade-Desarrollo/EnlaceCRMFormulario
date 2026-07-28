@@ -70,7 +70,7 @@ async function handleWhatsapp() {
             <span style="color: dodgerblue;">
                <strong> Tu validación de identidad se encuentra en revision. Este proceso puede tardar algunos minutos.<br>
 
-                Por favor, sal de la aplicación y vuelve a ingresar en unos minutos para verificar el estado de tu validación. </strong>.
+                Por favor, espera unos segundos para conocer el resultado de tu validacion. </strong>.
             </span>
         </p>
       </div>
