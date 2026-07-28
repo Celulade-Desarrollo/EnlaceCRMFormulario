@@ -139,9 +139,9 @@ const handleSubmit = async (event) => {
     Grupo_Etnico: "NINGUNO",
     Declara_Renta: false,
     Esta_obligado_a_tener_RUT_por_tu_actividad_economica: true,
-    Nombres: Nombre,
-    Primer_Apellido: primerApellido,
-    "2do_Apellido_opcional": segundoApellido,
+    // Nombres: Nombre,
+    // Primer_Apellido: primerApellido,
+    // "2do_Apellido_opcional": segundoApellido,
     Estrato: "3",
   };
 
