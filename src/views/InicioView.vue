@@ -125,7 +125,7 @@ onMounted(async () => {
           token.value = badToken;
           localStorage.setItem('token', badToken);
         }
-
+  
         if (cliente) {
           const apellidos = (cliente.apellido || "").trim().split(/\s+/);
           const primerApellido = apellidos[0] || "";
@@ -167,21 +167,7 @@ const continuarSolo = async () => {
   }
 };
 
-const irConAsesor = async () => {
-  try {
-    await axios.put(`/api/flujoRegistroEnlace/estado/pendiente/${clienteNum.value[0].Id}`, {
-      Estado: "Asesor"
-    }, {
-      headers: {
-        Authorization: `Bearer ${token.value}`,
-        "Content-Type": "application/json",
-      },
-    });
-    router.push("/PantallaAsesor");
-  } catch (err) {
-    console.error(err);
-  }
-};
+
 </script>
 
 <template>

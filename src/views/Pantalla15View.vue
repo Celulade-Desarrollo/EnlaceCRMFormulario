@@ -100,23 +100,12 @@ const handleSubmit = (event) => {
     deudaSeleccionada.value === "Si" ? MontoDeudaMensual.value : ""
   );
 
-  // 👉 Ingresos diferentes
   formStore.updateField("Ingresos_Diferentes_Negocio", ingresosSeleccionado.value);
   formStore.updateField(
     "Monto_ingresos_diferentes_negocio",
     ingresosSeleccionado.value === "Si" ? MontoIngresosDiferentes.value : ""
   );
-
-  // 🪶 Logs para ver en consola
-  console.log("💰 Valor_Bienes:", bienes.value);
-  console.log("💳 Valor_Deudas:", deudas.value);
-  console.log("🏠 Gastos_Mensuales:", gastos.value);
-  console.log("❓ Deuda_Mensual:", deudaSeleccionada.value);
-  console.log("💵 Monto_Deuda_Mensual:", MontoDeudaMensual.value);
-  console.log("❓ Ingresos_Diferentes_Negocio:", ingresosSeleccionado.value);
-  console.log("💸 Monto_Ingresos_Diferentes:", MontoIngresosDiferentes.value);
-
-  // 👉 Guardar y pasar a la siguiente pantalla
+  
   store.completarFormulario();
   router.push("/antesDeTerminar");
 };

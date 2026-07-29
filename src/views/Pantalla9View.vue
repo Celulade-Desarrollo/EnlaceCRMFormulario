@@ -8,14 +8,16 @@ import Footer from "../components/UI/Footer.vue";
 import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
 import { useFormStore } from '../stores/formStore.js'
+import axios from "axios";
 
 const store = useFormularioStore();
 const router = useRouter();
 const error = ref("");
 const formStore = useFormStore()
 const nombreTienda = ref("");
+const id = localStorage.getItem("Id");
 
-const handleSubmit = (event) => {
+const handleSubmit = async(event) => {
   event.preventDefault(); // Evita el envío del formulario por defecto
   const numeroneveras = document.querySelector('input[name="nevera"]:checked');
   const registro = document.querySelector('input[name="registro"]:checked');
@@ -44,6 +46,19 @@ if (!neveraSeleccionada || !registroSeleccionado) {
   formStore.updateField('Numero_de_neveras', numeroneveras.value)
   formStore.updateField('Nombre_Tienda', nombreTienda.value);
   formStore.updateField('Registrado_Camara_Comercio', registro.value)
+  try {
+    await axios.patch(`/api/flujoRegistroEnlace/${id}`, {
+      Nombre_Tienda: nombreTienda.value,
+      Numero_de_neveras: numeroneveras.value,
+      Registrado_Camara_Comercio: registro.value
+    }, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error) {
+    console.error("Error:", error);
+  }
 };
 onMounted(() => {
   let miRuta = window.location.pathname;

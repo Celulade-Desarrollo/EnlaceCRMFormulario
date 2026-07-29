@@ -45,6 +45,7 @@ const mostrarBarrios = ref(false);
 const direccion = ref("");
 
 const error = ref("");
+const id = localStorage.getItem("Id");
 
 // Cargar Departamentos
 const loadDepartments = async () => {
@@ -188,7 +189,7 @@ const selectBarrio = (nombre) => {
 };
 
 // Manejar envío del formulario
-const handleSubmit = (event) => {
+const handleSubmit = async(event) => {
   event.preventDefault();
 
   if (!selectedDepartment.value || !selectedCity.value || !selectedBarrio.value || !direccion.value.trim()) {
@@ -212,6 +213,20 @@ const handleSubmit = (event) => {
   formStore.updateField('Barrio', selectedBarrio.value);
   formStore.updateField('Direccion', direccion.value);
 
+  try {
+    await axios.patch(`/api/flujoRegistroEnlace/${id}`, {
+      Ubicacion_del_Negocio_Departamento: selectedDepartment.value,
+      Ubicacion_del_Negocio_Ciudad: selectedCity.value,
+      Barrio: selectedBarrio.value,
+      Direccion: direccion.value
+    }, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });  
+  } catch (error) {
+    console.error("Error:", error);
+  }
   store.completarFormulario();
   router.push("/informacionNegocio"); 
 };
