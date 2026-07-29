@@ -113,7 +113,7 @@ const router = createRouter({
       name: "PantallaAsesor",
       component: () => import("../views/Pantalla18View.vue"),
     },
-     {
+    {
       path: "/PantallafailedTruora",
       name: "PantallafailedTruora",
       component: () => import("../views/Pantalla19View.vue"),
