@@ -137,7 +137,9 @@ const handleSubmit = async (event) => {
     formStore.updateField("Cedula_Cliente", cedula.value.toString());
     try {
       await axios.patch(`/api/flujoRegistroEnlace/${id}`, 
-      { Cedula_Cliente: cedula.value.toString() }, {
+      { Cedula_Cliente: cedula.value.toString() }, 
+      {
+
         headers: {
           "Content-Type": "application/json",
         },

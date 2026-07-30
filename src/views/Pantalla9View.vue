@@ -14,51 +14,49 @@ const store = useFormularioStore();
 const router = useRouter();
 const error = ref("");
 const formStore = useFormStore()
-const nombreTienda = ref("");
 const id = localStorage.getItem("Id");
+const nombreTienda = ref("");
+const numeroNeveras = ref("");
+const registradoCamara = ref("");
 
-const handleSubmit = async(event) => {
-  event.preventDefault(); // Evita el envío del formulario por defecto
-  const numeroneveras = document.querySelector('input[name="nevera"]:checked');
-  const registro = document.querySelector('input[name="registro"]:checked');
+const handleSubmit = async () => {
 
-  const neveraSeleccionada = document.querySelector(
-    'input[name="nevera"]:checked'
-  );
-  const registroSeleccionado = document.querySelector(
-    'input[name="registro"]:checked'
-  );
+  if (!nombreTienda.value.trim()) {
+    error.value = "Por favor ingresa el nombre de tu tienda.";
+    return;
+  }
 
-if (!nombreTienda.value.trim()) {
-  error.value = "Por favor ingresa el nombre de tu tienda.";
-  return;
-}
-
-if (!neveraSeleccionada || !registroSeleccionado) {
-  error.value = "Por favor responde todas las preguntas antes de continuar.";
-  return;
-}
+  if (!numeroNeveras.value || !registradoCamara.value) {
+    error.value = "Por favor responde todas las preguntas antes de continuar.";
+    return;
+  }
 
   error.value = "";
-  event.preventDefault();
+
   store.completarFormulario();
-  router.push("/ventas");
-  formStore.updateField('Numero_de_neveras', numeroneveras.value)
+
+  formStore.updateField('Numero_de_neveras', numeroNeveras.value);
   formStore.updateField('Nombre_Tienda', nombreTienda.value);
-  formStore.updateField('Registrado_Camara_Comercio', registro.value)
-  try {
-    await axios.patch(`/api/flujoRegistroEnlace/${id}`, {
-      Nombre_Tienda: nombreTienda.value,
-      Numero_de_neveras: numeroneveras.value,
-      Registrado_Camara_Comercio: registro.value
-    }, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-  } catch (error) {
-    console.error("Error:", error);
-  }
+  formStore.updateField('Registrado_Camara_Comercio', registradoCamara.value);
+console.log("Datos a enviar:", {
+   Registrado_Camara_Comercio: registradoCamara.value
+  });
+   try {
+     await axios.patch(`/api/flujoRegistroEnlace/${id}`, {
+       Nombre_Tienda: nombreTienda.value,
+       Numero_de_neveras: numeroNeveras.value,
+       Registrado_Camara_Comercio: registradoCamara.value
+     }, {
+       headers: {
+         "Content-Type": "application/json",
+       },
+     });
+
+   } catch (error) {
+     console.error("Error:", error);
+   }
+
+   router.push("/ventas");
 };
 onMounted(() => {
   let miRuta = window.location.pathname;
@@ -122,6 +120,7 @@ onMounted(() => {
               class="checkbox-hidden"
               name="nevera"
               value="No"
+              v-model="numeroNeveras"
             />
             <label for="nevera-no" class="button mt-4">No</label>
 
@@ -131,6 +130,8 @@ onMounted(() => {
               class="checkbox-hidden"
               name="nevera"
               value="1"
+              v-model="numeroNeveras"
+
             />
             <label for="nevera-1" class="button mt-4">1</label>
 
@@ -140,6 +141,8 @@ onMounted(() => {
               class="checkbox-hidden"
               name="nevera"
               value="2"
+              v-model="numeroNeveras"
+
             />
             <label for="nevera-2" class="button mt-4">2</label>
 
@@ -149,6 +152,8 @@ onMounted(() => {
               class="checkbox-hidden"
               name="nevera"
               value="3 o más"
+              v-model="numeroNeveras"
+
             />
             <label for="nevera-3" class="button mt-4">3 o más</label>
           </div>
@@ -163,7 +168,9 @@ onMounted(() => {
               id="registro-si"
               class="checkbox-hidden"
               name="registro"
-              value="Sí"
+              value="Si"
+              v-model="registradoCamara"
+
             />
             <label for="registro-si" class="button mt-4">Sí</label>
 
@@ -173,6 +180,7 @@ onMounted(() => {
               class="checkbox-hidden"
               name="registro"
               value="No"
+              v-model="registradoCamara"
             />
             <label for="registro-no" class="button mt-4">No</label>
           </div>

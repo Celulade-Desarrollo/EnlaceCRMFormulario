@@ -8,6 +8,7 @@ import Footer from "../components/UI/Footer.vue";
 import { useFormStore } from "../stores/formStore.js";
 import { useRouter } from "vue-router";
 import { useFormularioStore } from "../router/store";
+import axios from "axios";
 
 const store = useFormularioStore();
 const bienes = ref("");
@@ -22,7 +23,9 @@ const MontoDeudaMensual = ref("");
 const router = useRouter();
 const formStore = useFormStore();
 
-// 👉 Formatea números con puntos (miles)
+const id = localStorage.getItem("Id");
+
+// Formatea números con puntos (miles)
 function formatCurrency(event) {
   const input = event.target;
   let value = input.value.replace(/\D/g, ""); // solo dígitos
@@ -50,18 +53,16 @@ function formatCurrency(event) {
   }
 }
 
-// 👉 Función auxiliar: revisa si el valor es "0" o vacío
+// Función auxiliar: revisa si el valor es "0" o vacío
 const isZero = (val) => {
   if (!val) return true;
   const num = parseInt(val.replace(/\./g, ""), 10);
   return isNaN(num) || num === 0;
 };
 
-// 👉 Envío del formulario con validaciones
-const handleSubmit = (event) => {
+const handleSubmit = async (event) => {
   event.preventDefault();
 
-  // ✅ Validaciones básicas de campos requeridos
   if (
     !bienes.value ||
     !deudas.value ||
@@ -76,7 +77,7 @@ const handleSubmit = (event) => {
     return;
   }
 
-  // 🚫 Validar que ciertos montos no sean 0
+  // validar que ciertos montos no sean 0
   if (
     isZero(bienes.value) ||
     isZero(gastos.value) ||
@@ -88,12 +89,10 @@ const handleSubmit = (event) => {
     return;
   }
 
-  // 🧠 Guardar en el store (como debe llegar a la BD)
   formStore.updateField("Valor_Bienes", bienes.value);
   formStore.updateField("Valor_Deudas", deudas.value);
   formStore.updateField("Gastos_Mensuales", gastos.value);
 
-  // 👉 Deuda mensual
   formStore.updateField("Deuda_Mensual", deudaSeleccionada.value);
   formStore.updateField(
     "Monto_Mensual_Deuda",
@@ -105,14 +104,29 @@ const handleSubmit = (event) => {
     "Monto_ingresos_diferentes_negocio",
     ingresosSeleccionado.value === "Si" ? MontoIngresosDiferentes.value : ""
   );
-  
+  const datos = {
+    Valor_Bienes: bienes.value,
+    Valor_Deudas: deudas.value,
+    Gastos_Mensuales: gastos.value,
+    Deuda_Mensual: deudaSeleccionada.value,
+    Monto_Mensual_Deuda: deudaSeleccionada.value === "Si" ? MontoDeudaMensual.value : "",
+    Ingresos_Diferentes_Negocio: ingresosSeleccionado.value,
+    Monto_ingresos_diferentes_negocio:
+      ingresosSeleccionado.value === "Si" ? MontoIngresosDiferentes.value : "",
+  }
+  try {
+    await axios.patch(`/api/flujoRegistroEnlace/${id}`, datos, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error) {
+    console.error("Error:", error);
+  }
   store.completarFormulario();
   router.push("/antesDeTerminar");
 };
 </script>
-
-
-
 
 <template>
 <Heading></Heading>
@@ -189,7 +203,6 @@ const handleSubmit = (event) => {
             <label for="deuda-no" class="button mt-4">No</label>
         </div>
 
-        <!-- Campo que aparece cuando selecciona "Sí" -->
         <div v-if="deudaSeleccionada === 'Si'"> 
             <p class="mb-4 font-bold">¿Cuál es el monto mensual que pagas por esa deuda?</p>
             <div>
