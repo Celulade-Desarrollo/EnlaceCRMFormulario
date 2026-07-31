@@ -147,7 +147,18 @@ const handleSubmit = async (event) => {
     } catch (error) {
       console.log(`error`, error);
     }
-    
+     try {
+      await axios.put(`/api/flujoRegistroEnlace/estado/pendiente/${id}`, {
+        Estado: "IncompletoBloqCedula",
+      }, {
+        headers: {
+          Authorization: `Bearer ${token.value}`,
+          "Content-Type": "application/json",
+        },
+      });
+    } catch (err) {
+      console.error(err);
+    }
     router.push("/negocio");
 
   } catch (err) {

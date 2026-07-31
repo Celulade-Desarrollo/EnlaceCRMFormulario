@@ -8,7 +8,7 @@
   import { fadeInUp } from "../motion/PagesAnimation";
   import { motion } from "motion-v";
   import { useFormStore } from '../stores/formStore.js'
-import axios from "axios";
+  import axios from "axios";
 
   const email = ref("");
   const confirmaremail = ref("");
@@ -17,9 +17,8 @@ import axios from "axios";
   const confirmEmailErrorMessage = ref("");
   const router = useRouter();
   const store = useFormularioStore();
-  const tokenAlpina = localStorage.getItem("tokenAlpina");
   const id = localStorage.getItem("Id");
-
+  const token = ref(localStorage.getItem('token'));
   //formulario global
   const formStore = useFormStore()
   // Función para limpiar valores undefined o null
@@ -93,7 +92,6 @@ import axios from "axios";
    const datos = {
       Correo_Electronico: confirmaremail.value,
     };
-    console.log("froncoreeo",datos);
 
     try {
       await axios.patch(`/api/flujoRegistroEnlace/${id}`, datos, {
@@ -103,9 +101,21 @@ import axios from "axios";
       });
     } catch (error) {
       console.log(`error`,error)
+    } 
+    try {
+      await axios.put(`/api/flujoRegistroEnlace/estado/pendiente/${id}`, {
+        Estado: "IncompletoBloqCorreo",
+      }, {
+        headers: {
+          Authorization: `Bearer ${token.value}`,
+          "Content-Type": "application/json",
+        },
+      });
+    } catch (err) {
+      console.error(err);
     }
-    formStore.updateField('Correo_Electronico', confirmaremail.value)
-    router.push("/nombres"); // Redirige a la siguiente pantalla
+    //formStore.updateField('Correo_Electronico', confirmaremail.value)
+    //router.push("/nombres"); // Redirige a la siguiente pantalla
   };
 
   const Id = ref(null);
