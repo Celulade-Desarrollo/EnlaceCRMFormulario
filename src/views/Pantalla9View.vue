@@ -18,6 +18,7 @@ const id = localStorage.getItem("Id");
 const nombreTienda = ref("");
 const numeroNeveras = ref("");
 const registradoCamara = ref("");
+const token = ref(localStorage.getItem('token'));
 
 const handleSubmit = async () => {
 
@@ -55,6 +56,18 @@ console.log("Datos a enviar:", {
    } catch (error) {
      console.error("Error:", error);
    }
+   try {
+      await axios.put(`/api/flujoRegistroEnlace/estado/pendiente/${id}`, {
+        Estado: "IncompletoBloqInfoNegocio",
+      }, {
+        headers: {
+          Authorization: `Bearer ${token.value}`,
+          "Content-Type": "application/json",
+        },
+      });
+    } catch (err) {
+      console.error(err);
+    }
 
    router.push("/ventas");
 };

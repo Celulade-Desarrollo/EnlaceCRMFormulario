@@ -115,7 +115,7 @@
       console.error(err);
     }
     //formStore.updateField('Correo_Electronico', confirmaremail.value)
-    //router.push("/nombres"); // Redirige a la siguiente pantalla
+    router.push("/nombres"); // Redirige a la siguiente pantalla
   };
 
   const Id = ref(null);

@@ -32,6 +32,7 @@ const apellidoError = ref("");
 const SegundoApellidoError = ref("");
 const cedulaErrorMessage = ref("");
 const id = localStorage.getItem("Id");
+const token = ref(localStorage.getItem('token'));
 
 // onMounted(async () => {
 //   localStorage.setItem("ruta", window.location.pathname);
@@ -147,7 +148,7 @@ const handleSubmit = async (event) => {
     } catch (error) {
       console.log(`error`, error);
     }
-     try {
+      try {
       await axios.put(`/api/flujoRegistroEnlace/estado/pendiente/${id}`, {
         Estado: "IncompletoBloqCedula",
       }, {

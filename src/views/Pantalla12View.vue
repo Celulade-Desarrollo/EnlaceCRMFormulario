@@ -18,6 +18,7 @@ const mostrarAlerta = ref(false);
 const mensajeAlerta = ref("");
 const ingresos = ref("");
 const id = localStorage.getItem("Id");
+const token = ref(localStorage.getItem('token'));
 
 const promedioIngresos = {
   "Menos de $200.000": 150000,
@@ -72,6 +73,18 @@ const handleSubmit = async (event) => {
   } catch (error) {
     console.error("Error:", error);
   }
+  try {
+      await axios.put(`/api/flujoRegistroEnlace/estado/pendiente/${id}`, {
+        Estado: "IncompletoBloqVentas",
+      }, {
+        headers: {
+          Authorization: `Bearer ${token.value}`,
+          "Content-Type": "application/json",
+        },
+      });
+    } catch (err) {
+      console.error(err);
+    }
 
   store.completarFormulario();
   router.push("/informacionFinanciera");
