@@ -46,7 +46,6 @@ const direccion = ref("");
 
 const error = ref("");
 const id = localStorage.getItem("Id");
-const token = ref(localStorage.getItem('token'));
 
 const loadDepartments = async () => {
   try {
@@ -223,24 +222,20 @@ const handleSubmit = async(event) => {
       headers: {
         "Content-Type": "application/json",
       },
-    });  
-  } catch (error) {
-    console.error("Error:", error);
-  }
-  try {
-      await axios.put(`/api/flujoRegistroEnlace/estado/pendiente/${id}`, {
+    });
+
+    await axios.put(`/api/flujoRegistroEnlace/estado/pendiente/${id}`, {
         Estado: "IncompletoBloqUbiNegocio",
       }, {
         headers: {
-          Authorization: `Bearer ${token.value}`,
           "Content-Type": "application/json",
         },
       });
-    } catch (err) {
-      console.error(err);
-    }
-  store.completarFormulario();
-  router.push("/informacionNegocio"); 
+    router.push("/informacionNegocio"); 
+
+  } catch (error) {
+    console.error("Error:", error);
+  }
 };
 
 onMounted(async () => {

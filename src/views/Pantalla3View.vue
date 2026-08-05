@@ -32,7 +32,6 @@ const apellidoError = ref("");
 const SegundoApellidoError = ref("");
 const cedulaErrorMessage = ref("");
 const id = localStorage.getItem("Id");
-const token = ref(localStorage.getItem('token'));
 
 // onMounted(async () => {
 //   localStorage.setItem("ruta", window.location.pathname);
@@ -137,30 +136,26 @@ const handleSubmit = async (event) => {
     store.completarFormulario();
     formStore.updateField("Cedula_Cliente", cedula.value.toString());
     try {
-      await axios.patch(`/api/flujoRegistroEnlace/${id}`, 
-      { Cedula_Cliente: cedula.value.toString() }, 
-      {
-
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-    } catch (error) {
-      console.log(`error`, error);
-    }
-      try {
-      await axios.put(`/api/flujoRegistroEnlace/estado/pendiente/${id}`, {
+       await axios.put(`/api/flujoRegistroEnlace/estado/pendiente/${id}`, {
         Estado: "IncompletoBloqCedula",
       }, {
         headers: {
-          Authorization: `Bearer ${token.value}`,
           "Content-Type": "application/json",
         },
       });
-    } catch (err) {
-      console.error(err);
-    }
+
+      await axios.patch(`/api/flujoRegistroEnlace/${id}`, 
+      { Cedula_Cliente: cedula.value.toString() }, 
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
     router.push("/negocio");
+
+    } catch (error) {
+      console.log(`error`, error);
+    }
 
   } catch (err) {
 

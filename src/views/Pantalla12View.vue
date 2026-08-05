@@ -18,7 +18,7 @@ const mostrarAlerta = ref(false);
 const mensajeAlerta = ref("");
 const ingresos = ref("");
 const id = localStorage.getItem("Id");
-const token = ref(localStorage.getItem('token'));
+//const token = ref(localStorage.getItem('token'));
 
 const promedioIngresos = {
   "Menos de $200.000": 150000,
@@ -27,8 +27,6 @@ const promedioIngresos = {
   "Entre $600.000 y $800.000": 700000,
   "Más de $800.000": 900000,
 };
-
-
 
 const handleCheckboxChange = (event) => {
   const checkboxes = document.querySelectorAll(".single-checkbox");
@@ -56,41 +54,34 @@ const handleSubmit = async (event) => {
 
   const valorPromedio = promedioIngresos[ingresos.value] || 0;
   const ingresoMensual = valorPromedio * 30;
-
-  // Formatear con puntos para guardar en BD
   const ingresoFormateado = ingresoMensual.toLocaleString('es-CO');
 
   formStore.updateField("Rango_de_Ingresos", ingresoFormateado);
 
   try {
     await axios.patch(`/api/flujoRegistroEnlace/${id}`, {
-     Rango_de_Ingresos: ingresoFormateado
+      Rango_de_Ingresos: ingresoFormateado
     }, {
       headers: {
         "Content-Type": "application/json",
       },
     });
-  } catch (error) {
-    console.error("Error:", error);
-  }
-  try {
-      await axios.put(`/api/flujoRegistroEnlace/estado/pendiente/${id}`, {
-        Estado: "IncompletoBloqVentas",
-      }, {
-        headers: {
-          Authorization: `Bearer ${token.value}`,
-          "Content-Type": "application/json",
-        },
-      });
-    } catch (err) {
-      console.error(err);
-    }
 
-  store.completarFormulario();
-  router.push("/informacionFinanciera");
+    await axios.put(`/api/flujoRegistroEnlace/estado/pendiente/${id}`, {
+      Estado: "IncompletoBloqVentas",
+    }, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    router.push("/informacionFinanciera");
+  } catch (err) {
+    console.error(err);
+  }
 };
 
 onMounted(() => {
+
   const checkboxes = document.querySelectorAll(".single-checkbox");
   checkboxes.forEach((checkbox) => {
     checkbox.addEventListener("change", handleCheckboxChange);
@@ -99,8 +90,8 @@ onMounted(() => {
   const miRuta = window.location.pathname;
   localStorage.setItem("ruta", miRuta);
 });
-</script>
 
+</script>
 
 <template>
   <div>

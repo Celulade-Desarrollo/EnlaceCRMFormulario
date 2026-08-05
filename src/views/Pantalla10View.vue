@@ -156,17 +156,23 @@ const handleSubmit = async (event) => {
     Grupo_Etnico: "NINGUNO",
     Fecha_Envio_Formulario: new Date(),
   };
-
   try {
-    await axios.patch(`/api/flujoRegistroEnlace/${id}`, datos, {
+    await axios.put(`/api/flujoRegistroEnlace/estado/pendiente/${id}`, {
+      Estado: "pendiente",
+    }, {
       headers: {
         "Content-Type": "application/json",
       },
     });
-  } catch (error) {
+    await axios.patch(`/api/flujoRegistroEnlace/${id}`, datos, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+   });
+    router.push("/truora");
+  }catch (error) {
     console.error("Error:", error);
-  }
-  router.push("/truora");
+    }
 };
 </script>
 

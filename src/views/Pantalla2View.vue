@@ -18,7 +18,7 @@
   const router = useRouter();
   const store = useFormularioStore();
   const id = localStorage.getItem("Id");
-  const token = ref(localStorage.getItem('token'));
+
   //formulario global
   const formStore = useFormStore()
   // Función para limpiar valores undefined o null
@@ -94,28 +94,23 @@
     };
 
     try {
+       await axios.put(`/api/flujoRegistroEnlace/estado/pendiente/${id}`, {
+        Estado: "IncompletoBloqCorreo",
+      }, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
       await axios.patch(`/api/flujoRegistroEnlace/${id}`, datos, {
         headers: {
           "Content-Type": "application/json",
         },
       });
+    router.push("/nombres");
     } catch (error) {
       console.log(`error`,error)
-    } 
-    try {
-      await axios.put(`/api/flujoRegistroEnlace/estado/pendiente/${id}`, {
-        Estado: "IncompletoBloqCorreo",
-      }, {
-        headers: {
-          Authorization: `Bearer ${token.value}`,
-          "Content-Type": "application/json",
-        },
-      });
-    } catch (err) {
-      console.error(err);
     }
-    //formStore.updateField('Correo_Electronico', confirmaremail.value)
-    router.push("/nombres"); // Redirige a la siguiente pantalla
   };
 
   const Id = ref(null);
