@@ -1,5 +1,4 @@
 import "./assets/main.css";
-
 import { createApp } from "vue";
 import { plugin, defaultConfig } from "@formkit/vue";
 import config from "../formkit.config";
@@ -9,6 +8,7 @@ import { createPinia } from "pinia";
 import axios from "axios";
 
 axios.defaults.baseURL = import.meta.env.VITE_API_URL;
+axios.defaults.withCredentials = true;
 
 const app = createApp(App);
 const pinia = createPinia();

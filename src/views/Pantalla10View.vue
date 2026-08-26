@@ -116,49 +116,63 @@ const handleSubmit = async (event) => {
   formStore.updateField("nbAgenteComercial", nbAgenteComercial);
   formStore.updateField("Declaracion_de_nacionalidad_y_residencia_fiscal_en_Colombia",true);
 
-  const datosFinales = formStore.getFinalData();
-  const datosLimpios = {
-    ...datosFinales,
-
-    Ubicacion_del_Negocio_Departamento:
-      localStorage.getItem("selectedDepartment") || "",
-    Ubicacion_del_Negocio_Ciudad:
-      localStorage.getItem("selectedCity") || "",
-    Barrio: localStorage.getItem("selectedBarrio") || "",
-    Direccion: localStorage.getItem("direccion") || "",
-    Rango_de_Ingresos: convertirAString(datosFinales.Rango_de_Ingresos ),
-    Valor_Bienes: convertirAString(datosFinales.Valor_Bienes),
-    Valor_Deudas: convertirAString(datosFinales.Valor_Deudas),
-    Gastos_Mensuales: convertirAString(datosFinales.Gastos_Mensuales),
-    Monto_Mensual_Deuda: convertirAString(datosFinales.Monto_Mensual_Deuda),
-    Monto_ingresos_diferentes_negocio: convertirAString(datosFinales.Monto_ingresos_diferentes_negocio),
+  // const datosFinales = formStore.getFinalData();
+  // const datosLimpios = {
+  //   ...datosFinales,
+  //   Ubicacion_del_Negocio_Departamento:
+  //     localStorage.getItem("selectedDepartment") || "",
+  //   Ubicacion_del_Negocio_Ciudad:
+  //     localStorage.getItem("selectedCity") || "",
+  //   Barrio: localStorage.getItem("selectedBarrio") || "",
+  //   Direccion: localStorage.getItem("direccion") || "",
+  //   Rango_de_Ingresos: convertirAString(datosFinales.Rango_de_Ingresos ),
+  //   Valor_Bienes: convertirAString(datosFinales.Valor_Bienes),
+  //   Valor_Deudas: convertirAString(datosFinales.Valor_Deudas),
+  //   Gastos_Mensuales: convertirAString(datosFinales.Gastos_Mensuales),
+  //   Monto_Mensual_Deuda: convertirAString(datosFinales.Monto_Mensual_Deuda),
+  //   Monto_ingresos_diferentes_negocio: convertirAString(datosFinales.Monto_ingresos_diferentes_negocio),
+  //   Declaracion_de_nacionalidad_y_residencia_fiscal_en_Colombia: true,
+  //   Fecha_Envio_Formulario: new Date(),
+  //   Estado_Civil: "Soltero",
+  //   Nivel_Educativo: "SECUNDARIA",
+  //   Grupo_Etnico: "NINGUNO",
+  //   Declara_Renta: false,
+  //   Esta_obligado_a_tener_RUT_por_tu_actividad_economica: true,
+  //   // Nombres: Nombre,
+  //   // Primer_Apellido: primerApellido,
+  //   // "2do_Apellido_opcional": segundoApellido,
+  //   Estrato: "3",
+  // };
+  const datos = {
+    Persona_expuesta_politicamente_PEP: persona === "si" ? 1 : 0,
+    Familiar_expuesto_politicamente_PEP: familiar === "si" ? 1 : 0,
+    Operaciones_moneda_extranjera: moneda === "si" ? 1 : 0,
     Declaracion_de_nacionalidad_y_residencia_fiscal_en_Colombia: true,
-    Fecha_Envio_Formulario: new Date(),
+    Declara_Renta: false,
+    Estrato: "3",
+    Esta_obligado_a_tener_RUT_por_tu_actividad_economica: true,
     Estado_Civil: "Soltero",
     Nivel_Educativo: "SECUNDARIA",
     Grupo_Etnico: "NINGUNO",
-    Declara_Renta: false,
-    Esta_obligado_a_tener_RUT_por_tu_actividad_economica: true,
-    // Nombres: Nombre,
-    // Primer_Apellido: primerApellido,
-    // "2do_Apellido_opcional": segundoApellido,
-    Estrato: "3",
+    Fecha_Envio_Formulario: new Date(),
   };
-
   try {
-    await axios.put(`/api/flujoRegistroEnlace/${id}`, datosLimpios, {
+    await axios.put(`/api/flujoRegistroEnlace/estado/pendiente/${id}`, {
+      Estado: "pendiente",
+    }, {
       headers: {
         "Content-Type": "application/json",
       },
     });
-
+    await axios.patch(`/api/flujoRegistroEnlace/${id}`, datos, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+   });
     router.push("/truora");
-  } catch (err) {
-    alert("Error al enviar el formulario");
-    console.error("Error enviando formulario:", err);
-
-    error.value = "Error al enviar el formulario";
-  }
+  }catch (error) {
+    console.error("Error:", error);
+    }
 };
 </script>
 

@@ -45,8 +45,8 @@ const mostrarBarrios = ref(false);
 const direccion = ref("");
 
 const error = ref("");
+const id = localStorage.getItem("Id");
 
-// Cargar Departamentos
 const loadDepartments = async () => {
   try {
     const response = await axios.get("/api/ubicacion/departamentos");
@@ -188,7 +188,7 @@ const selectBarrio = (nombre) => {
 };
 
 // Manejar envío del formulario
-const handleSubmit = (event) => {
+const handleSubmit = async(event) => {
   event.preventDefault();
 
   if (!selectedDepartment.value || !selectedCity.value || !selectedBarrio.value || !direccion.value.trim()) {
@@ -212,8 +212,30 @@ const handleSubmit = (event) => {
   formStore.updateField('Barrio', selectedBarrio.value);
   formStore.updateField('Direccion', direccion.value);
 
-  store.completarFormulario();
-  router.push("/informacionNegocio"); 
+  try {
+    await axios.patch(`/api/flujoRegistroEnlace/${id}`, {
+      Ubicacion_del_Negocio_Departamento: selectedDepartment.value,
+      Ubicacion_del_Negocio_Ciudad: selectedCity.value,
+      Barrio: selectedBarrio.value,
+      Direccion: direccion.value
+    }, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    await axios.put(`/api/flujoRegistroEnlace/estado/pendiente/${id}`, {
+        Estado: "IncompletoBloqUbiNegocio",
+      }, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    router.push("/informacionNegocio"); 
+
+  } catch (error) {
+    console.error("Error:", error);
+  }
 };
 
 onMounted(async () => {
@@ -280,9 +302,8 @@ onMounted(async () => {
             type="text"
             v-model="departmentSearch"
             @input="filterDepartments(departmentSearch)"
-            @focus="showDepartments = true"
-            @blur="setTimeout(() => showDepartments = false, 200)"
             @click="showDepartments = !showDepartments"
+            @blur="setTimeout(() => showDepartments = false, 200)"
             placeholder="Selecciona"
             class="custom-select w-full"
           />
@@ -307,9 +328,8 @@ onMounted(async () => {
             type="text"
             v-model="citySearch"
             @input="filterCities(citySearch)"
-            @focus="showCities = true"
-            @blur="setTimeout(() => showCities = false, 200)"
             @click="showCities = !showCities"
+            @blur="setTimeout(() => showCities = false, 200)"
             placeholder="Selecciona"
             class="custom-select w-full"
             :disabled="!selectedDepartmentId"
@@ -333,9 +353,8 @@ onMounted(async () => {
             type="text"
             v-model="buscarBarrio"
             @input="filtrarBarrios(buscarBarrio)"
-            @focus="mostrarBarrios = true"
-            @blur="setTimeout(() => mostrarBarrios = false, 200)"
             @click="mostrarBarrios = !mostrarBarrios"
+            @blur="setTimeout(() => mostrarBarrios = false, 200)"
             placeholder="Selecciona"
             class="custom-select w-full"
             :disabled="!selectedCityId"

@@ -31,6 +31,7 @@ const nombreError = ref("");
 const apellidoError = ref("");
 const SegundoApellidoError = ref("");
 const cedulaErrorMessage = ref("");
+const id = localStorage.getItem("Id");
 
 // onMounted(async () => {
 //   localStorage.setItem("ruta", window.location.pathname);
@@ -133,13 +134,28 @@ const handleSubmit = async (event) => {
     }
 
     store.completarFormulario();
-
-    formStore.updateField("Nombres", nombre.value);
-    formStore.updateField("Primer_Apellido", apellido.value);
-    formStore.updateField("2do_Apellido_opcional", SegundoApellido.value);
     formStore.updateField("Cedula_Cliente", cedula.value.toString());
+    try {
+       await axios.put(`/api/flujoRegistroEnlace/estado/pendiente/${id}`, {
+        Estado: "IncompletoBloqCedula",
+      }, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
+      await axios.patch(`/api/flujoRegistroEnlace/${id}`, 
+      { Cedula_Cliente: cedula.value.toString() }, 
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
     router.push("/negocio");
+
+    } catch (error) {
+      console.log(`error`, error);
+    }
 
   } catch (err) {
 

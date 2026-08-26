@@ -8,6 +8,8 @@
   import { fadeInUp } from "../motion/PagesAnimation";
   import { motion } from "motion-v";
   import { useFormStore } from '../stores/formStore.js'
+  import axios from "axios";
+
   const email = ref("");
   const confirmaremail = ref("");
   const errorMessage = ref("");
@@ -15,8 +17,7 @@
   const confirmEmailErrorMessage = ref("");
   const router = useRouter();
   const store = useFormularioStore();
-  const tokenAlpina = localStorage.getItem("tokenAlpina");
-
+  const id = localStorage.getItem("Id");
 
   //formulario global
   const formStore = useFormStore()
@@ -65,7 +66,7 @@
   watch([email, confirmaremail], validateEmail);
 
   // Validar al enviar el formulario
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     const emailValue = clearUndefined(email.value);
     const confirmEmailValue = clearUndefined(confirmaremail.value);
 
@@ -88,8 +89,28 @@
     }
     event.preventDefault();
     store.completarFormulario(); // Marca el formulario como completado
-    formStore.updateField('Correo_Electronico', confirmaremail.value)
-    router.push("/nombres"); // Redirige a la siguiente pantalla
+   const datos = {
+      Correo_Electronico: confirmaremail.value,
+    };
+
+    try {
+       await axios.put(`/api/flujoRegistroEnlace/estado/pendiente/${id}`, {
+        Estado: "IncompletoBloqCorreo",
+      }, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      await axios.patch(`/api/flujoRegistroEnlace/${id}`, datos, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    router.push("/nombres");
+    } catch (error) {
+      console.log(`error`,error)
+    }
   };
 
   const Id = ref(null);
