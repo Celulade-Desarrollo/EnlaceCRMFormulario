@@ -8,6 +8,7 @@ import { useRouter } from "vue-router";
 import { fadeInUp } from "../motion/PagesAnimation";
 import { motion } from "motion-v";
 import { useFormStore } from "../stores/formStore.js";
+import axios from "axios";
 
 const store = useFormularioStore();
 const router = useRouter();
@@ -16,8 +17,9 @@ const formStore = useFormStore();
 const mostrarAlerta = ref(false);
 const mensajeAlerta = ref("");
 const ingresos = ref("");
+const id = localStorage.getItem("Id");
+//const token = ref(localStorage.getItem('token'));
 
-// 🧮 Mapa de rangos a valores promedio diarios
 const promedioIngresos = {
   "Menos de $200.000": 150000,
   "Entre $200.000 y $400.000": 300000,
@@ -26,15 +28,6 @@ const promedioIngresos = {
   "Más de $800.000": 900000,
 };
 
-// 💰 Calcular el ingreso mensual formateado para mostrar
-const ingresoMensualFormateado = computed(() => {
-  if (!ingresos.value) return "";
-  const valorPromedio = promedioIngresos[ingresos.value] || 0;
-  const ingresoMensual = valorPromedio * 30;
-  return ingresoMensual.toLocaleString('es-CO');
-});
-
-// ✅ Cuando se selecciona un checkbox
 const handleCheckboxChange = (event) => {
   const checkboxes = document.querySelectorAll(".single-checkbox");
   checkboxes.forEach((checkbox) => {
@@ -46,8 +39,7 @@ const handleCheckboxChange = (event) => {
   ingresos.value = event.target.value;
 };
 
-// ✅ Cuando se hace clic en "Continuar"
-const handleSubmit = (event) => {
+const handleSubmit = async (event) => {
   event.preventDefault();
 
   const checkboxes = document.querySelectorAll(".single-checkbox");
@@ -60,30 +52,36 @@ const handleSubmit = (event) => {
     return;
   }
 
-  // 🧮 Calcular ingreso mensual
   const valorPromedio = promedioIngresos[ingresos.value] || 0;
   const ingresoMensual = valorPromedio * 30;
-
-  // 💰 Formatear con puntos para guardar en BD
   const ingresoFormateado = ingresoMensual.toLocaleString('es-CO');
 
-  // 🧩 Guardar el valor formateado (con puntos como string)
   formStore.updateField("Rango_de_Ingresos", ingresoFormateado);
 
-  console.log("📊 Guardando ingreso mensual:", {
-    Seleccion: ingresos.value,
-    IngresoNumerico: ingresoMensual,
-    IngresoGuardado: ingresoFormateado,
-    Tipo: typeof ingresoFormateado,
-  });
+  try {
+    await axios.patch(`/api/flujoRegistroEnlace/${id}`, {
+      Rango_de_Ingresos: ingresoFormateado
+    }, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-  // 📨 Continuar al siguiente paso
-  store.completarFormulario();
-  router.push("/informacionFinanciera");
+    await axios.put(`/api/flujoRegistroEnlace/estado/pendiente/${id}`, {
+      Estado: "IncompletoBloqVentas",
+    }, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    router.push("/informacionFinanciera");
+  } catch (err) {
+    console.error(err);
+  }
 };
 
-// ✅ Inicialización al montar la vista
 onMounted(() => {
+
   const checkboxes = document.querySelectorAll(".single-checkbox");
   checkboxes.forEach((checkbox) => {
     checkbox.addEventListener("change", handleCheckboxChange);
@@ -92,8 +90,8 @@ onMounted(() => {
   const miRuta = window.location.pathname;
   localStorage.setItem("ruta", miRuta);
 });
-</script>
 
+</script>
 
 <template>
   <div>
